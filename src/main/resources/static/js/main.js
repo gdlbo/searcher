@@ -411,3 +411,60 @@ function grantAdmin() {
             alert('Error processing request');
         });
 }
+
+function resetDatabase() {
+    fetch('/api/resetDatabase', {
+        method: 'GET',
+        credentials: 'include'
+    }).then(response => {
+        if (response.ok) {
+            response.text().then(text => console.log(text));
+        } else {
+            console.error('Failed to reset database with status:', response.status);
+        }
+    }).catch(error => {
+        console.error('Reset database failed with error:', error);
+    });
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 2500);
+}
+
+function restartServer() {
+    fetch('/api/restartServer', {
+        method: 'GET',
+        credentials: 'include'
+    }).then(response => {
+        if (response.ok) {
+            response.text().then(text => console.log(text));
+        } else {
+            console.error('Failed to restart server with status:', response.status);
+        }
+    }).catch(error => {
+        console.error('Restart server failed with error:', error);
+    });
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 2500);
+}
+
+function changePassword(username, newPassword) {
+    const formData = new URLSearchParams();
+    formData.append('username', username);
+    formData.append('newPassword', newPassword);
+
+    fetch('/api/changePassword?username=' + encodeURIComponent(username) + '&newPassword=' + encodeURIComponent(newPassword), {
+        method: 'GET',
+        credentials: 'include'
+    }).then(response => {
+        if (response.ok) {
+            response.text().then(text => console.log(text));
+        } else {
+            console.error('Failed to change password with status:', response.status);
+        }
+    }).catch(error => {
+        console.error('Change password failed with error:', error);
+    });
+}

@@ -26,15 +26,19 @@
             </div>
         </div>
         <div th:if="${isAdmin}" class="settings-section">
-            <h3>Admin Rights</h3>
+            <h3>Admin</h3>
             <div class="grant-admin-container">
-                <label for="userName">Username:</label>
+                <label for="userName">Give admin:</label>
                 <div class="input-button-container">
                     <input type="text" id="username" placeholder="Enter username">
                     <button class="custom-button" onclick="grantAdmin()" type="button">Apply</button>
                 </div>
             </div>
+            <button class="custom-button" onclick="resetDatabase()" type="button">Reset Database</button>
+            <button class="custom-button" onclick="restartServer()" type="button">Restart Server</button>
         </div>
+        <h3>Account</h3>
+<!--        <button class="custom-button" onclick="changePassword(document.getElementById('username').value, 'новый_пароль')" type="button">Change Password</button>-->
         <button class="custom-button" onclick="logout()" type="button">Logout</button>
         <button class="custom-button" onclick="closeSettingsDialog()" type="button">Close</button>
     </div>
