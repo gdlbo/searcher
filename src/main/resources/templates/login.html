@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Login Page</title>
     <link rel="stylesheet" th:href="@{/css/login.css}"/>
+    <script th:src="@{/js/themes.js}"></script>
+    <script>
+        window.onload = function () {
+            initTheme();
+        };
+    </script>
 </head>
 <body>
 <div class="login-container">
@@ -18,7 +24,7 @@
         </div>
         <button type="submit">Login</button>
         <p class="error" th:if="${param.error}">Invalid username or password.</p>
-        <button type="button" onclick="window.location.href='/auth/register'">Register</button>
+        <button onclick="window.location.href='/auth/register'" type="button">Register</button>
     </form>
 </div>
 </body>

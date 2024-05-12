@@ -3,10 +3,15 @@
 <head>
     <title>Searcher</title>
     <script th:src="@{/js/main.js}"></script>
+    <script th:src="@{/js/themes.js}"></script>
+    <script th:src="@{/js/requests.js}"></script>
+    <script th:src="@{/js/dropzone.js}"></script>
+    <script th:src="@{/js/sorting.js}"></script>
+    <script th:src="@{/js/search.js}"></script>
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 </head>
-<body th:data-is-admin="${isAdmin}">
 
+<body th:data-is-admin="${isAdmin}">
 <div class="header-container">
     <h1>Searcher</h1>
     <button class="settings-button" onclick="openSettingsDialog()" type="button">Settings</button>

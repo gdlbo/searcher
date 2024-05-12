@@ -1,16 +1,56 @@
+:root {
+    --background-color: #fff;
+    --text-color: #333;
+    --input-background-color: #f2f2f2;
+    --input-border-color: #ccc;
+    --input-text-color: #333;
+    --primary-color: #007bff;
+    --primary-color-hover: #e0e0e0;
+    --container-background-color: white;
+    --input-border-color-focus: #0056b3;
+    --input-label-color: #777;
+}
+
+:root[data-theme="light"] {
+    --background-color: #fff;
+    --text-color: #333;
+    --input-background-color: #f2f2f2;
+    --input-border-color: #ccc;
+    --input-text-color: #333;
+    --primary-color: #007bff;
+    --primary-color-hover: #e0e0e0;
+    --container-background-color: white;
+    --input-border-color-focus: #0056b3;
+    --input-label-color: #777;
+}
+
+:root[data-theme="dark"] {
+    --background-color: #333;
+    --text-color: #ddd;
+    --input-background-color: #444;
+    --input-border-color: #555;
+    --input-text-color: #ddd;
+    --primary-color: #555;
+    --primary-color-hover: #666;
+    --container-background-color: #3a3f4b;
+    --input-border-color-focus: #2f7384;
+    --input-label-color: #d7dae0;
+}
+
 body {
     font-family: 'Arial', sans-serif;
-    background: #f7f7f7;
+    background: var(--background-color);
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    color: var(--text-color);
 }
 
 form {
-    background: white;
+    background: var(--container-background-color);
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -21,7 +61,7 @@ form {
 
 label {
     font-size: 12px;
-    color: #777;
+    color: var(--input-label-color);
     margin-bottom: 5px;
 }
 
@@ -29,15 +69,17 @@ input[type="text"], input[type="password"] {
     width: 100%;
     padding: 10px;
     font-size: 16px;
-    border: 2px solid #ddd;
+    border: 2px solid var(--input-border-color);
     border-radius: 4px;
     display: block;
     transition: border-color 0.3s;
     box-sizing: border-box;
+    background-color: var(--input-background-color);
+    color: var(--input-text-color);
 }
 
 input[type="text"]:focus, input[type="password"]:focus {
-    border-color: #0056b3;
+    border-color: var(--input-border-color-focus);
     outline: none;
 }
 
@@ -45,7 +87,7 @@ button[type="submit"] {
     width: 100%;
     padding: 10px;
     border: none;
-    background: #0056b3;
+    background: var(--primary-color);
     color: white;
     font-size: 16px;
     border-radius: 4px;
@@ -55,5 +97,5 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background: #004494;
+    background: var(--primary-color-hover);
 }

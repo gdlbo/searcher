@@ -1,7 +1,62 @@
+:root {
+    --background-color: #fff;
+    --text-color: #333;
+    --input-background-color: #f2f2f2;
+    --input-border-color: #ccc;
+    --input-text-color: #333;
+    --primary-color: #007bff;
+    --primary-color-hover: #e0e0e0;
+    --table-header-background-color: #f2f2f2;
+    --table-border-color: #ddd;
+    --table-row-hover-background-color: #f5f5f5;
+    --link-color: #007bff;
+    --dropdown-background-color: #ccc;
+    --dropdown-hover-background-color: #bbb;
+    --settings-button-background-color: #007bff;
+    --settings-button-hover-background-color: #0069d9;
+}
+
+:root[data-theme="light"] {
+    --background-color: #fff;
+    --text-color: #333;
+    --input-background-color: #f2f2f2;
+    --input-border-color: #ccc;
+    --input-text-color: #333;
+    --primary-color: #007bff;
+    --primary-color-hover: #e0e0e0;
+    --table-header-background-color: #f2f2f2;
+    --table-border-color: #ddd;
+    --table-row-hover-background-color: #f5f5f5;
+    --link-color: #007bff;
+    --dropdown-background-color: #ccc;
+    --dropdown-hover-background-color: #bbb;
+    --settings-button-background-color: #007bff;
+    --settings-button-hover-background-color: #0069d9;
+}
+
+:root[data-theme="dark"] {
+    --background-color: #333;
+    --text-color: #ddd;
+    --input-background-color: #444;
+    --input-border-color: #555;
+    --input-text-color: #ddd;
+    --primary-color: #555;
+    --primary-color-hover: #666;
+    --table-header-background-color: #444;
+    --table-border-color: #555;
+    --table-row-hover-background-color: #555;
+    --link-color: #ddd;
+    --dropdown-background-color: #555;
+    --dropdown-hover-background-color: #666;
+    --settings-button-background-color: #555;
+    --settings-button-hover-background-color: #666;
+}
+
 body {
     font-family: Arial, sans-serif;
     padding: 20px;
-    color: #333;
+    color: var(--text-color);
+    background-color: var(--background-color);
 }
 
 .pagination {
@@ -16,19 +71,19 @@ body {
     padding: 5px 10px;
     margin-right: 5px;
     font-size: 16px;
-    background-color: #f2f2f2;
-    color: #333;
-    border: 1px solid #ccc;
+    background-color: var(--input-background-color);
+    color: var(--input-text-color);
+    border: 1px solid var(--input-border-color);
     border-radius: 4px;
     text-decoration: none;
 }
 
 .pagination a:hover {
-    background-color: #e0e0e0;
+    background-color: var(--primary-color-hover);
 }
 
 .pagination a.selected-page {
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: #fff;
 }
 
@@ -61,12 +116,14 @@ input[type="submit"] {
 input[type="text"],
 input[type="password"],
 input[type="file"] {
-    border: 2px solid #ddd;
+    border: 2px solid var(--input-border-color);
+    background-color: var(--input-background-color);
+    color: var(--input-text-color);
 }
 
 input[type="submit"] {
     border: none;
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: #fff;
     cursor: pointer;
     margin-left: 10px;
@@ -81,20 +138,20 @@ th,
 td {
     padding: 15px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--table-border-color);
 }
 
 th {
-    background-color: #f2f2f2;
+    background-color: var(--table-header-background-color);
     font-weight: normal;
 }
 
 tr:hover {
-    background-color: #f5f5f5;
+    background-color: var(--table-row-hover-background-color);
 }
 
 a {
-    color: #007bff;
+    color: var(--link-color);
     text-decoration: none;
 }
 
@@ -119,77 +176,16 @@ a {
 .theme-dropdown {
     padding: 5px;
     font-size: 16px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--input-border-color);
     border-radius: 4px;
     width: 100%;
 }
 
-/* Dark theme */
-body.dark-theme {
-    background-color: #333;
-    color: #ddd;
-}
-
-body.dark-theme input[type="text"],
-body.dark-theme input[type="password"],
-body.dark-theme input[type="file"] {
-    background-color: #444;
-    border-color: #555;
-    color: #ddd;
-}
-
-body.dark-theme input[type="submit"] {
-    background-color: #555;
-}
-
-body.dark-theme table {
-    border-color: #555;
-}
-
-body.dark-theme th,
-body.dark-theme td {
-    border-color: #555;
-}
-
-body.dark-theme th {
-    background-color: #444;
-}
-
-body.dark-theme tr:hover {
-    background-color: #555;
-}
-
-body.dark-theme a {
-    color: #ddd;
-}
-
-body.dark-theme .theme-dropdown {
-    background-color: #444;
-    border-color: #555;
-    color: #ddd;
-}
-
-body.dark-theme .pagination a {
-    background-color: #444;
-    color: #ddd;
-    border-color: #555;
-}
-
-body.dark-theme .pagination a:hover {
-    background-color: #555;
-}
-
-body.dark-theme .pagination a.selected-page {
-    background-color: #555;
-}
-
-/* Other */
 .selected-page {
     background-color: rgba(51, 122, 183, 0.62);
     color: #fff;
 }
 
-/* Added styles for the dialog box */
 .dialog-box {
     display: none;
     position: fixed;
@@ -202,7 +198,7 @@ body.dark-theme .pagination a.selected-page {
 }
 
 .dialog-content {
-    background-color: #f9f9f9;
+    background-color: var(--background-color);
     padding: 24px 32px;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -215,12 +211,11 @@ body.dark-theme .pagination a.selected-page {
     max-width: 400px;
 }
 
-
 .dialog-content h2 {
     margin: 0 0 24px;
     font-size: 24px;
     font-weight: 600;
-    color: #333;
+    color: var(--text-color);
 }
 
 .dialog-content .close {
@@ -237,18 +232,8 @@ body.dark-theme .pagination a.selected-page {
     text-decoration: none;
 }
 
-body.dark-theme .dialog-content h2 {
-    color: #fff;
-}
-
-body.dark-theme .dialog-content input[type="file"] {
-    background-color: #444;
-    border-color: #555;
-    color: #ddd;
-}
-
 .dialog-content button {
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -261,7 +246,7 @@ body.dark-theme .dialog-content input[type="file"] {
 }
 
 .dialog-content button:hover {
-    background-color: #0069d9;
+    background-color: var(--primary-color-hover);
 }
 
 .dialog-content button + button {
@@ -269,39 +254,10 @@ body.dark-theme .dialog-content input[type="file"] {
     margin-top: 16px;
 }
 
-/* Dark theme styles for the dialog box */
-body.dark-theme .dialog-box {
-    background-color: rgba(51, 51, 51, 0.8);
-}
-
-body.dark-theme .dialog-content {
-    background-color: #3a3a3a;
-    color: #ddd;
-    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
-}
-
-body.dark-theme .dialog-content .close {
-    color: #bbb;
-}
-
-body.dark-theme .dialog-content input[type="file"] {
-    background-color: #444;
-    border-color: #555;
-    color: #ddd;
-}
-
-body.dark-theme .dialog-content button {
-    background-color: #555;
-}
-
-body.dark-theme .dialog-content button:hover {
-    background-color: #666;
-}
-
 .drop-zone {
     width: 100%;
     max-width: 300px;
-    border: 2px dashed #ccc;
+    border: 2px dashed var(--input-border-color);
     border-radius: 8px;
     padding: 20px;
     text-align: center;
@@ -312,7 +268,7 @@ body.dark-theme .dialog-content button:hover {
 .drop-zone__prompt {
     display: inline-block;
     font-size: 16px;
-    color: #777;
+    color: var(--input-text-color);
     margin-top: 5px;
 }
 
@@ -321,7 +277,7 @@ body.dark-theme .dialog-content button:hover {
 }
 
 .drop-zone.drag-over {
-    border-color: #007bff;
+    border-color: var(--primary-color);
 }
 
 .drop-zone-container {
@@ -359,7 +315,7 @@ body.dark-theme .dialog-content button:hover {
     position: absolute;
     right: 0;
     mt4in-width: 180px;
-    background-color: #fff;
+    background-color: var(--background-color);
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
     z-index: 1;
     border-radius: 8px;
@@ -368,7 +324,7 @@ body.dark-theme .dialog-content button:hover {
 
 .dropdown-content a,
 .dropdown-content button {
-    color: #333;
+    color: var(--text-color);
     padding: 8px 16px;
     text-decoration: none;
     display: block;
@@ -383,11 +339,11 @@ body.dark-theme .dialog-content button:hover {
 
 .dropdown-content a:hover,
 .dropdown-content button:hover {
-    background-color: #f1f1f1;
+    background-color: var(--dropdown-hover-background-color);
 }
 
 .dialog-content .custom-button {
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -398,76 +354,34 @@ body.dark-theme .dialog-content button:hover {
 }
 
 .dialog-content .custom-button:hover {
-    background-color: #0069d9;
+    background-color: var(--primary-color-hover);
 }
 
 .dropdown-content .custom-dropdown-button {
     margin-bottom: 2px;
-    color: #333;
+    color: var(--text-color);
     padding: 8px 16px;
     text-decoration: none;
     display: block;
     font-size: 14px;
     border-radius: 4px;
     transition: background-color 0.2s ease-in-out;
-    background-color: #ccc;
+    background-color: var(--dropdown-background-color);
     border: none;
     width: 100%;
 }
 
 .dropdown-content .custom-dropdown-button:hover {
-    background-color: #bbb;
-}
-
-body.dark-theme .dropdown-content {
-    background-color: #3a3a3a;
-}
-
-body.dark-theme .dropdown-content a,
-body.dark-theme .dropdown-content button {
-    color: #ddd;
-}
-
-body.dark-theme .dropdown-content a:hover,
-body.dark-theme .dropdown-content button:hover {
-    background-color: #444;
-}
-
-body.dark-theme .dialog-content .custom-button {
-    background-color: #555;
-}
-
-body.dark-theme .dialog-content .custom-button:hover {
-    background-color: #666;
-}
-
-body.dark-theme .settings-button {
-    background-color: #555;
-}
-
-body.dark-theme .settings-button:hover {
-    background-color: #666;
-}
-
-body.dark-theme .dropdown-content .custom-dropdown-button {
-    background-color: #555;
-}
-
-body.dark-theme .dropdown-content .custom-dropdown-button:hover {
-    background-color: #666;
+    background-color: var(--dropdown-hover-background-color);
 }
 
 .options-button {
     background-color: transparent;
     border: none;
     font-size: 18px;
-    color: #333;
+    color: var(--text-color);
     display: flex;
     align-items: center;
-}
-
-body.dark-theme .options-button {
-    color: #ddd;
 }
 
 .options-button:focus {
@@ -498,7 +412,7 @@ body.dark-theme .options-button {
 }
 
 .settings-button {
-    background-color: #007bff;
+    background-color: var(--settings-button-background-color);
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -511,7 +425,7 @@ body.dark-theme .options-button {
 }
 
 .settings-button:hover {
-    background-color: #0069d9;
+    background-color: var(--settings-button-hover-background-color);
 }
 
 .input-button-container {

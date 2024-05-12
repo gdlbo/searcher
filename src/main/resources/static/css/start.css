@@ -1,0 +1,86 @@
+:root {
+    --background-color: #f5f5f5;
+    --text-color: #333;
+    --form-background-color: white;
+    --input-border-color: #ccc;
+    --input-background-color: #f2f2f2;
+    --input-text-color: #333;
+    --button-background-color: #007bff;
+    --button-hover-background-color: #0056b3;
+}
+
+:root[data-theme="light"] {
+    --background-color: #f5f5f5;
+    --text-color: #333;
+    --form-background-color: white;
+    --input-border-color: #ccc;
+    --input-background-color: #f2f2f2;
+    --input-text-color: #333;
+    --button-background-color: #007bff;
+    --button-hover-background-color: #0056b3;
+}
+
+:root[data-theme="dark"] {
+    --background-color: #333;
+    --text-color: #ddd;
+    --form-background-color: #444;
+    --input-background-color: #444;
+    --input-border-color: #555;
+    --input-text-color: #ddd;
+    --button-background-color: #555;
+    --button-hover-background-color: #666;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--form-background-color);
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+input[type="text"] {
+    font-size: 1rem;
+    padding: 0.5rem;
+    border: 1px solid var(--input-border-color);
+    border-radius: 0.25rem;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 1.5rem;
+    background-color: var(--input-background-color);
+    color: var(--input-text-color);
+}
+
+button {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--button-background-color);
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: var(--button-hover-background-color);
+}

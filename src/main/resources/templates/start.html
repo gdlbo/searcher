@@ -3,58 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Start Page</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f5f5f5;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: white;
-            padding: 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        label {
-            font-size: 1.25rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-
-        input[type="text"] {
-            font-size: 1rem;
-            padding: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 0.25rem;
-            width: 100%;
-            max-width: 300px;
-            margin-bottom: 1.5rem;
-        }
-
-        button {
-            font-size: 1rem;
-            padding: 0.5rem 1rem;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/start.css}"/>
+    <script th:src="@{/js/themes.js}"></script>
+    <script>
+        window.onload = function () {
+            initTheme();
+        };
+    </script>
 </head>
 <body>
 <form action="/api/submit" method="post">

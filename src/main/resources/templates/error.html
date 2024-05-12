@@ -2,28 +2,13 @@
 <html lang="en" xmlns="https://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <head>
     <title>Error</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f5f5f5;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        p {
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/error.css}"/>
+    <script th:src="@{/js/themes.js}"></script>
+    <script>
+        window.onload = function () {
+            initTheme();
+        };
+    </script>
 </head>
 <body>
 <div>
