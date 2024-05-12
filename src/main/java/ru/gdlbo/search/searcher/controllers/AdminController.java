@@ -5,8 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.gdlbo.search.searcher.config.RestartManager;
+import ru.gdlbo.search.searcher.config.WebSecurityConfig;
 import ru.gdlbo.search.searcher.repository.User;
 import ru.gdlbo.search.searcher.repository.UserRepository;
 import ru.gdlbo.search.searcher.repository.UserRole;
@@ -77,7 +79,9 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Current user not found");
         }
 
-        if (!currentUser.getPassword().equals(oldPassword)) {
+        PasswordEncoder encoder = new WebSecurityConfig().passwordEncoder();
+
+        if (!encoder.matches(oldPassword, currentUser.getPassword())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Old password is incorrect");
         }
 
@@ -89,7 +93,7 @@ public class AdminController {
             currentUser.setUsername(username);
         }
 
-        currentUser.setPassword(newPassword);
+        currentUser.setPassword(encoder.encode(newPassword));
         userRepository.save(currentUser);
 
         return ResponseEntity.ok("Credentials updated successfully");
