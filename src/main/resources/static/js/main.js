@@ -1,10 +1,16 @@
 let systemThemeListener;
+let isAdmin = false;
 
 window.onload = function () {
     initTheme();
     initDropZone();
     loadSearch();
 };
+
+document.addEventListener("DOMContentLoaded", function () {
+    initSortLinks();
+    isAdmin = document.body.getAttribute('data-is-admin') === 'true';
+});
 
 function storeSearch() {
     const searchQuery = document.getElementById("searchQuery").value;
@@ -151,50 +157,54 @@ function openDropdown(event) {
         }
     };
 
-    const replaceButton = event.target.nextElementSibling.querySelector("#replaceButton");
-    replaceButton.addEventListener("click", function (e) {
-        e.stopPropagation();
-        const dialogBox = document.getElementById("dialog-box");
-        dialogBox.style.display = "block";
-        closeDropdown();
-    });
-
-    const deleteButton = event.target.nextElementSibling.querySelector("#deleteButton");
-    deleteButton.addEventListener("click", function (e) {
-        e.stopPropagation();
-        const dialogBox = document.getElementById("dialog-box");
-        const filePathInput = dialogBox.querySelector('input[name="filePath"]');
-        filePathInput.value = e.target.parentNode.querySelector('input[name="filePath"]').value;
-        removeFile(filePathInput.value)
-    });
-
     const historyButton = event.target.nextElementSibling.querySelector("#historyButton");
-    historyButton.addEventListener("click", function (e) {
-        e.stopPropagation();
-        const dialogBox = document.getElementById("dialog-box");
-        const filePathInput = dialogBox.querySelector('input[name="filePath"]');
-        filePathInput.value = e.target.parentNode.querySelector('input[name="filePath"]').value;
-        showFileHistory(filePathInput.value)
-    });
+    if (historyButton) {
+        historyButton.addEventListener("click", function (e) {
+            e.stopPropagation();
+            const dialogBox = document.getElementById("dialog-box");
+            const filePathInput = dialogBox.querySelector('input[name="filePath"]');
+            filePathInput.value = e.target.parentNode.querySelector('input[name="filePath"]').value;
+            showFileHistory(filePathInput.value)
+        });
+    }
 
     const downloadButton = event.target.nextElementSibling.querySelector("#downloadButton");
-    downloadButton.addEventListener("click", function (e) {
-        e.stopPropagation();
-        const dialogBox = document.getElementById("dialog-box");
-        const filePathInput = dialogBox.querySelector('input[name="filePath"]');
-        filePathInput.value = e.target.parentNode.querySelector('input[name="filePath"]').value;
-        downloadFile(filePathInput.value)
-    });
+    if (downloadButton) {
+        downloadButton.addEventListener("click", function (e) {
+            e.stopPropagation();
+            const dialogBox = document.getElementById("dialog-box");
+            const filePathInput = dialogBox.querySelector('input[name="filePath"]');
+            filePathInput.value = e.target.parentNode.querySelector('input[name="filePath"]').value;
+            downloadFile(filePathInput.value)
+        });
+    }
+
+    const replaceButton = event.target.nextElementSibling.querySelector("#replaceButton");
+    if (replaceButton) {
+        replaceButton.addEventListener("click", function (e) {
+            e.stopPropagation();
+            const dialogBox = document.getElementById("dialog-box");
+            dialogBox.style.display = "block";
+            closeDropdown();
+        });
+    }
+
+    const deleteButton = event.target.nextElementSibling.querySelector("#deleteButton");
+    if (deleteButton) {
+        deleteButton.addEventListener("click", function (e) {
+            e.stopPropagation();
+            const dialogBox = document.getElementById("dialog-box");
+            const filePathInput = dialogBox.querySelector('input[name="filePath"]');
+            filePathInput.value = e.target.parentNode.querySelector('input[name="filePath"]').value;
+            removeFile(filePathInput.value)
+        });
+    }
 }
 
 function closeDropdown() {
     const dropdownContent = document.querySelector(".dropdown-content");
     dropdownContent.style.display = "none";
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-    initSortLinks();
-});
 
 function initSortLinks() {
     const sortLinks = document.querySelectorAll(".sort");
@@ -233,7 +243,6 @@ function updateSortLink(link, newSortOrder) {
 
 function updateOtherSortLinks(link) {
     const sortLinks = document.querySelectorAll(".sort");
-
     sortLinks.forEach(function (otherLink) {
         if (otherLink !== link) {
             otherLink.dataset.sortorder = "";
@@ -334,7 +343,10 @@ function showFileHistory(filePath) {
                     buttonDiv.style.float = 'right';
                     buttonDiv.style.display = 'flex';
                     buttonDiv.appendChild(downloadButton);
-                    buttonDiv.appendChild(deleteButton);
+
+                    if (isAdmin) {
+                        buttonDiv.appendChild(deleteButton);
+                    }
 
                     listItem.appendChild(dateSpan);
                     listItem.appendChild(buttonDiv);

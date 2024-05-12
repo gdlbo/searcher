@@ -5,7 +5,7 @@
     <script th:src="@{/js/main.js}"></script>
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 </head>
-<body>
+<body th:data-is-admin="${isAdmin}">
 
 <div class="header-container">
     <h1>Searcher</h1>
@@ -100,8 +100,8 @@
                     <input name="filePath" th:value="${file.filePath}" type="hidden"/>
                     <button class="custom-dropdown-button" id="downloadButton">Download</button>
                     <div th:if="${isAdmin}">
-                        <button class="custom-dropdown-button" id="replaceButton">Replace</button>
                         <button class="custom-dropdown-button" id="deleteButton">Delete</button>
+                        <button class="custom-dropdown-button" id="replaceButton">Replace</button>
                     </div>
                     <button class="custom-dropdown-button" id="historyButton">History</button>
                 </div>
