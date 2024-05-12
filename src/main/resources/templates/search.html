@@ -99,7 +99,10 @@
                 <div class="dropdown-content" id="dropdown-content">
                     <input name="filePath" th:value="${file.filePath}" type="hidden"/>
                     <button class="custom-dropdown-button" id="downloadButton">Download</button>
-                    <button class="custom-dropdown-button" id="replaceButton">Replace</button>
+                    <div th:if="${isAdmin}">
+                        <button class="custom-dropdown-button" id="replaceButton">Replace</button>
+                        <button class="custom-dropdown-button" id="deleteButton">Delete</button>
+                    </div>
                     <button class="custom-dropdown-button" id="historyButton">History</button>
                 </div>
             </div>

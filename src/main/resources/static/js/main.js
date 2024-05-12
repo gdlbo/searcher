@@ -155,10 +155,17 @@ function openDropdown(event) {
     replaceButton.addEventListener("click", function (e) {
         e.stopPropagation();
         const dialogBox = document.getElementById("dialog-box");
-        const filePathInput = dialogBox.querySelector('input[name="filePath"]');
-        filePathInput.value = e.target.parentNode.querySelector('input[name="filePath"]').value;
         dialogBox.style.display = "block";
         closeDropdown();
+    });
+
+    const deleteButton = event.target.nextElementSibling.querySelector("#deleteButton");
+    deleteButton.addEventListener("click", function (e) {
+        e.stopPropagation();
+        const dialogBox = document.getElementById("dialog-box");
+        const filePathInput = dialogBox.querySelector('input[name="filePath"]');
+        filePathInput.value = e.target.parentNode.querySelector('input[name="filePath"]').value;
+        removeFile(filePathInput.value)
     });
 
     const historyButton = event.target.nextElementSibling.querySelector("#historyButton");
@@ -363,6 +370,11 @@ function deleteFileFromHistory(filePath) {
 
 function downloadFile(filePath) {
     window.location.href = `/api/download?filePath=${encodeURIComponent(filePath)}`;
+}
+
+function removeFile(filePath) {
+    window.location.href = `/api/remove?filePath=${encodeURIComponent(filePath)}`;
+    window.location.reload();
 }
 
 function openSettingsDialog() {
