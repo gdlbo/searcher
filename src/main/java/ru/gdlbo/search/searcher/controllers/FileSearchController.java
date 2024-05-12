@@ -89,6 +89,7 @@ public class FileSearchController {
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("query", query);
         model.addAttribute("isAdmin", isAdmin);
+        model.addAttribute("nickname", authentication.getName());
 
         return "search";
     }

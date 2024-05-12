@@ -9,7 +9,7 @@
 
 <div class="header-container">
     <h1>Searcher</h1>
-    <button type="button" class="settings-button" onclick="openSettingsDialog()">Settings</button>
+    <button class="settings-button" onclick="openSettingsDialog()" type="button">Settings</button>
 </div>
 
 <div class="dialog-box" id="settingsDialog">
@@ -25,20 +25,36 @@
                 </select>
             </div>
         </div>
-        <div th:if="${isAdmin}" class="settings-section">
+        <div th:if="${isAdmin}">
             <h3>Admin</h3>
-            <div class="grant-admin-container">
+            <div class="input-group">
                 <label for="userName">Give admin:</label>
-                <div class="input-button-container">
-                    <input type="text" id="username" placeholder="Enter username">
-                    <button class="custom-button" onclick="grantAdmin()" type="button">Apply</button>
-                </div>
+                <input id="username" placeholder="Enter username" type="text">
+            </div>
+            <div class="button-group">
+                <button class="custom-button" onclick="grantAdmin()" type="button">Apply</button>
             </div>
             <button class="custom-button" onclick="resetDatabase()" type="button">Reset Database</button>
             <button class="custom-button" onclick="restartServer()" type="button">Restart Server</button>
         </div>
-        <h3>Account</h3>
-<!--        <button class="custom-button" onclick="changePassword(document.getElementById('username').value, 'новый_пароль')" type="button">Change Password</button>-->
+        <div class="account-credentials">
+            <h3>Account</h3>
+            <div class="input-group">
+                <label for="nickname">Nickname:</label>
+                <input id="nickname" th:placeholder="${nickname}" type="text">
+            </div>
+            <div class="input-group">
+                <label for="old-password">Old Password:</label>
+                <input id="old-password" placeholder="Old password" type="password">
+            </div>
+            <div class="input-group">
+                <label for="new-password">New Password:</label>
+                <input id="new-password" placeholder="New password" type="password">
+            </div>
+            <div class="button-group">
+                <button class="custom-button" onclick="changePassword()" type="button">Apply Changes</button>
+            </div>
+        </div>
         <button class="custom-button" onclick="logout()" type="button">Logout</button>
         <button class="custom-button" onclick="closeSettingsDialog()" type="button">Close</button>
     </div>

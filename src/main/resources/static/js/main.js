@@ -450,21 +450,32 @@ function restartServer() {
     }, 2500);
 }
 
-function changePassword(username, newPassword) {
-    const formData = new URLSearchParams();
-    formData.append('username', username);
-    formData.append('newPassword', newPassword);
+function changePassword() {
+    const nickname = document.getElementById('nickname').value;
+    const oldPassword = document.getElementById('old-password').value;
+    const newPassword = document.getElementById('new-password').value;
 
-    fetch('/api/changePassword?username=' + encodeURIComponent(username) + '&newPassword=' + encodeURIComponent(newPassword), {
+    const formData = new URLSearchParams();
+    if (nickname) {
+        formData.append('nickname', encodeURIComponent(nickname));
+    }
+
+    formData.append('oldPassword', encodeURIComponent(oldPassword));
+    formData.append('newPassword', encodeURIComponent(newPassword));
+
+    fetch('/api/changeCredentials?' + formData, {
         method: 'GET',
         credentials: 'include'
     }).then(response => {
         if (response.ok) {
-            response.text().then(text => console.log(text));
+            response.text().then(text => console.log('Password changed successfully:', text));
+            alert('Credentials updated successfully!');
         } else {
             console.error('Failed to change password with status:', response.status);
+            response.text().then(text => alert(text));
         }
     }).catch(error => {
         console.error('Change password failed with error:', error);
+        alert('Change password failed with error: ' + error);
     });
 }

@@ -48,6 +48,7 @@ label {
 
 input[type="text"],
 input[type="file"],
+input[type="password"],
 input[type="submit"] {
     padding: 10px;
     font-size: 16px;
@@ -58,6 +59,7 @@ input[type="submit"] {
 }
 
 input[type="text"],
+input[type="password"],
 input[type="file"] {
     border: 2px solid #ddd;
 }
@@ -129,6 +131,7 @@ body.dark-theme {
 }
 
 body.dark-theme input[type="text"],
+body.dark-theme input[type="password"],
 body.dark-theme input[type="file"] {
     background-color: #444;
     border-color: #555;
@@ -503,17 +506,6 @@ body.dark-theme .options-button {
     background-color: #0069d9;
 }
 
-.grant-admin-container {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    margin-top: 10px;
-}
-
-.grant-admin-container label {
-    margin-right: 10px;
-}
-
 .input-button-container {
     display: flex;
     align-items: center;
@@ -524,4 +516,21 @@ body.dark-theme .options-button {
 .input-button-container input[type="text"] {
     flex-grow: 1;
     margin-right: 10px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.input-group label {
+    margin-right: 10px;
+}
+
+.button-group {
+    margin-top: 10px;
 }

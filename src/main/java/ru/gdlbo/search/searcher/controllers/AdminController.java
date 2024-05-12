@@ -1,16 +1,17 @@
 package ru.gdlbo.search.searcher.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
-import ru.gdlbo.search.searcher.SearcherApplication;
 import ru.gdlbo.search.searcher.config.RestartManager;
+import ru.gdlbo.search.searcher.repository.User;
 import ru.gdlbo.search.searcher.repository.UserRepository;
 import ru.gdlbo.search.searcher.repository.UserRole;
+
+import java.util.Optional;
 
 @RestController
 public class AdminController {
@@ -69,22 +70,28 @@ public class AdminController {
         return ResponseEntity.ok("Server is restarting...");
     }
 
-    @GetMapping("/api/changePassword")
-    public ResponseEntity<String> changePassword(@RequestParam(required = false) String username , @RequestParam String newPassword, Authentication authentication) {
-        if (username == null || username.isEmpty()) {
-            username = authentication.getName();
+    @GetMapping("/api/changeCredentials")
+    public ResponseEntity<String> changeCredentials(@RequestParam(required = false) String username, @RequestParam String oldPassword, @RequestParam String newPassword, Authentication authentication) {
+        User currentUser = userRepository.findByUsername(authentication.getName()).orElse(null);
+        if (currentUser == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Current user not found");
         }
 
-        if (!authentication.getName().equals(username) || !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User is not same as username");
+        if (!currentUser.getPassword().equals(oldPassword)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Old password is incorrect");
         }
 
-        return userRepository.findByUsername(username)
-                .map(user -> {
-                    user.setPassword(newPassword);
-                    userRepository.save(user);
-                    return ResponseEntity.ok("Password changed");
-                })
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("User does not exist"));
+        if (username != null && !username.isEmpty() && !username.equals(currentUser.getUsername())) {
+            boolean exists = userRepository.findByUsername(username).isPresent();
+            if (exists) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with this username already exists");
+            }
+            currentUser.setUsername(username);
+        }
+
+        currentUser.setPassword(newPassword);
+        userRepository.save(currentUser);
+
+        return ResponseEntity.ok("Credentials updated successfully");
     }
 }
