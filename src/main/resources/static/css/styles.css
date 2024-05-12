@@ -441,6 +441,14 @@ body.dark-theme .dialog-content .custom-button:hover {
     background-color: #666;
 }
 
+body.dark-theme .settings-button {
+    background-color: #555;
+}
+
+body.dark-theme .settings-button:hover {
+    background-color: #666;
+}
+
 body.dark-theme .dropdown-content .custom-dropdown-button {
     background-color: #555;
 }
