@@ -43,67 +43,6 @@ function closeDialog() {
     fileNameSpan.textContent = "";
 }
 
-function openDropdown(event) {
-    event.stopPropagation();
-
-    const dropdowns = document.querySelectorAll(".dropdown-content");
-    dropdowns.forEach((dropdown) => {
-        dropdown.style.display = "none";
-    });
-
-    const dropdownContent = event.target.nextElementSibling;
-    dropdownContent.style.display = "block";
-
-    window.onclick = function (e) {
-        if (!e.target.matches(".options-button") && !dropdownContent.contains(e.target)) {
-            dropdownContent.style.display = "none";
-        }
-    };
-
-    const historyButton = event.target.nextElementSibling.querySelector("#historyButton");
-    if (historyButton) {
-        historyButton.addEventListener("click", function (e) {
-            e.stopPropagation();
-            const dialogBox = document.getElementById("dialog-box");
-            const filePathInput = dialogBox.querySelector('input[name="filePath"]');
-            filePathInput.value = e.target.parentNode.querySelector('input[name="filePath"]').value;
-            showFileHistory(filePathInput.value)
-        });
-    }
-
-    const downloadButton = event.target.nextElementSibling.querySelector("#downloadButton");
-    if (downloadButton) {
-        downloadButton.addEventListener("click", function (e) {
-            e.stopPropagation();
-            const dialogBox = document.getElementById("dialog-box");
-            const filePathInput = dialogBox.querySelector('input[name="filePath"]');
-            filePathInput.value = e.target.parentNode.querySelector('input[name="filePath"]').value;
-            downloadFile(filePathInput.value)
-        });
-    }
-
-    const replaceButton = event.target.nextElementSibling.querySelector("#replaceButton");
-    if (replaceButton) {
-        replaceButton.addEventListener("click", function (e) {
-            e.stopPropagation();
-            const dialogBox = document.getElementById("dialog-box");
-            dialogBox.style.display = "block";
-            closeDropdown();
-        });
-    }
-
-    const deleteButton = event.target.nextElementSibling.querySelector("#deleteButton");
-    if (deleteButton) {
-        deleteButton.addEventListener("click", function (e) {
-            e.stopPropagation();
-            const dialogBox = document.getElementById("dialog-box");
-            const filePathInput = dialogBox.querySelector('input[name="filePath"]');
-            filePathInput.value = e.target.parentNode.querySelector('input[name="filePath"]').value;
-            removeFile(filePathInput.value)
-        });
-    }
-}
-
 function closeDropdown() {
     const dropdownContent = document.querySelector(".dropdown-content");
     dropdownContent.style.display = "none";

@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +18,9 @@ import java.util.stream.Collectors;
 
 @Component
 public class LoggingFilter extends OncePerRequestFilter {
+    @Autowired
+    private Config config;
+
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         // Get the username and roles of the user making the request
@@ -31,11 +35,12 @@ public class LoggingFilter extends OncePerRequestFilter {
                     .collect(Collectors.joining(", "));
         }
 
-        // Log the request
-        System.out.println("Request received: " + request.getMethod() + " " + request.getRequestURI());
-        System.out.println("Username: " + username);
-        System.out.println("Roles: " + roles);
-        System.out.println("----------------------------");
+        if (config.getIsDebug()) {
+            System.out.println("Request received: " + request.getMethod() + " " + request.getRequestURI());
+            System.out.println("Username: " + username);
+            System.out.println("Roles: " + roles);
+            System.out.println("----------------------------");
+        }
 
         // Continue with the request processing
         filterChain.doFilter(request, response);

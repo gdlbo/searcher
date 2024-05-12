@@ -1,8 +1,9 @@
 package ru.gdlbo.search.searcher.controllers;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.gdlbo.search.searcher.repository.FileInfo;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 public class FileHistoryController {
     // This method is responsible for retrieving the history of a file
     @GetMapping("/api/history")
-    public ResponseEntity<List<FileInfo>> getFileHistory(@RequestParam String fileName, Model model) {
+    public ResponseEntity<List<FileInfo>> getFileHistory(@RequestParam String fileName) {
         System.out.println("Request received to get history for file: " + fileName);
 
         File file = new File(fileName);
@@ -49,13 +50,13 @@ public class FileHistoryController {
 
     // This method is responsible for removing a file from the history
     @GetMapping("/api/remove")
-    public String removeFileFromHistory(@RequestParam String filePath) {
+    public String removeFileFromHistory(@RequestParam String filePath, Authentication authentication) {
         System.out.println("Request received to remove file: " + filePath);
 
         File fileToRemove = new File(filePath);
 
         // Check to not abuse deletion of files
-        if (!fileToRemove.getAbsolutePath().contains(".history")) {
+        if (!fileToRemove.getAbsolutePath().contains(".history") && !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             System.out.println("Attempt to delete file outside of history directory: " + filePath);
             return "redirect:/error";
         }

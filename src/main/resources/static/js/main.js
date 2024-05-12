@@ -11,6 +11,56 @@ document.addEventListener("DOMContentLoaded", function () {
     isAdmin = document.body.getAttribute('data-is-admin') === 'true';
 });
 
+function openDropdown(event) {
+    event.stopPropagation();
+    closeAllDropdowns();
+    const dropdownContent = event.target.nextElementSibling;
+    dropdownContent.style.display = "block";
+
+    setupGlobalClickListener(dropdownContent);
+    setupButtonHandlers(dropdownContent);
+}
+
+function closeAllDropdowns() {
+    const dropdowns = document.querySelectorAll(".dropdown-content");
+    dropdowns.forEach(dropdown => dropdown.style.display = "none");
+}
+
+function setupGlobalClickListener(dropdownContent) {
+    window.onclick = function (event) {
+        if (!event.target.matches(".options-button") && !dropdownContent.contains(event.target)) {
+            dropdownContent.style.display = "none";
+        }
+    };
+}
+
+function setupButtonHandlers(dropdownContent) {
+    dropdownContent.addEventListener('click', function (event) {
+        event.stopPropagation();
+        const buttonType = event.target.closest('button')?.id;
+        if (!buttonType) return;
+
+        const dialogBox = document.getElementById("dialog-box");
+        const filePath = event.target.closest('.dropdown-content').querySelector('input[name="filePath"]').value;
+
+        switch (buttonType) {
+            case "historyButton":
+                showFileHistory(filePath);
+                break;
+            case "downloadButton":
+                downloadFile(filePath);
+                break;
+            case "replaceButton":
+                dialogBox.style.display = "block";
+                closeAllDropdowns();
+                break;
+            case "deleteButton":
+                removeFile(filePath);
+                break;
+        }
+    });
+}
+
 function showFileHistory(filePath) {
     const encodedFilePath = encodeURIComponent(filePath);
     fetch('/api/history?fileName=' + encodedFilePath)

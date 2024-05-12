@@ -108,6 +108,16 @@ function downloadFile(filePath) {
 }
 
 function removeFile(filePath) {
-    window.location.href = `/api/remove?filePath=${encodeURIComponent(filePath)}`;
-    window.location.reload();
+    fetch('/api/remove?filePath=' + encodeURIComponent(filePath), {
+        method: 'GET',
+        credentials: 'include'
+    }).then(response => {
+        if (response.ok) {
+            window.location.reload();
+        } else {
+            console.error('Failed to remove file with status:', response.status);
+        }
+    }).catch(error => {
+        console.error('Failed to remove file:', error);
+    });
 }
