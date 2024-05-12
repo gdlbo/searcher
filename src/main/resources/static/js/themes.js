@@ -8,7 +8,9 @@ function initTheme() {
         themeDropdown.value = selectedTheme;
     } else {
         systemThemeListener = window.matchMedia("(prefers-color-scheme: dark)");
-        systemThemeListener.addEventListener("change", systemThemeChange);
+        systemThemeListener.addEventListener("change", systemThemeChange, {
+            once: true
+        });
     }
 
     changeTheme();
@@ -20,10 +22,15 @@ function systemThemeChange(event) {
     document.documentElement.setAttribute("data-theme", newColorScheme);
 
     if (themeDropdown) {
-        document.getElementById("theme-dropdown").value = "system";
+        themeDropdown.value = "system";
     }
 
     localStorage.setItem("selected-theme", "system");
+
+    if (!systemThemeListener) {
+        systemThemeListener = window.matchMedia("(prefers-color-scheme: dark)");
+        systemThemeListener.addEventListener("change", systemThemeChange, {once: true});
+    }
 }
 
 function changeTheme() {
@@ -39,7 +46,9 @@ function changeTheme() {
     } else {
         if (!systemThemeListener) {
             systemThemeListener = window.matchMedia("(prefers-color-scheme: dark)");
-            systemThemeListener.addEventListener("change", systemThemeChange);
+            systemThemeListener.addEventListener("change", systemThemeChange, {
+                once: true
+            });
         }
         const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
         document.documentElement.setAttribute("data-theme", prefersDark ? "dark" : "light");
