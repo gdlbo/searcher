@@ -42,8 +42,3 @@ function closeDialog() {
     const fileNameSpan = document.getElementById("file-name");
     fileNameSpan.textContent = "";
 }
-
-function closeDropdown() {
-    const dropdownContent = document.querySelector(".dropdown-content");
-    dropdownContent.style.display = "none";
-}
