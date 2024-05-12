@@ -27,6 +27,12 @@ jobs:
     - name: Build with Gradle Wrapper
       run: ./gradlew bootJar
 
+    - name: Upload JAR file
+      uses: actions/upload-artifact@v3
+      with:
+        name: searcher-jar
+        path: build/libs/searcher-1.0.0.jar
+
   dependency-submission:
 
     runs-on: ubuntu-latest
