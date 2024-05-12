@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="https://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<head>
+    <title>Searcher</title>
+    <script th:src="@{/js/main.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+
+<div class="header-container">
+    <h1>Searcher</h1>
+    <button type="button" class="settings-button" onclick="openSettingsDialog()">Settings</button>
+</div>
+
+<div class="dialog-box" id="settingsDialog">
+    <div class="dialog-content">
+        <h2>Settings</h2>
+        <div class="settings-section">
+            <div class="theme-switcher">
+                <label class="theme-dropdown-label" for="theme-dropdown">Theme:</label>
+                <select class="theme-dropdown" id="theme-dropdown" onchange="changeTheme()">
+                    <option value="system">Follow system</option>
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                </select>
+            </div>
+        </div>
+        <div th:if="${isAdmin}" class="settings-section">
+            <h3>Admin Rights</h3>
+            <div class="grant-admin-container">
+                <label for="userName">Username:</label>
+                <div class="input-button-container">
+                    <input type="text" id="username" placeholder="Enter username">
+                    <button class="custom-button" onclick="grantAdmin()" type="button">Apply</button>
+                </div>
+            </div>
+        </div>
+        <button class="custom-button" onclick="logout()" type="button">Logout</button>
+        <button class="custom-button" onclick="closeSettingsDialog()" type="button">Close</button>
+    </div>
+</div>
+
+<form action="/search" method="get" onsubmit="storeSearch();">
+    <label>
+        <input id="searchQuery" name="query" type="text"/>
+    </label>
+    <label>
+        <input id="searchNumber" name="number" placeholder="Search by number" type="text"/>
+    </label>
+    <input type="submit" value="Search"/>
+</form>
+
+<div th:replace="~{::pagination}"></div>
+
+<table id="file-paths">
+    <thead>
+    <tr>
+        <th>
+            <a class="sort" data-sortby="name" th:href="@{/search(query=${query}, page=${page}, sortBy='name')}">
+                Path <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+            </a>
+        </th>
+        <th>
+            <a class="sort" data-sortby="date" th:href="@{/search(query=${query}, page=${page}, sortBy='date')}">
+                Date <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+            </a>
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="file : ${fileInfos}">
+        <td><span th:text="${file.filePath}"></span></td>
+        <td><span th:text="${file.lastModified}"></span></td>
+        <td>
+            <div class="dropdown">
+                <button class="options-button" onclick="openDropdown(event)">...</button>
+                <div class="dropdown-content" id="dropdown-content">
+                    <input name="filePath" th:value="${file.filePath}" type="hidden"/>
+                    <button class="custom-dropdown-button" id="downloadButton">Download</button>
+                    <button class="custom-dropdown-button" id="replaceButton">Replace</button>
+                    <button class="custom-dropdown-button" id="historyButton">History</button>
+                </div>
+            </div>
+
+            <div class="dialog-box" id="dialog-box">
+                <div class="dialog-content">
+                    <h2>Replace File</h2>
+                    <form action="/api/replace" enctype="multipart/form-data" method="post">
+                        <input name="filePath" th:value="${file.filePath}" type="hidden"/>
+                        <div class="form-group">
+                            <div class="drop-zone-container">
+                                <div class="drop-zone">
+                                    <input id="file-input" name="file" type="file"/>
+                                    <label class="drop-zone__prompt" for="file-input">Choose or drop a file here</label>
+                                    <span id="file-name"></span>
+                                </div>
+                            </div>
+                            <div class="buttons">
+                                <button class="custom-button" type="submit">Replace</button>
+                                <button class="custom-button" onclick="closeDialog()" type="button">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="dialog-box" id="fileHistoryDialog" style="display: none;">
+                <div class="dialog-content">
+                    <h2>File History</h2>
+                    <div class="file-history-list" id="fileHistoryList">
+                        <!-- files -->
+                    </div>
+                    <button class="custom-button" onclick="closeFileHistoryDialog()" type="button">Close</button>
+                </div>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="pagination" th:fragment="pagination" th:if="${fileInfos.size() gt 0}">
+    <span th:each="i : ${pageNumbers}">
+        <a th:href="@{/search(page=0, query=${query})}" th:if="${i == -1}" th:text="'&lt;&lt;'"></a>
+        <a th:classappend="${i == page} ? 'selected-page'" th:href="@{/search(page=${i}, query=${query})}"
+           th:if="${i >= 0 && i < totalPages}"
+           th:text="${i + 1}"></a>
+        <a th:href="@{/search(page=${totalPages - 1}, query=${query})}" th:if="${i == totalPages - 1}"
+           th:text="'&gt;&gt;'"></a>
+    </span>
+</div>
+
+</body>
+</html>

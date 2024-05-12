@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registration</title>
+    <link rel="stylesheet" th:href="@{/css/registration.css}"/>
+</head>
+<body>
+
+<form action="/auth/reg" method="get">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username"><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password"><br>
+
+    <button type="submit">Register</button>
+</form>
+
+</body>
+</html>

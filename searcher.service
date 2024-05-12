@@ -1,0 +1,14 @@
+[Unit]
+Description=Searcher service
+After=network.target
+
+[Service]
+User=<your-user> // user
+ExecStart=/usr/bin/java -jar /path/to/searcher-1.0.0.jar
+SuccessExitStatus=143
+TimeoutStopSec=10
+Restart=on-failure
+Environment="JAVA_OPTS=-Xms1024m -Xmx1024m"
+
+[Install]
+WantedBy=multi-user.target
