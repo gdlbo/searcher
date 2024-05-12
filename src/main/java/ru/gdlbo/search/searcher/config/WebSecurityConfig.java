@@ -66,6 +66,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/**").hasRole("ADMIN") // Only allow access to other '/api/**' endpoints if the user has the 'ADMIN' role
                         .anyRequest().authenticated()
                 )
+                .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(withDefaults());
         return http.build();
     }

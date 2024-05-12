@@ -13,8 +13,6 @@ import ru.gdlbo.search.searcher.repository.User;
 import ru.gdlbo.search.searcher.repository.UserRepository;
 import ru.gdlbo.search.searcher.repository.UserRole;
 
-import java.util.Optional;
-
 @RestController
 public class AdminController {
     @Autowired
