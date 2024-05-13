@@ -38,7 +38,7 @@ public class FileSearchController {
         try {
             attrs = Files.readAttributes(path, BasicFileAttributes.class);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.fillInStackTrace();
         }
         return attrs;
     }
@@ -132,32 +132,52 @@ public class FileSearchController {
         if (directory.isDirectory()) {
             File[] files = directory.listFiles();
             if (files != null) {
-                List<File> directories = Arrays.stream(files)
-                        .filter(file -> file.isDirectory() && !file.getName().equals(".history"))
-                        .toList();
+                List<File> directories = getDirectories(files);
+                List<File> matchingFiles = getMatchingFiles(files, query);
 
-                List<File> matchingFiles = Arrays.stream(files)
-                        .filter(file -> file.isFile() && file.getName().contains(query))
-                        .toList();
-
-                directories.parallelStream().forEach(dir -> {
-                    Runnable task = createTask(dir, query, fileInfos);
-                    futures.add(executor.submit(task));
-                });
-
-                matchingFiles.parallelStream().forEach(file -> {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    BasicFileAttributes attrs = getFileAttributes(file);
-                    String lastModified = dateFormat.format(new Date(attrs.lastModifiedTime().toMillis()));
-                    String creationDate = dateFormat.format(new Date(attrs.creationTime().toMillis()));
-                    synchronized (fileInfos) {
-                        fileInfos.add(new FileInfo(file.getAbsolutePath(), lastModified, creationDate));
-                    }
-                });
+                submitTasksForDirectories(directories, query, fileInfos, executor, futures);
+                processMatchingFiles(matchingFiles, fileInfos);
             }
         }
 
         waitForTasksToComplete(futures);
+    }
+
+    private List<File> getDirectories(File[] files) {
+        return Arrays.stream(files)
+                .filter(file -> file.isDirectory() && !file.getName().equals(".history"))
+                .toList();
+    }
+
+    private List<File> getMatchingFiles(File[] files, String query) {
+        return Arrays.stream(files)
+                .filter(file -> file.isFile() && file.getName().contains(query))
+                .toList();
+    }
+
+    private void submitTasksForDirectories(List<File> directories, String query, List<FileInfo> fileInfos, ExecutorService executor, List<Future<?>> futures) {
+        directories.parallelStream().forEach(dir -> {
+            Runnable task = createTask(dir, query, fileInfos);
+            futures.add(executor.submit(task));
+        });
+    }
+
+    private void processMatchingFiles(List<File> matchingFiles, List<FileInfo> fileInfos) {
+        matchingFiles.parallelStream().forEach(file -> {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            BasicFileAttributes attrs = getFileAttributes(file);
+
+            Date lastModifiedDate = attrs != null && attrs.lastModifiedTime() != null ? new Date(attrs.lastModifiedTime().toMillis()) : new Date(file.lastModified());
+            String lastModified = dateFormat.format(lastModifiedDate);
+
+            Date creationDate = attrs != null && attrs.creationTime() != null ? new Date(attrs.creationTime().toMillis()) : null;
+            String creationDateStr = creationDate != null ? dateFormat.format(creationDate) : "N/A";
+
+            synchronized (fileInfos) {
+                fileInfos.add(new FileInfo(file.getAbsolutePath(), lastModified, creationDateStr));
+            }
+        });
     }
 
     // This method creates a Runnable task to search a directory
