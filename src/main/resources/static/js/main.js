@@ -162,6 +162,7 @@ function openSettingsDialog() {
 
 function closeSettingsDialog() {
     const settingsDialog = document.getElementById("settingsDialog");
+    settingsDialog.querySelector('.dialog-content').scrollTop = 0;
     document.body.style.overflow = '';
     settingsDialog.style.display = "none";
 }
