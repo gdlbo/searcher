@@ -92,6 +92,12 @@ function initSortByLastModified() {
     button.textContent = `Sort by Last Modified: ${currentSortBy === 'true' ? 'On' : 'Off'}`;
 }
 
+function initShowHidden() {
+    let showHidden = localStorage.getItem('showHidden') || 'false';
+    let button = document.getElementById('toggleShowHidden');
+    button.textContent = `Show hidden files/dirs: ${showHidden === 'true' ? 'On' : 'Off'}`;
+}
+
 function toggleSortByLastModified() {
     let button = document.getElementById('toggleSortByLastModified');
     let currentSortBy = localStorage.getItem('sortByLastModified') || 'false';
@@ -106,5 +112,22 @@ function toggleSortByLastModified() {
 function updateSortStatusAndRedirect(newSortBy) {
     let searchParams = new URLSearchParams(window.location.search);
     searchParams.set('sortByLastModified', newSortBy);
+    window.location.search = searchParams.toString();
+}
+
+function toggleShowHidden() {
+    let button = document.getElementById('toggleShowHidden');
+    let currentSortBy = localStorage.getItem('showHidden') || 'false';
+
+    let showHidden = currentSortBy === 'true' ? 'false' : 'true';
+    localStorage.setItem('showHidden', showHidden);
+
+    button.textContent = `Show hidden files/dirs: ${showHidden === 'true' ? 'On' : 'Off'}`;
+    updateHiddenAndRedirect(showHidden);
+}
+
+function updateHiddenAndRedirect(showHidden) {
+    let searchParams = new URLSearchParams(window.location.search);
+    searchParams.set('showHidden', showHidden);
     window.location.search = searchParams.toString();
 }

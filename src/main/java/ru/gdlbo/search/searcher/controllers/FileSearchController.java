@@ -51,6 +51,7 @@ public class FileSearchController {
                               @RequestParam(required = false) String sortBy,
                               @RequestParam(required = false, defaultValue = "asc") String sortOrder,
                               @RequestParam(required = false, defaultValue = "false") Boolean sortByLastModified,
+                              @RequestParam(required = false, defaultValue = "false") Boolean showHidden,
                               Authentication authentication,
                               Model model) {
 
@@ -65,10 +66,10 @@ public class FileSearchController {
 
         if (query == null || query.isEmpty()) {
             File defaultLocation = new File(searchPath);
-            searchDirectory(defaultLocation, "", fileInfos, Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()), new ArrayList<>());
+            searchDirectory(defaultLocation, "", fileInfos, Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()), new ArrayList<>(), showHidden);
         } else {
             File searchLocation = new File(searchPath);
-            searchDirectory(searchLocation, query, fileInfos, Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()), new ArrayList<>());
+            searchDirectory(searchLocation, query, fileInfos, Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()), new ArrayList<>(), showHidden);
         }
 
         // Sort the fileInfos list based on user input
@@ -107,6 +108,7 @@ public class FileSearchController {
         model.addAttribute("isAdmin", isAdmin);
         model.addAttribute("nickname", authentication.getName());
         model.addAttribute("sortByLastModified", sortByLastModified);
+        model.addAttribute("showHidden", showHidden);
 
         return "search";
     }
@@ -128,14 +130,14 @@ public class FileSearchController {
     }
 
     // This method searches a directory for matching files and subdirectories
-    private void searchDirectory(File directory, String query, List<FileInfo> fileInfos, ExecutorService executor, List<Future<?>> futures) {
+    private void searchDirectory(File directory, String query, List<FileInfo> fileInfos, ExecutorService executor, List<Future<?>> futures, Boolean showHidden) {
         if (directory.isDirectory()) {
             File[] files = directory.listFiles();
             if (files != null) {
-                List<File> directories = getDirectories(files);
-                List<File> matchingFiles = getMatchingFiles(files, query);
+                List<File> directories = getDirectories(files, showHidden);
+                List<File> matchingFiles = getMatchingFiles(files, query, showHidden);
 
-                submitTasksForDirectories(directories, query, fileInfos, executor, futures);
+                submitTasksForDirectories(directories, query, fileInfos, executor, futures, showHidden);
                 processMatchingFiles(matchingFiles, fileInfos);
             }
         }
@@ -143,21 +145,21 @@ public class FileSearchController {
         waitForTasksToComplete(futures);
     }
 
-    private List<File> getDirectories(File[] files) {
+    private List<File> getDirectories(File[] files, Boolean showHidden) {
         return Arrays.stream(files)
-                .filter(file -> file.isDirectory() && !file.getName().equals(".history"))
+                .filter(file -> file.isDirectory() && !file.getName().equals(".history") && (showHidden || !file.isHidden()))
                 .toList();
     }
 
-    private List<File> getMatchingFiles(File[] files, String query) {
+    private List<File> getMatchingFiles(File[] files, String query, Boolean showHidden) {
         return Arrays.stream(files)
-                .filter(file -> file.isFile() && file.getName().contains(query))
+                .filter(file -> file.isFile() && file.getName().contains(query) && (showHidden || !file.isHidden()))
                 .toList();
     }
 
-    private void submitTasksForDirectories(List<File> directories, String query, List<FileInfo> fileInfos, ExecutorService executor, List<Future<?>> futures) {
+    private void submitTasksForDirectories(List<File> directories, String query, List<FileInfo> fileInfos, ExecutorService executor, List<Future<?>> futures, Boolean showHidden) {
         directories.parallelStream().forEach(dir -> {
-            Runnable task = createTask(dir, query, fileInfos);
+            Runnable task = createTask(dir, query, fileInfos, showHidden);
             futures.add(executor.submit(task));
         });
     }
@@ -181,10 +183,10 @@ public class FileSearchController {
     }
 
     // This method creates a Runnable task to search a directory
-    private Runnable createTask(File file, String query, List<FileInfo> fileInfos) {
+    private Runnable createTask(File file, String query, List<FileInfo> fileInfos, Boolean showHidden) {
         return () -> {
             if (file.isDirectory()) {
-                searchDirectory(file, query, fileInfos, Executors.newSingleThreadExecutor(), new ArrayList<>());
+                searchDirectory(file, query, fileInfos, Executors.newSingleThreadExecutor(), new ArrayList<>(), showHidden);
             }
         };
     }

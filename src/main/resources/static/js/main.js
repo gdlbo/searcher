@@ -9,18 +9,23 @@ window.onload = function () {
 document.addEventListener("DOMContentLoaded", function () {
     const savedSortBy = localStorage.getItem("sortBy");
     const savedSortOrder = localStorage.getItem("sortOrder");
+    const savedShowHidden = localStorage.getItem("showHidden");
     const url = new URL(window.location.href);
     const currentSortBy = url.searchParams.get("sortBy");
     const currentSortOrder = url.searchParams.get("sortOrder");
+    const currentShowHidden = url.searchParams.get("showHidden");
 
-    if (savedSortBy !== currentSortBy || savedSortOrder !== currentSortOrder) {
+    if (savedSortBy !== currentSortBy || savedSortOrder !== currentSortOrder || savedShowHidden !== currentShowHidden) {
         if (savedSortBy && savedSortOrder) {
             updateURLAndRedirect(savedSortBy, savedSortOrder);
+        } else {
+            updateURLWithShowHidden(savedShowHidden);
         }
     }
 
     initSortLinks();
     initSortByLastModified();
+    initShowHidden();
 
     const isAdmin = document.body.getAttribute('data-is-admin') === 'true';
 });

@@ -24,32 +24,58 @@ function loadSearch() {
     }
 }
 
-function updateURLAndRedirect(sortBy, newSortOrder) {
+function getCurrentParams() {
     const url = new URL(window.location.href);
-    const query = url.searchParams.get("query") || "";
-    const page = parseInt(url.searchParams.get("page")) || 0;
-    const currentSortBy = url.searchParams.get("sortBy");
-    const currentSortOrder = url.searchParams.get("sortOrder");
-    const currentSort = localStorage.getItem('sortByLastModified') || 'false';
+    return {
+        query: url.searchParams.get("query") || "",
+        page: parseInt(url.searchParams.get("page")) || 0,
+        currentSortBy: url.searchParams.get("sortBy"),
+        currentSortOrder: url.searchParams.get("sortOrder"),
+        currentSort: localStorage.getItem('sortByLastModified') || 'false',
+        showHidden: localStorage.getItem('showHidden') || 'false'
+    };
+}
 
-    if (currentSortBy !== sortBy || currentSortOrder !== newSortOrder) {
-        url.searchParams.set("query", query);
-        url.searchParams.set("page", page);
+function updateURLAndLocalStorage(sortBy, newSortOrder, params) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("query", params.query);
+    url.searchParams.set("page", params.page);
+    if (newSortOrder === "none") {
+        url.searchParams.delete("sortBy");
+        url.searchParams.delete("sortOrder");
+        localStorage.removeItem("sortBy");
+        localStorage.removeItem("sortOrder");
+    } else {
+        url.searchParams.set("sortBy", sortBy);
+        url.searchParams.set("sortOrder", newSortOrder);
+        localStorage.setItem("sortBy", sortBy);
+        localStorage.setItem("sortOrder", newSortOrder);
+    }
+    url.searchParams.set("sortByLastModified", params.currentSort);
+    url.searchParams.set("showHidden", params.showHidden);
+    return url;
+}
 
-        if (newSortOrder === "none") {
-            url.searchParams.delete("sortBy");
-            url.searchParams.delete("sortOrder");
-            url.searchParams.delete("sortByLastModified");
-            localStorage.removeItem("sortBy");
-            localStorage.removeItem("sortOrder");
-        } else {
-            url.searchParams.set("sortBy", sortBy);
-            url.searchParams.set("sortOrder", newSortOrder);
-            url.searchParams.set("sortByLastModified", currentSort);
-            localStorage.setItem("sortBy", sortBy);
-            localStorage.setItem("sortOrder", newSortOrder);
-        }
+function setHideParameter(show) {
+    const url = new URL(window.location.href);
+    localStorage.setItem('showHidden', show);
+    url.searchParams.set("showHidden", show);
+    return url;
+}
 
-        window.location.href = url.toString();
+function updateURLWithShowHidden(showHidden) {
+    const url = setHideParameter(showHidden);
+    redirectTo(url);
+}
+
+function redirectTo(url) {
+    window.location.href = url.toString();
+}
+
+function updateURLAndRedirect(sortBy, newSortOrder) {
+    const params = getCurrentParams();
+    if (params.currentSortBy !== sortBy || params.currentSortOrder !== newSortOrder) {
+        const updatedUrl = updateURLAndLocalStorage(sortBy, newSortOrder, params);
+        redirectTo(updatedUrl);
     }
 }
