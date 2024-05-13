@@ -89,13 +89,13 @@ function hideArrows(link) {
 function initSortByLastModified() {
     let currentSortBy = localStorage.getItem('sortByLastModified') || 'false';
     let button = document.getElementById('toggleSortByLastModified');
-    button.textContent = `Sort by Last Modified: ${currentSortBy === 'true' ? 'On' : 'Off'}`;
+    button.textContent = `Sort by last modified: ${currentSortBy === 'true' ? 'On' : 'Off'}`;
 }
 
 function initShowHidden() {
     let showHidden = localStorage.getItem('showHidden') || 'false';
     let button = document.getElementById('toggleShowHidden');
-    button.textContent = `Show hidden files/dirs: ${showHidden === 'true' ? 'On' : 'Off'}`;
+    button.textContent = `Show hidden: ${showHidden === 'true' ? 'On' : 'Off'}`;
 }
 
 function toggleSortByLastModified() {
@@ -105,7 +105,7 @@ function toggleSortByLastModified() {
     let newSortBy = currentSortBy === 'true' ? 'false' : 'true';
     localStorage.setItem('sortByLastModified', newSortBy);
 
-    button.textContent = `Sort by Last Modified: ${newSortBy === 'true' ? 'On' : 'Off'}`;
+    button.textContent = `Sort by last modified: ${newSortBy === 'true' ? 'On' : 'Off'}`;
     updateSortStatusAndRedirect(newSortBy);
 }
 
@@ -122,7 +122,7 @@ function toggleShowHidden() {
     let showHidden = currentSortBy === 'true' ? 'false' : 'true';
     localStorage.setItem('showHidden', showHidden);
 
-    button.textContent = `Show hidden files/dirs: ${showHidden === 'true' ? 'On' : 'Off'}`;
+    button.textContent = `Show hidden: ${showHidden === 'true' ? 'On' : 'Off'}`;
     updateHiddenAndRedirect(showHidden);
 }
 
