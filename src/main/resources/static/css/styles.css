@@ -57,6 +57,19 @@ body {
     padding: 20px;
     color: var(--text-color);
     background-color: var(--background-color);
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 .pagination {
