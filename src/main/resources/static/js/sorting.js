@@ -1,21 +1,39 @@
+const ARROW_DISPLAY_NONE = "none";
+const ARROW_DISPLAY_INLINE_BLOCK = "inline-block";
+
 function initSortLinks() {
-    const sortLinks = document.querySelectorAll(".sort");
-    sortLinks.forEach(initSortLink);
+    document.querySelectorAll(".sort").forEach(initSortLink);
 }
 
 function initSortLink(link) {
     hideArrows(link);
     setInitialArrowState(link);
 
-    link.addEventListener("click", function (event) {
+    link.addEventListener("click", (event) => {
         event.preventDefault();
-        handleSortLinkClick(this);
+        handleSortLinkClick(link);
     });
 }
 
-function handleSortLinkClick(link) {
+function setInitialArrowState(link) {
     const sortBy = link.dataset.sortby;
-    const currentSortOrder = link.dataset.sortorder || "none";
+    const sortOrder = localStorage.getItem(`sortOrder_${sortBy}`);
+
+    if (sortOrder) {
+        link.dataset.sortorder = sortOrder;
+        updateArrows(link, sortOrder);
+    } else {
+        hideArrows(link);
+    }
+}
+
+function handleSortLinkClick(link) {
+    if (link.dataset.sortable === "false") {
+        return;
+    }
+
+    const sortBy = link.dataset.sortby;
+    const currentSortOrder = link.dataset.sortorder || ARROW_DISPLAY_NONE;
     const newSortOrder = getNewSortOrder(currentSortOrder);
 
     updateSortLink(link, newSortOrder);
@@ -26,7 +44,9 @@ function handleSortLinkClick(link) {
 }
 
 function getNewSortOrder(currentSortOrder) {
-    return currentSortOrder === "none" ? "asc" : currentSortOrder === "asc" ? "desc" : "none";
+    if (currentSortOrder === ARROW_DISPLAY_NONE) return "asc";
+    if (currentSortOrder === "asc") return "desc";
+    return ARROW_DISPLAY_NONE;
 }
 
 function updateSortLink(link, newSortOrder) {
@@ -34,10 +54,9 @@ function updateSortLink(link, newSortOrder) {
 }
 
 function updateOtherSortLinks(link) {
-    const sortLinks = document.querySelectorAll(".sort");
-    sortLinks.forEach(function (otherLink) {
+    document.querySelectorAll(".sort").forEach((otherLink) => {
         if (otherLink !== link) {
-            otherLink.dataset.sortorder = "";
+            otherLink.dataset.sortorder = ARROW_DISPLAY_NONE;
             hideArrows(otherLink);
         }
     });
@@ -45,18 +64,15 @@ function updateOtherSortLinks(link) {
 
 function updateArrows(link, newSortOrder) {
     const arrows = link.querySelectorAll(".arrow");
+    const ascArrowDisplay = newSortOrder === "asc" ? ARROW_DISPLAY_INLINE_BLOCK : ARROW_DISPLAY_NONE;
+    const descArrowDisplay = newSortOrder === "desc" ? ARROW_DISPLAY_INLINE_BLOCK : ARROW_DISPLAY_NONE;
 
-    if (newSortOrder === "none") {
-        arrows[0].style.display = "none";
-        arrows[1].style.display = "none";
-    } else {
-        arrows[0].style.display = newSortOrder === "asc" ? "inline-block" : "none";
-        arrows[1].style.display = newSortOrder === "desc" ? "inline-block" : "none";
-    }
+    arrows[0].style.display = ascArrowDisplay;
+    arrows[1].style.display = descArrowDisplay;
 }
 
 function updateLocalStorage(sortBy, newSortOrder) {
-    if (newSortOrder !== "none") {
+    if (newSortOrder !== ARROW_DISPLAY_NONE) {
         localStorage.setItem(`sortOrder_${sortBy}`, newSortOrder);
     } else {
         localStorage.removeItem(`sortOrder_${sortBy}`);
@@ -65,18 +81,7 @@ function updateLocalStorage(sortBy, newSortOrder) {
 
 function hideArrows(link) {
     const arrows = link.querySelectorAll(".arrow");
-    arrows[0].style.display = "none";
-    arrows[1].style.display = "none";
-}
-
-function setInitialArrowState(link) {
-    const sortBy = link.dataset.sortby;
-    const sortOrder = localStorage.getItem(`sortOrder_${sortBy}`);
-
-    if (sortOrder) {
-        link.dataset.sortorder = sortOrder;
-        const arrows = link.querySelectorAll(".arrow");
-        arrows[0].style.display = sortOrder === "asc" ? "inline-block" : "none";
-        arrows[1].style.display = sortOrder === "desc" ? "inline-block" : "none";
-    }
+    arrows.forEach((arrow) => {
+        arrow.style.display = ARROW_DISPLAY_NONE;
+    });
 }
