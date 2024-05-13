@@ -28,20 +28,28 @@ function updateURLAndRedirect(sortBy, newSortOrder) {
     const url = new URL(window.location.href);
     const query = url.searchParams.get("query") || "";
     const page = parseInt(url.searchParams.get("page")) || 0;
-    const currentSortBy = localStorage.getItem('sortByLastModified') || 'false';
+    const currentSortBy = url.searchParams.get("sortBy");
+    const currentSortOrder = url.searchParams.get("sortOrder");
+    const currentSort = localStorage.getItem('sortByLastModified') || 'false';
 
-    url.searchParams.set("query", query);
-    url.searchParams.set("page", page);
+    if (currentSortBy !== sortBy || currentSortOrder !== newSortOrder) {
+        url.searchParams.set("query", query);
+        url.searchParams.set("page", page);
 
-    if (newSortOrder === "none") {
-        url.searchParams.delete("sortBy");
-        url.searchParams.delete("sortOrder");
-        url.searchParams.delete("sortByLastModified");
-    } else {
-        url.searchParams.set("sortBy", sortBy);
-        url.searchParams.set("sortOrder", newSortOrder);
-        url.searchParams.set("sortByLastModified", currentSortBy);
+        if (newSortOrder === "none") {
+            url.searchParams.delete("sortBy");
+            url.searchParams.delete("sortOrder");
+            url.searchParams.delete("sortByLastModified");
+            localStorage.removeItem("sortBy");
+            localStorage.removeItem("sortOrder");
+        } else {
+            url.searchParams.set("sortBy", sortBy);
+            url.searchParams.set("sortOrder", newSortOrder);
+            url.searchParams.set("sortByLastModified", currentSort);
+            localStorage.setItem("sortBy", sortBy);
+            localStorage.setItem("sortOrder", newSortOrder);
+        }
+
+        window.location.href = url.toString();
     }
-
-    window.location.href = url.toString();
 }

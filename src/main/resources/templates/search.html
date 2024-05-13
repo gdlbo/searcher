@@ -152,12 +152,11 @@
 
 <div class="pagination" th:fragment="pagination" th:if="${fileInfos.size() gt 0}">
     <span th:each="i : ${pageNumbers}">
-        <a th:href="@{/search(page=0, query=${query})}" th:if="${i == -1}" th:text="'&lt;&lt;'"></a>
-        <a th:classappend="${i == page} ? 'selected-page'" th:href="@{/search(page=${i}, query=${query})}"
-           th:if="${i >= 0 && i < totalPages}"
-           th:text="${i + 1}"></a>
-        <a th:href="@{/search(page=${totalPages - 1}, query=${query})}" th:if="${i == totalPages - 1}"
-           th:text="'&gt;&gt;'"></a>
+        <a th:if="${i == -1}" th:href="@{/search(page=0, query=${query})}" onclick="storeSearch(); return true;">«</a>
+        <a th:if="${i >= 0 && i < totalPages}" th:classappend="${i == page} ? 'selected-page'" th:href="@{/search(page=${i}, query=${query})}" onclick="storeSearch(); return true;">
+            <span th:text="${i + 1}"></span>
+        </a>
+        <a th:if="${i == totalPages - 1}" th:href="@{/search(page=${totalPages - 1}, query=${query})}" onclick="storeSearch(); return true;">»</a>
     </span>
 </div>
 

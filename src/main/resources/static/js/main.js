@@ -7,9 +7,22 @@ window.onload = function () {
 };
 
 document.addEventListener("DOMContentLoaded", function () {
+    const savedSortBy = localStorage.getItem("sortBy");
+    const savedSortOrder = localStorage.getItem("sortOrder");
+    const url = new URL(window.location.href);
+    const currentSortBy = url.searchParams.get("sortBy");
+    const currentSortOrder = url.searchParams.get("sortOrder");
+
+    if (savedSortBy !== currentSortBy || savedSortOrder !== currentSortOrder) {
+        if (savedSortBy && savedSortOrder) {
+            updateURLAndRedirect(savedSortBy, savedSortOrder);
+        }
+    }
+
     initSortLinks();
-    initSortByLastModified()
-    isAdmin = document.body.getAttribute('data-is-admin') === 'true';
+    initSortByLastModified();
+
+    const isAdmin = document.body.getAttribute('data-is-admin') === 'true';
 });
 
 function openDropdown(event) {
