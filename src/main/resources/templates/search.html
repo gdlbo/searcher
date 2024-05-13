@@ -29,9 +29,9 @@
                     <option value="light">Light</option>
                 </select>
             </div>
+            <h3>Search</h3>
+            <button id="toggleSortByLastModified" onclick="toggleSortByLastModified()">Sort by Last Modified: Off</button>
         </div>
-        <h2>Search</h2>
-        <button id="toggleSortByLastModified" onclick="toggleSortByLastModified()">Sort by Last Modified: Off</button>
         <div th:if="${isAdmin}">
             <h3>Admin</h3>
             <div class="input-group">
