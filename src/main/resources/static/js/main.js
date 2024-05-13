@@ -128,12 +128,14 @@ function showFileHistory(filePath) {
 
             // Show the file history dialog
             const fileHistoryDialog = document.getElementById('fileHistoryDialog');
+            document.body.style.overflow = 'hidden';
             fileHistoryDialog.style.display = 'block';
         });
 }
 
 function closeFileHistoryDialog() {
     const fileHistoryDialog = document.getElementById('fileHistoryDialog');
+    document.body.style.overflow = '';
     fileHistoryDialog.style.display = 'none';
 }
 
@@ -154,10 +156,12 @@ function deleteFileFromHistory(filePath) {
 
 function openSettingsDialog() {
     const settingsDialog = document.getElementById("settingsDialog");
+    document.body.style.overflow = 'hidden';
     settingsDialog.style.display = "block";
 }
 
 function closeSettingsDialog() {
     const settingsDialog = document.getElementById("settingsDialog");
+    document.body.style.overflow = '';
     settingsDialog.style.display = "none";
 }

@@ -194,6 +194,7 @@ a {
     top: 0;
     width: 100%;
     height: 100%;
+    overflow: hidden;
     background-color: rgba(0, 0, 0, 0.5);
 }
 
@@ -209,6 +210,17 @@ a {
     display: flex;
     flex-direction: column;
     max-width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.dialog-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dialog-content::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    border-radius: 10px;
 }
 
 .dialog-content h2 {
