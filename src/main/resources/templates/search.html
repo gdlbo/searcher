@@ -20,7 +20,8 @@
 <div class="dialog-box" id="settingsDialog">
     <div class="dialog-content">
         <h2>Settings</h2>
-        <div class="settings-section">
+        <div class="settings-section margin-bottom">
+            <h3>Themes</h3>
             <div class="theme-switcher">
                 <label class="theme-dropdown-label" for="theme-dropdown">Theme:</label>
                 <select class="theme-dropdown" id="theme-dropdown" onchange="changeTheme()">
@@ -29,12 +30,14 @@
                     <option value="light">Light</option>
                 </select>
             </div>
-            <h3>Search</h3>
-            <button id="toggleSortByLastModified" onclick="toggleSortByLastModified()">Sort by Last Modified: Off
-            </button>
-            <button id="toggleShowHidden" onclick="toggleShowHidden()">Show hidden files/dirs: Off</button>
         </div>
-        <div th:if="${isAdmin}">
+        <div class="settings-section margin-bottom">
+            <h3>Search</h3>
+            <button class="custom-button" id="toggleSortByLastModified" onclick="toggleSortByLastModified()">Sort by Last Modified: Off
+            </button>
+            <button class="custom-button" id="toggleShowHidden" onclick="toggleShowHidden()">Show hidden files/dirs: Off</button>
+        </div>
+        <div th:if="${isAdmin}" class="margin-bottom">
             <h3>Admin</h3>
             <div class="input-group">
                 <label for="userName">Give admin:</label>
@@ -46,7 +49,7 @@
             <button class="custom-button" onclick="resetDatabase()" type="button">Reset Database</button>
             <button class="custom-button" onclick="restartServer()" type="button">Restart Server</button>
         </div>
-        <div class="account-credentials">
+        <div class="account-credentials margin-bottom">
             <h3>Account</h3>
             <div class="input-group">
                 <label for="nickname">Nickname:</label>
@@ -63,8 +66,8 @@
             <div class="button-group">
                 <button class="custom-button" onclick="changePassword()" type="button">Apply Changes</button>
             </div>
+            <button class="custom-button" onclick="logout()" type="button">Logout</button>
         </div>
-        <button class="custom-button" onclick="logout()" type="button">Logout</button>
         <button class="custom-button" onclick="closeSettingsDialog()" type="button">Close</button>
     </div>
 </div>
