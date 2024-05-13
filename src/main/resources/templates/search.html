@@ -22,13 +22,21 @@
         <h2>Settings</h2>
         <div class="settings-section margin-bottom">
             <h3>Themes</h3>
-            <div class="theme-switcher">
+            <div class="theme-switcher margin-bottom">
                 <label class="theme-dropdown-label" for="theme-dropdown">Theme:</label>
                 <select class="theme-dropdown" id="theme-dropdown" onchange="changeTheme()">
                     <option value="system">Follow system</option>
                     <option value="dark">Dark</option>
                     <option value="light">Light</option>
                 </select>
+            </div>
+            <div class="input-group">
+                <label for="accentColor">Custom accent (HEX):</label>
+                <input id="accentColor" placeholder="Enter color" type="text">
+            </div>
+            <div class="button-group">
+                <button class="custom-button" onclick="handleAccentColorChange()" type="button">Apply color</button>
+                <button class="custom-button" onclick="resetAccentColor()">Reset Accent Color</button>
             </div>
         </div>
         <div class="settings-section margin-bottom">
