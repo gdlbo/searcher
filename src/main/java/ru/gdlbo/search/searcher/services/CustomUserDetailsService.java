@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.gdlbo.search.searcher.repository.Role;
 import ru.gdlbo.search.searcher.repository.User;
 import ru.gdlbo.search.searcher.repository.UserRepository;
 import ru.gdlbo.search.searcher.repository.UserRole;

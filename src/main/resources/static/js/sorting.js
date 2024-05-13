@@ -85,3 +85,26 @@ function hideArrows(link) {
         arrow.style.display = ARROW_DISPLAY_NONE;
     });
 }
+
+function initSortByLastModified() {
+    let currentSortBy = localStorage.getItem('sortByLastModified') || 'false';
+    let button = document.getElementById('toggleSortByLastModified');
+    button.textContent = `Sort by Last Modified: ${currentSortBy === 'true' ? 'On' : 'Off'}`;
+}
+
+function toggleSortByLastModified() {
+    let button = document.getElementById('toggleSortByLastModified');
+    let currentSortBy = localStorage.getItem('sortByLastModified') || 'false';
+
+    let newSortBy = currentSortBy === 'true' ? 'false' : 'true';
+    localStorage.setItem('sortByLastModified', newSortBy);
+
+    button.textContent = `Sort by Last Modified: ${newSortBy === 'true' ? 'On' : 'Off'}`;
+    updateSortStatusAndRedirect(newSortBy);
+}
+
+function updateSortStatusAndRedirect(newSortBy) {
+    let searchParams = new URLSearchParams(window.location.search);
+    searchParams.set('sortByLastModified', newSortBy);
+    window.location.search = searchParams.toString();
+}

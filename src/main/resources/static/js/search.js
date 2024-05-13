@@ -28,6 +28,7 @@ function updateURLAndRedirect(sortBy, newSortOrder) {
     const url = new URL(window.location.href);
     const query = url.searchParams.get("query") || "";
     const page = parseInt(url.searchParams.get("page")) || 0;
+    const currentSortBy = localStorage.getItem('sortByLastModified') || 'false';
 
     url.searchParams.set("query", query);
     url.searchParams.set("page", page);
@@ -35,9 +36,11 @@ function updateURLAndRedirect(sortBy, newSortOrder) {
     if (newSortOrder === "none") {
         url.searchParams.delete("sortBy");
         url.searchParams.delete("sortOrder");
+        url.searchParams.delete("sortByLastModified");
     } else {
         url.searchParams.set("sortBy", sortBy);
         url.searchParams.set("sortOrder", newSortOrder);
+        url.searchParams.set("sortByLastModified", currentSortBy);
     }
 
     window.location.href = url.toString();

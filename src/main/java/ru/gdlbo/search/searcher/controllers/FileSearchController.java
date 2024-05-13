@@ -12,6 +12,10 @@ import ru.gdlbo.search.searcher.repository.FileInfo;
 import ru.gdlbo.search.searcher.repository.UserRepository;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -28,6 +32,17 @@ public class FileSearchController {
     @Autowired
     private Config config;
 
+    public static BasicFileAttributes getFileAttributes(File file) {
+        Path path = file.toPath();
+        BasicFileAttributes attrs = null;
+        try {
+            attrs = Files.readAttributes(path, BasicFileAttributes.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return attrs;
+    }
+
     // This method is responsible for searching files based on user input
     @GetMapping("/search")
     public String searchFiles(@RequestParam(required = false) String query,
@@ -35,6 +50,7 @@ public class FileSearchController {
                               @RequestParam(defaultValue = "0") int page,
                               @RequestParam(required = false) String sortBy,
                               @RequestParam(required = false, defaultValue = "asc") String sortOrder,
+                              @RequestParam(required = false, defaultValue = "false") Boolean sortByLastModified,
                               Authentication authentication,
                               Model model) {
 
@@ -57,9 +73,9 @@ public class FileSearchController {
 
         // Sort the fileInfos list based on user input
         if (sortBy != null && !sortBy.isEmpty()) {
-            fileInfos.sort(getFileInfoComparator(sortBy, sortOrder));
+            fileInfos.sort(getFileInfoComparator(sortBy, sortOrder, sortByLastModified));
         } else {
-            fileInfos.sort(getFileInfoComparator("name", "asc"));
+            fileInfos.sort(getFileInfoComparator("name", "asc", sortByLastModified));
         }
 
         // Filter the fileInfos list based on user input
@@ -90,25 +106,25 @@ public class FileSearchController {
         model.addAttribute("query", query);
         model.addAttribute("isAdmin", isAdmin);
         model.addAttribute("nickname", authentication.getName());
+        model.addAttribute("sortByLastModified", sortByLastModified);
 
         return "search";
     }
 
-    // This method returns a Comparator<FileInfo> based on user input
-    private Comparator<FileInfo> getFileInfoComparator(String sortBy, String sortOrder) {
-        Comparator<FileInfo> comparator = Comparator.comparing(FileInfo::getFilePath);
+    private Comparator<FileInfo> getFileInfoComparator(String sortBy, String sortOrder, Boolean sortByLastModified) {
+        Comparator<FileInfo> comparator = switch (sortBy.toLowerCase()) {
+            case "name" -> Comparator.comparing(FileInfo::getFilePath);
+            case "date" -> sortByLastModified
+                    ? Comparator.comparing(FileInfo::getLastModified)
+                    : Comparator.comparing(FileInfo::getCreationTime);
+            default -> throw new IllegalArgumentException("Invalid sortBy parameter: " + sortBy);
+        };
 
-        switch (sortBy.toLowerCase()) {
-            case "name":
-                break;
-            case "date":
-                comparator = comparator.thenComparing(FileInfo::getLastModified, Comparator.reverseOrder());
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid sortBy parameter: " + sortBy);
+        if ("desc".equalsIgnoreCase(sortOrder)) {
+            comparator = comparator.reversed();
         }
 
-        return sortOrder.equalsIgnoreCase("desc") ? comparator.reversed() : comparator;
+        return comparator;
     }
 
     // This method searches a directory for matching files and subdirectories
@@ -131,9 +147,11 @@ public class FileSearchController {
 
                 matchingFiles.parallelStream().forEach(file -> {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String lastModified = dateFormat.format(new Date(file.lastModified()));
+                    BasicFileAttributes attrs = getFileAttributes(file);
+                    String lastModified = dateFormat.format(new Date(attrs.lastModifiedTime().toMillis()));
+                    String creationDate = dateFormat.format(new Date(attrs.creationTime().toMillis()));
                     synchronized (fileInfos) {
-                        fileInfos.add(new FileInfo(file.getAbsolutePath(), lastModified));
+                        fileInfos.add(new FileInfo(file.getAbsolutePath(), lastModified, creationDate));
                     }
                 });
             }

@@ -8,6 +8,7 @@ window.onload = function () {
 
 document.addEventListener("DOMContentLoaded", function () {
     initSortLinks();
+    initSortByLastModified()
     isAdmin = document.body.getAttribute('data-is-admin') === 'true';
 });
 

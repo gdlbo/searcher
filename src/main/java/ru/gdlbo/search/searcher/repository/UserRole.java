@@ -3,8 +3,6 @@ package ru.gdlbo.search.searcher.repository;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.io.Serializable;
-
 @Setter
 @Getter
 @Entity

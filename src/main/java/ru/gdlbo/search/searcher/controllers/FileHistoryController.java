@@ -40,7 +40,7 @@ public class FileHistoryController {
         fileList.sort(Comparator.comparingLong(File::lastModified));
 
         List<FileInfo> fileHistory = fileList.stream()
-                .map(f -> new FileInfo(f.getAbsolutePath(), String.valueOf(f.lastModified())))
+                .map(f -> new FileInfo(f.getAbsolutePath(), String.valueOf(f.lastModified()), null))
                 .collect(Collectors.toList());
 
         System.out.println("Returning history for file: " + fileName);
