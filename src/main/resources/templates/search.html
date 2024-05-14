@@ -30,12 +30,30 @@
                     <option value="light">Light</option>
                 </select>
             </div>
-            <div class="input-group">
+            <div class="input-group margin-bottom">
+                <label class="theme-dropdown-label" for="colorPicker">Color:</label>
+                <select class="theme-dropdown" id="colorPicker" onchange="handleAccentColorPicker()">
+                    <option value="">Select a color</option>
+                    <option value="#a14242">Dark red</option>
+                    <option value="#588163">Olive green</option>
+                    <option value="#6e57d2">Lavender</option>
+                    <option value="#ff8a22">Orange</option>
+                    <option value="#e00a97">Magenta</option>
+                    <option value="#843c54">Maroon</option>
+                    <option value="#1a4f76">Navy blue</option>
+                    <option value="#ffd700">Gold</option>
+                    <option value="#8b4513">Saddle brown</option>
+                    <option value="#4682b4">Steel blue</option>
+                    <option value="#ff69b4">Hot pink</option>
+                    <option value="#20b2aa">Light sea green</option>
+                </select>
+            </div>
+            <div class="input-group margin-bottom">
                 <label for="accentColor">Custom accent (HEX):</label>
                 <input id="accentColor" placeholder="Enter color" type="text">
             </div>
             <div class="button-group">
-                <button class="custom-button" onclick="handleAccentColorChange()" type="button">Apply color</button>
+                <button class="custom-button" onclick="handleAccentColorHex()" type="button">Apply color</button>
                 <button class="custom-button" onclick="resetAccentColor()">Reset Accent Color</button>
             </div>
         </div>
@@ -62,14 +80,12 @@
                 <label for="searcherPath">Path to search:</label>
                 <input id="searcherPath" th:value="${searchPath}" placeholder="/path/to/search" type="text">
             </div>
-            <div class="button-group">
+            <div class="button-group margin-bottom">
                 <button class="custom-button" onclick="applyCustomPath()" type="button">Apply</button>
-            </div>
-            <div class="margin-bottom">
-                <button class="custom-button" id="toggleDebug" onclick="toggleDebug()">Debug: Off</button>
             </div>
             <button class="custom-button" onclick="resetDatabase()" type="button">Reset Database</button>
             <button class="custom-button" onclick="restartServer()" type="button">Restart Server</button>
+            <button class="custom-button" id="toggleDebug" onclick="toggleDebug()">Debug: Off</button>
         </div>
         <div class="account-credentials margin-bottom">
             <h3>Account</h3>

@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initSortByLastModified();
     initShowHidden();
     initDebug();
+    initThemeButtons()
 });
 
 function openDropdown(event) {

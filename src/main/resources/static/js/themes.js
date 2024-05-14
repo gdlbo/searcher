@@ -81,9 +81,10 @@ function changePrimaryColor(baseColor) {
 }
 
 function resetAccentColor() {
-    const defaultColor = getDefaultAccentColor();
-    document.getElementById('accentColor').value = defaultColor;
+    document.getElementById('accentColor').value = getDefaultAccentColor();
     localStorage.removeItem('accent-color');
+    document.getElementById("colorPicker").value = '';
+    document.getElementById("accentColor").disabled = false;
     document.documentElement.style.removeProperty('--primary-color');
     document.documentElement.style.removeProperty('--primary-color-hover');
     document.documentElement.style.removeProperty('--link-color');
@@ -111,11 +112,56 @@ function shadeColor(color, percent) {
     return "#" + RR + GG + BB;
 }
 
-function handleAccentColorChange() {
+
+function initThemeButtons() {
+    const savedColor = localStorage.getItem("accent-color") || '#007bff';
+
     const colorPicker = document.getElementById("accentColor");
-    const newColor = colorPicker.value;
+    const colorSelect = document.getElementById("colorPicker");
+
+    colorPicker.value = savedColor;
+    colorSelect.value = colorSelect.querySelector(`option[value="${savedColor}"]`) ? savedColor : '';
+
+    colorPicker.disabled = !!colorSelect.value;
+}
+
+function handleAccentColorPicker() {
+    const colorPicker = document.getElementById("accentColor");
+    const colorSelect = document.getElementById("colorPicker");
+    let newColor;
+
+    if (colorSelect.value !== "") {
+        newColor = colorSelect.value;
+        colorPicker.disabled = true;
+    } else {
+        newColor = colorPicker.value;
+        colorPicker.disabled = false;
+    }
+
+    if (colorSelect.value === "") {
+        resetAccentColor();
+        return;
+    }
+
+    changePrimaryColor(newColor);
+    colorPicker.value = newColor;
+    localStorage.setItem("accent-color", newColor);
+}
+
+function handleAccentColorHex() {
+    const colorPicker = document.getElementById("accentColor");
+    let newColor;
+
+    if (colorPicker.value) {
+        newColor = colorPicker.value;
+    } else {
+        newColor = getDefaultAccentColor();
+    }
+
     if (isValidColor(newColor)) {
         changePrimaryColor(newColor);
+        colorPicker.value = newColor;
+        localStorage.setItem("accent-color", newColor);
     } else {
         alert("Please enter a valid HEX color code.");
         colorPicker.value = localStorage.getItem("accent-color") || '#007bff';
