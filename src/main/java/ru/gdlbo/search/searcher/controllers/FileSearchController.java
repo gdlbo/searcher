@@ -18,10 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
 @Controller
@@ -55,7 +52,7 @@ public class FileSearchController {
                               Authentication authentication,
                               Model model) {
 
-        List<FileInfo> fileInfos = Collections.synchronizedList(new ArrayList<>());
+        List<FileInfo> fileInfos = new CopyOnWriteArrayList<>();
         int resultsPerPage = 50;
         String searchPath = config.getPath();
         boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
@@ -176,9 +173,7 @@ public class FileSearchController {
             Date creationDate = attrs != null && attrs.creationTime() != null ? new Date(attrs.creationTime().toMillis()) : null;
             String creationDateStr = creationDate != null ? dateFormat.format(creationDate) : "N/A";
 
-            synchronized (fileInfos) {
-                fileInfos.add(new FileInfo(file.getAbsolutePath(), lastModified, creationDateStr));
-            }
+            fileInfos.add(new FileInfo(file.getAbsolutePath(), lastModified, creationDateStr));
         });
     }
 
