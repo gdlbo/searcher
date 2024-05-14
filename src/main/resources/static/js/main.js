@@ -1,11 +1,11 @@
 let isAdmin = false;
+let isDebug = false;
 
 window.onload = function () {
     initTheme();
     initDropZone();
     loadSearch();
 };
-
 document.addEventListener("DOMContentLoaded", function () {
     const savedSortBy = localStorage.getItem("sortBy");
     const savedSortOrder = localStorage.getItem("sortOrder");
@@ -23,11 +23,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    isAdmin = document.body.getAttribute('data-is-admin') === 'true';
+    isDebug = document.body.getAttribute('data-is-debug') === 'true';
+
     initSortLinks();
     initSortByLastModified();
     initShowHidden();
-
-    const isAdmin = document.body.getAttribute('data-is-admin') === 'true';
+    initDebug();
 });
 
 function openDropdown(event) {
@@ -165,4 +167,17 @@ function closeSettingsDialog() {
     settingsDialog.querySelector('.dialog-content').scrollTop = 0;
     document.body.style.overflow = '';
     settingsDialog.style.display = "none";
+}
+
+function toggleDebug() {
+    let button = document.getElementById('toggleDebug');
+    let debug = !isDebug;
+
+    button.textContent = `Debug: ${debug ? 'On' : 'Off'}`;
+    applyDebugStatus(debug)
+}
+
+function initDebug() {
+    let button = document.getElementById('toggleDebug');
+    button.textContent = `Debug: ${isDebug === true ? 'On' : 'Off'}`;
 }

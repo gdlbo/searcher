@@ -11,7 +11,7 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 </head>
 
-<body th:data-is-admin="${isAdmin}">
+<body th:data-is-admin="${isAdmin}" th:data-is-debug="${isDebug}" th:data-path="${searchPath}">
 <div class="header-container">
     <h1>Searcher</h1>
     <button class="settings-button" onclick="openSettingsDialog()" type="button">Settings</button>
@@ -54,6 +54,19 @@
             </div>
             <div class="button-group">
                 <button class="custom-button" onclick="grantAdmin()" type="button">Apply</button>
+            </div>
+        </div>
+        <div class="margin-bottom" th:if="${isAdmin}">
+            <h3>System</h3>
+            <div class="input-group">
+                <label for="searcherPath">Path to search:</label>
+                <input id="searcherPath" th:value="${searchPath}" placeholder="/path/to/search" type="text">
+            </div>
+            <div class="button-group">
+                <button class="custom-button" onclick="applyCustomPath()" type="button">Apply</button>
+            </div>
+            <div class="margin-bottom">
+                <button class="custom-button" id="toggleDebug" onclick="toggleDebug()">Debug: Off</button>
             </div>
             <button class="custom-button" onclick="resetDatabase()" type="button">Reset Database</button>
             <button class="custom-button" onclick="restartServer()" type="button">Restart Server</button>

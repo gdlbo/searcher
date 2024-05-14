@@ -48,7 +48,13 @@ public class FileSearchController {
                               Authentication authentication,
                               Model model) {
 
-        List<FileInfo> fileInfos = performFileSearch(query, showHidden);
+        String searchPath = config.getPath();
+
+        if (searchPath == null || searchPath.isEmpty()) {
+            return "redirect:/start";
+        }
+
+        List<FileInfo> fileInfos = performFileSearch(query, showHidden, searchPath);
 
         sortFileInfos(fileInfos, sortBy, sortOrder, sortByLastModified);
 
@@ -63,9 +69,8 @@ public class FileSearchController {
         return "search";
     }
 
-    private List<FileInfo> performFileSearch(String query, Boolean showHidden) {
+    private List<FileInfo> performFileSearch(String query, Boolean showHidden, String searchPath) {
         List<FileInfo> fileInfos = Collections.synchronizedList(new ArrayList<>());
-        String searchPath = config.getPath();
 
         if (searchPath == null || searchPath.isEmpty()) {
             return fileInfos;
@@ -135,10 +140,15 @@ public class FileSearchController {
         model.addAttribute("pageNumbers", getPageNumbers(paginatedResult.getPage(), paginatedResult.getTotalPages(), 10));
         model.addAttribute("totalPages", paginatedResult.getTotalPages());
         model.addAttribute("query", query);
-        model.addAttribute("isAdmin", authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")));
         model.addAttribute("nickname", authentication.getName());
         model.addAttribute("sortByLastModified", sortByLastModified);
         model.addAttribute("showHidden", showHidden);
+
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            model.addAttribute("isAdmin", true);
+            model.addAttribute("isDebug", config.getIsDebug());
+            model.addAttribute("searchPath", config.getPath());
+        }
     }
 
     private Comparator<FileInfo> getFileInfoComparator(String sortBy, String sortOrder, Boolean sortByLastModified) {

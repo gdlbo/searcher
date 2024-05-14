@@ -35,6 +35,42 @@ function grantAdmin() {
         });
 }
 
+function applyCustomPath() {
+    const path = document.getElementById('searcherPath').value;
+    if (!path) {
+        alert('Please enter a path.');
+        return;
+    }
+
+    fetch('/api/submit?searcherPath=' + encodeURIComponent(path), {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
+    }).catch(error => {
+        console.error('Error:', error);
+    });
+
+    setTimeout(() => {
+        window.location.href = '/';
+    }, 2000);
+}
+
+function applyDebugStatus(status) {
+    fetch('/api/submit?isDebug=' + status, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
+    }).catch(error => {
+        console.error('Error:', error);
+    });
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 2000);
+}
+
 function resetDatabase() {
     fetch('/api/resetDatabase', {
         method: 'GET',
