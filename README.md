@@ -28,6 +28,22 @@ BEGIN
     END LOOP;
 END $$;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO searcher;
+
+CREATE TABLE users (
+                      id SERIAL PRIMARY KEY,
+                      username VARCHAR(50) UNIQUE NOT NULL,
+                      password VARCHAR(255) NOT NULL,
+                      enabled BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE user_roles (
+                           id SERIAL PRIMARY KEY,
+                           role VARCHAR(50) NOT NULL,
+                           user_id INTEGER NOT NULL,
+                           CONSTRAINT fk_user
+                              FOREIGN KEY(user_id)
+                                 REFERENCES users(id)
+);
 ```
 
 ### Сборка и запуск приложения
