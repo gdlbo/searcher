@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user_roles")  // Изменено имя таблицы
-@EqualsAndHashCode(exclude = {"user", "role"}) // Исключаем user и role из equals и hashCode
+@Table(name = "user_roles")
+@EqualsAndHashCode(exclude = {"user", "role"})
 public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

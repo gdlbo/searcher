@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "roles")  // Изменено имя таблицы
-@EqualsAndHashCode // Оставляем стандартное поведение
+@Table(name = "roles")
+@EqualsAndHashCode
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

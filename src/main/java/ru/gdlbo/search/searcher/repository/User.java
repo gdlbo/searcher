@@ -13,8 +13,8 @@ import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "users")  // Изменено имя таблицы
-@EqualsAndHashCode(exclude = "userRoles") // Исключаем userRoles из equals и hashCode
+@Table(name = "users")
+@EqualsAndHashCode(exclude = "userRoles")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

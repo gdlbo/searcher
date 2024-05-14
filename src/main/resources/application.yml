@@ -9,6 +9,9 @@ spring:
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
+  sql:
+    init:
+      mode: always
 server:
   compression:
     enabled: true
