@@ -11,16 +11,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/auth")
 public class LoginController {
-
     @GetMapping("/login")
-    public ModelAndView login(@RequestParam(value = "error", required = false) String error) {
-
-        ModelAndView modelAndView = new ModelAndView("login");
-        if (error != null) {
-            modelAndView.addObject("error", "Invalid username or password.");
-        }
-
-        return modelAndView;
+    public String login() {
+        return "login";
     }
 
     @GetMapping("/logout")

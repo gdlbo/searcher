@@ -16,6 +16,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import ru.gdlbo.search.searcher.repository.UserRepository;
 
 import java.util.stream.Collectors;
@@ -28,20 +30,17 @@ public class WebSecurityConfig {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private Config config;
-
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByUsername(username)
-                .map(user -> User.builder()
-                        .username(user.getUsername())
-                        .password(user.getPassword())
-                        .authorities(user.getUserRoles().stream()
+                .map(user -> new User(
+                        user.getUsername(),
+                        user.getPassword(),
+                        user.getUserRoles().stream()
                                 .map(userRole -> new SimpleGrantedAuthority(userRole.getRole().getName()))
-                                .collect(Collectors.toList()))
-                        .build())
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден: " + username));
+                                .collect(Collectors.toList())
+                ))
+                .orElseThrow();
     }
 
     @Bean
@@ -77,6 +76,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/js/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/error").permitAll()
+                        .requestMatchers("/register").permitAll()
+                        .requestMatchers("/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(formLogin -> formLogin

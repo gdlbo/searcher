@@ -23,8 +23,6 @@ import java.util.regex.Pattern;
 
 @Controller
 public class FileSearchController {
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private Config config;

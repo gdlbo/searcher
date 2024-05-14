@@ -1,4 +1,4 @@
-package ru.gdlbo.search.searcher.controllers;
+package ru.gdlbo.search.searcher.config;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
