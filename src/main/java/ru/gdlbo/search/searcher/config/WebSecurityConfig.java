@@ -1,6 +1,5 @@
 package ru.gdlbo.search.searcher.config;
 
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,16 +34,13 @@ public class WebSecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByUsername(username)
-                .map(user -> {
-//                    Hibernate.initialize(user.getUserRoles());
-                    return User.builder()
-                            .username(user.getUsername())
-                            .password(user.getPassword())
-                            .authorities(user.getUserRoles().stream()
-                                    .map(role -> new SimpleGrantedAuthority(role.getRole()))
-                                    .collect(Collectors.toList()))
-                            .build();
-                })
+                .map(user -> User.builder()
+                        .username(user.getUsername())
+                        .password(user.getPassword())
+                        .authorities(user.getUserRoles().stream()
+                                .map(userRole -> new SimpleGrantedAuthority(userRole.getRole().getName()))
+                                .collect(Collectors.toList()))
+                        .build())
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден: " + username));
     }
 

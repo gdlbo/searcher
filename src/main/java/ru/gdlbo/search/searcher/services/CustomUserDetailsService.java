@@ -58,8 +58,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     // This method is responsible for mapping a user's roles to their corresponding authorities
     public Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<UserRole> userRoles) {
         return userRoles.stream()
-                .map(UserRole::getRole)
-                .map(SimpleGrantedAuthority::new)
+                .map(userRole -> new SimpleGrantedAuthority(userRole.getRole().getName()))
                 .collect(Collectors.toList());
     }
 }

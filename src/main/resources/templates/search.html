@@ -41,11 +41,12 @@
         </div>
         <div class="settings-section margin-bottom">
             <h3>Search</h3>
-            <button class="custom-button" id="toggleSortByLastModified" onclick="toggleSortByLastModified()">Sort by last modified: Off
+            <button class="custom-button" id="toggleSortByLastModified" onclick="toggleSortByLastModified()">Sort by
+                last modified: Off
             </button>
             <button class="custom-button" id="toggleShowHidden" onclick="toggleShowHidden()">Show hidden: Off</button>
         </div>
-        <div th:if="${isAdmin}" class="margin-bottom">
+        <div class="margin-bottom" th:if="${isAdmin}">
             <h3>Admin</h3>
             <div class="input-group">
                 <label for="userName">Give admin:</label>

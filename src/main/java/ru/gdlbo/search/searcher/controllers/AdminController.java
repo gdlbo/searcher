@@ -11,17 +11,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.gdlbo.search.searcher.config.RestartManager;
 import ru.gdlbo.search.searcher.config.WebSecurityConfig;
-import ru.gdlbo.search.searcher.repository.User;
-import ru.gdlbo.search.searcher.repository.UserRepository;
-import ru.gdlbo.search.searcher.repository.UserRole;
+import ru.gdlbo.search.searcher.repository.*;
 
 @RestController
 public class AdminController {
     @Autowired
+    private RestartManager restartManager;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private RestartManager restartManager;
+    private RoleRepository roleRepository;
 
     @GetMapping("/api/grantAdmin")
     public ResponseEntity<String> grantAdminPrivileges(@RequestParam String username, Authentication authentication) {
@@ -31,10 +32,19 @@ public class AdminController {
 
         return userRepository.findByUsername(username)
                 .map(user -> {
-                    if (user.getUserRoles().stream().anyMatch(role -> role.getRole().equals("ROLE_ADMIN"))) {
+                    Role adminRole = roleRepository.findByName("ROLE_ADMIN")
+                            .orElseGet(() -> {
+                                Role newRole = new Role("ROLE_ADMIN");
+                                roleRepository.save(newRole);
+                                return newRole;
+                            });
+
+                    if (user.getUserRoles().stream()
+                            .anyMatch(userRole -> userRole.getRole().getName().equals("ROLE_ADMIN"))) {
                         return ResponseEntity.ok("User already an admin");
                     }
-                    user.getUserRoles().add(new UserRole("ROLE_ADMIN", user));
+
+                    user.getUserRoles().add(new UserRole(user, adminRole));
                     userRepository.save(user);
                     return ResponseEntity.ok("Admin privileges granted to " + username);
                 })

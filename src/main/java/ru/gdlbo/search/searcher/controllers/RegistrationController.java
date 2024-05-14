@@ -1,13 +1,11 @@
 package ru.gdlbo.search.searcher.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.gdlbo.search.searcher.config.WebSecurityConfig;
-import ru.gdlbo.search.searcher.repository.User;
-import ru.gdlbo.search.searcher.repository.UserRepository;
-import ru.gdlbo.search.searcher.repository.UserRole;
+import ru.gdlbo.search.searcher.repository.*;
 
 import java.util.Collections;
 
@@ -15,6 +13,12 @@ import java.util.Collections;
 public class RegistrationController {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/auth/register")
     public String showRegistrationForm() {
@@ -39,12 +43,25 @@ public class RegistrationController {
         // Create a new user
         User user = new User();
         user.setUsername(username);
-        user.setPassword(new WebSecurityConfig().passwordEncoder().encode(password));
+        user.setPassword(passwordEncoder.encode(password));
+
+        // Ensure roles exist in the database
+        Role roleAdmin = roleRepository.findByName("ROLE_ADMIN").orElseGet(() -> {
+            Role newRole = new Role("ROLE_ADMIN");
+            roleRepository.save(newRole);
+            return newRole;
+        });
+
+        Role roleUser = roleRepository.findByName("ROLE_USER").orElseGet(() -> {
+            Role newRole = new Role("ROLE_USER");
+            roleRepository.save(newRole);
+            return newRole;
+        });
 
         if (username.equals("admin")) {
-            user.setUserRoles(Collections.singleton(new UserRole("ROLE_ADMIN", user)));
+            user.setUserRoles(Collections.singleton(new UserRole(user, roleAdmin)));
         } else {
-            user.setUserRoles(Collections.singleton(new UserRole("ROLE_USER", user)));
+            user.setUserRoles(Collections.singleton(new UserRole(user, roleUser)));
         }
 
         // Save the user

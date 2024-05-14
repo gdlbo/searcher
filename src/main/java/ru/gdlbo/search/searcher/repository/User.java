@@ -9,21 +9,19 @@ import lombok.NoArgsConstructor;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Table(name = "users")
 @Data
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = "userRoles")
+@Table(name = "users")  // Изменено имя таблицы
+@EqualsAndHashCode(exclude = "userRoles") // Исключаем userRoles из equals и hashCode
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false)
     private String password;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
