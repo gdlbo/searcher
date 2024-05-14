@@ -15,19 +15,27 @@ Searcher — это веб-приложение для поиска файлов
 2. Создайте таблицу `files` с помощью SQL-команды:
 ```sql
 CREATE DATABASE searcher;
+
 CREATE ROLE searcher LOGIN PASSWORD 'searcher';
+
+GRANT CREATE ON SCHEMA public TO searcher;
+
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO searcher;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO searcher;
+
 DO $$
-DECLARE
-    seq record;
-BEGIN
-    FOR seq IN SELECT sequence_schema, sequence_name FROM information_schema.sequences WHERE sequence_schema = 'public'
-    LOOP
-        EXECUTE format('GRANT ALL PRIVILEGES ON SEQUENCE %I.%I TO searcher;', seq.sequence_schema, seq.sequence_name);
-    END LOOP;
-END $$;
+   DECLARE
+      seq record;
+   BEGIN
+      FOR seq IN SELECT sequence_schema, sequence_name FROM information_schema.sequences WHERE sequence_schema = 'public'
+         LOOP
+              EXECUTE format('GRANT ALL PRIVILEGES ON SEQUENCE %I.%I TO searcher;', seq.sequence_schema, seq.sequence_name);
+         END LOOP;
+   END
+$$;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO searcher;
+
+\c searcher
 
 CREATE TABLE users (
                       id SERIAL PRIMARY KEY,
@@ -35,6 +43,8 @@ CREATE TABLE users (
                       password VARCHAR(255) NOT NULL,
                       enabled BOOLEAN NOT NULL DEFAULT TRUE
 );
+
+ALTER TABLE users OWNER TO searcher;
 
 CREATE TABLE user_roles (
                            id SERIAL PRIMARY KEY,
@@ -44,6 +54,8 @@ CREATE TABLE user_roles (
                               FOREIGN KEY(user_id)
                                  REFERENCES users(id)
 );
+
+ALTER TABLE user_roles OWNER TO searcher;
 ```
 
 ### Сборка и запуск приложения

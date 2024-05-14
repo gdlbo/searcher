@@ -36,7 +36,7 @@ public class WebSecurityConfig {
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByUsername(username)
                 .map(user -> {
-                    Hibernate.initialize(user.getUserRoles());
+//                    Hibernate.initialize(user.getUserRoles());
                     return User.builder()
                             .username(user.getUsername())
                             .password(user.getPassword())
