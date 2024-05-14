@@ -14,6 +14,7 @@ Searcher — это веб-приложение для поиска файлов
 1. Установите PostgreSQL и создайте новую базу данных для вашего приложения.
 2. Создайте таблицу `files` с помощью SQL-команды:
 ```sql
+CREATE DATABASE searcher;
 CREATE ROLE searcher LOGIN PASSWORD 'searcher';
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO searcher;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO searcher;
