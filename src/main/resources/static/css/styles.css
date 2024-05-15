@@ -72,6 +72,35 @@ body {
     }
 }
 
+#file-paths thead {
+    border-radius: 10px 10px 0 0;
+    background-color: #f0f0f0;
+}
+
+#file-paths {
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+}
+
+#file-paths {
+    border-radius: 10px;
+    border: 1px solid var(--input-border-color);
+}
+
+.sort {
+    padding: 10px;
+    display: inline-block;
+}
+
+#file-paths th {
+    text-align: center;
+}
+
+#file-paths td {
+    text-align: center;
+}
+
 .pagination {
     display: flex;
     align-items: center;
