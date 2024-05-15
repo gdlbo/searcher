@@ -221,6 +221,13 @@ a {
     border: 1px solid var(--input-border-color);
     border-radius: 4px;
     width: 100%;
+    background-color: var(--input-background-color);
+    color: var(--input-text-color);
+}
+
+.theme-dropdown:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary-color);
 }
 
 .selected-page {
