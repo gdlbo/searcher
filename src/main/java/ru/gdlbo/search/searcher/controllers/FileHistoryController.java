@@ -38,9 +38,10 @@ public class FileHistoryController {
         // Sort the files by timestamp
         List<File> fileList = new ArrayList<>(Arrays.asList(files));
         fileList.sort(Comparator.comparingLong(File::lastModified));
+        String location = file.getAbsolutePath();
 
         List<FileInfo> fileHistory = fileList.stream()
-                .map(f -> new FileInfo(f.getAbsolutePath(), String.valueOf(f.lastModified()), null))
+                .map(f -> new FileInfo(null, null, null, null, null, null, null, null, location, null))
                 .collect(Collectors.toList());
 
         System.out.println("Returning history for file: " + fileName);

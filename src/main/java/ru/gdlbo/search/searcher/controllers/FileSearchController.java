@@ -103,8 +103,8 @@ public class FileSearchController {
         Pattern numberPattern = Pattern.compile("ВГМТ\\." + number + "\\.\\d{3}(-\\d{2})?.*");
         return fileInfos.stream()
                 .filter(fileInfo -> {
-                    boolean matchesQuery = query == null || query.isEmpty() || fileInfo.getFilePath().contains(query);
-                    boolean matchesNumber = numberPattern.matcher(fileInfo.getFilePath()).find();
+                    boolean matchesQuery = query == null || query.isEmpty() || fileInfo.getLocation().contains(query);
+                    boolean matchesNumber = numberPattern.matcher(fileInfo.getLocation()).find();
                     return matchesQuery && matchesNumber;
                 })
                 .toList();
@@ -153,7 +153,7 @@ public class FileSearchController {
 
     private Comparator<FileInfo> getFileInfoComparator(String sortBy, String sortOrder, Boolean sortByLastModified) {
         Comparator<FileInfo> comparator = switch (sortBy.toLowerCase()) {
-            case "name" -> Comparator.comparing(FileInfo::getFilePath);
+            case "name" -> Comparator.comparing(FileInfo::getLocation);
             case "date" -> sortByLastModified
                     ? Comparator.comparing(FileInfo::getLastModified)
                     : Comparator.comparing(FileInfo::getCreationTime);
@@ -216,8 +216,17 @@ public class FileSearchController {
             Date creationDate = attrs != null && attrs.creationTime() != null ? new Date(attrs.creationTime().toMillis()) : null;
             String creationDateStr = creationDate != null ? dateFormat.format(creationDate) : "N/A";
 
+            String decNumber = extractDecNumber(file.getName());
+            String deviceName = extractDeviceName(file.getName());
+            String documentType = extractDocumentType(file.getName());
+            String usedDevices = extractUsedDevices(file.getName());
+            String project = extractProject(file.getName());
+            String location = file.getAbsolutePath();
+            String inventoryNumber = extractInventoryNumber(file.getName());
+            String extension = extractExtension(file.getName());
+
             synchronized (fileInfos) {
-                fileInfos.add(new FileInfo(file.getAbsolutePath(), lastModified, creationDateStr));
+                fileInfos.add(new FileInfo(decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, extension, lastModified, location, creationDateStr));
             }
         });
     }
@@ -240,7 +249,44 @@ public class FileSearchController {
         }
     }
 
-    // This method returns a list of page numbers based on user input
+    private String extractDecNumber(String fileName) {
+//        String baseName = fileName.substring(0, fileName.lastIndexOf('.'));
+//        return baseName.split(" ")[0];
+        return "DEC NUM";
+    }
+
+    private String extractDeviceName(String fileName) {
+//        String baseName = fileName.substring(0, fileName.lastIndexOf('.'));
+//        return baseName.contains(" ") ? baseName.substring(baseName.indexOf(' ') + 1) : "";
+        return "DEVICE NAME";
+    }
+
+    private String extractDocumentType(String fileName) {
+        // Логика для извлечения Document Type
+        return "Спецификация"; // Пример
+    }
+
+    private String extractUsedDevices(String fileName) {
+        // Логика для извлечения Used Devices
+        return "Устройство 1, Устройство 2"; // Пример
+    }
+
+    private String extractProject(String fileName) {
+        // Логика для извлечения Project
+        return "Проект 1"; // Пример
+    }
+
+    private String extractInventoryNumber(String fileName) {
+        // Логика для извлечения Inventory Number
+        return "01/23-001"; // Пример
+    }
+
+    private String extractExtension(String fileName) {
+        // Логика для извлечения расширения файла
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
+    }
+
+        // This method returns a list of page numbers based on user input
     public List<Integer> getPageNumbers(int currentPage, int totalPages, int limit) {
         List<Integer> pageNumbers = new ArrayList<>();
         int startPage = Math.max(0, currentPage - limit / 2);

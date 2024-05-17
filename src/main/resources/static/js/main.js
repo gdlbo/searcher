@@ -106,12 +106,12 @@ function showFileHistory(filePath) {
 
                     const deleteButton = document.createElement('button');
                     deleteButton.textContent = 'Delete';
-                    deleteButton.onclick = () => deleteFileFromHistory(file.filePath);
+                    deleteButton.onclick = () => deleteFileFromHistory(file.location);
                     deleteButton.classList.add('small-button');
 
                     const downloadButton = document.createElement('button');
                     downloadButton.textContent = 'Download';
-                    downloadButton.onclick = () => downloadFile(file.filePath);
+                    downloadButton.onclick = () => downloadFile(file.location);
                     downloadButton.classList.add('small-button');
 
                     const buttonDiv = document.createElement('div');
