@@ -19,8 +19,10 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.regex.Matcher;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 
 @Controller
@@ -207,14 +209,15 @@ public class FileSearchController {
     }
 
     private void processMatchingFiles(List<File> matchingFiles, List<FileInfo> fileInfos) {
-        matchingFiles.parallelStream().forEach(file -> {            String decNumber = "N/A";
+        matchingFiles.parallelStream().forEach(file -> {
             FileNameParser fileNameParser = new FileNameParser(file.getName());
+            String decNumber = "N/A";
             String deviceName = "N/A";
             String documentType = "N/A";
             String usedDevices = "N/A";
             String project = "N/A";
             String inventoryNumber = "N/A";
-            String location = file.getParent()  + "/";
+            String location = file.getParent() + "/";
             String extension = fileNameParser.extractExtension();
 
             if (file.getName().startsWith("ВГМТ")) {

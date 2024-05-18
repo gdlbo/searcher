@@ -4,8 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FileNameParser {
-    private final String fileName;
     private static int currentDrawingNumber = 0; // Текущий номер чертежа для автоматического присвоения
+    private final String fileName;
 
     public FileNameParser(String fileName) {
         this.fileName = fileName;
