@@ -216,19 +216,66 @@ public class FileSearchController {
             Date creationDate = attrs != null && attrs.creationTime() != null ? new Date(attrs.creationTime().toMillis()) : null;
             String creationDateStr = creationDate != null ? dateFormat.format(creationDate) : "N/A";
 
-            String decNumber = extractDecNumber(file.getName());
-            String deviceName = extractDeviceName(file.getName());
-            String documentType = extractDocumentType(file.getName());
-            String usedDevices = extractUsedDevices(file.getName());
-            String project = extractProject(file.getName());
-            String location = file.getAbsolutePath();
-            String inventoryNumber = extractInventoryNumber(file.getName());
-            String extension = extractExtension(file.getName());
+            String decNumber = "N/A";
+            String deviceName = "N/A";
+            String documentType = "N/A";
+            String usedDevices = "N/A";
+            String project = "N/A";
+            String inventoryNumber = "N/A";
+            String location = file.getParent();
+            String extension = extractExtension(file.getName() + "/");
+
+            if (file.getName().startsWith("ВГМТ")) {
+                decNumber = extractDecNumber(file.getName());
+                deviceName = extractDeviceName(file.getName());
+                documentType = extractDocumentType(file.getName());
+                usedDevices = extractUsedDevices(file.getName());
+                project = extractProject(file.getName());
+                inventoryNumber = extractInventoryNumber(file.getName());
+            }
 
             synchronized (fileInfos) {
                 fileInfos.add(new FileInfo(decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, extension, lastModified, location, creationDateStr));
             }
         });
+    }
+
+    private String extractDecNumber(String fileName) {
+        String[] parts = fileName.split("_");
+        return parts.length > 0 ? parts[0] : "N/A";
+    }
+
+    private String extractDeviceName(String fileName) {
+        String[] parts = fileName.split("_");
+        return parts.length > 1 ? parts[1] : "N/A";
+    }
+
+    private String extractDocumentType(String fileName) {
+        String[] parts = fileName.split("_");
+        return parts.length > 2 ? parts[2] : "N/A";
+    }
+
+    private String extractUsedDevices(String fileName) {
+        String[] parts = fileName.split("_");
+        return parts.length > 3 ? parts[3] : "N/A";
+    }
+
+    private String extractProject(String fileName) {
+        String[] parts = fileName.split("_");
+        return parts.length > 4 ? parts[4] : "N/A";
+    }
+
+    private String extractInventoryNumber(String fileName) {
+        String[] parts = fileName.split("_");
+        return parts.length > 5 ? parts[5] : "N/A";
+    }
+
+    private String extractExtension(String fileName) {
+        int lastIndexOfDot = fileName.lastIndexOf(".");
+        if (lastIndexOfDot == -1 || lastIndexOfDot == 0 || lastIndexOfDot == fileName.length() - 1) {
+            return "none";
+        }
+        return fileName.substring(lastIndexOfDot + 1);
     }
 
     private Runnable createTask(File file, String query, List<FileInfo> fileInfos, Boolean showHidden) {
@@ -249,44 +296,7 @@ public class FileSearchController {
         }
     }
 
-    private String extractDecNumber(String fileName) {
-//        String baseName = fileName.substring(0, fileName.lastIndexOf('.'));
-//        return baseName.split(" ")[0];
-        return "DEC NUM";
-    }
-
-    private String extractDeviceName(String fileName) {
-//        String baseName = fileName.substring(0, fileName.lastIndexOf('.'));
-//        return baseName.contains(" ") ? baseName.substring(baseName.indexOf(' ') + 1) : "";
-        return "DEVICE NAME";
-    }
-
-    private String extractDocumentType(String fileName) {
-        // Логика для извлечения Document Type
-        return "Спецификация"; // Пример
-    }
-
-    private String extractUsedDevices(String fileName) {
-        // Логика для извлечения Used Devices
-        return "Устройство 1, Устройство 2"; // Пример
-    }
-
-    private String extractProject(String fileName) {
-        // Логика для извлечения Project
-        return "Проект 1"; // Пример
-    }
-
-    private String extractInventoryNumber(String fileName) {
-        // Логика для извлечения Inventory Number
-        return "01/23-001"; // Пример
-    }
-
-    private String extractExtension(String fileName) {
-        // Логика для извлечения расширения файла
-        return fileName.substring(fileName.lastIndexOf(".") + 1);
-    }
-
-        // This method returns a list of page numbers based on user input
+    // This method returns a list of page numbers based on user input
     public List<Integer> getPageNumbers(int currentPage, int totalPages, int limit) {
         List<Integer> pageNumbers = new ArrayList<>();
         int startPage = Math.max(0, currentPage - limit / 2);
