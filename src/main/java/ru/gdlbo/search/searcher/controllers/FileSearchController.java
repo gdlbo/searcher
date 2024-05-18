@@ -205,7 +205,27 @@ public class FileSearchController {
     }
 
     private void processMatchingFiles(List<File> matchingFiles, List<FileInfo> fileInfos) {
-        matchingFiles.parallelStream().forEach(file -> {
+        matchingFiles.parallelStream().forEach(file -> {            String decNumber = "N/A";
+            String deviceName = "N/A";
+            String documentType = "N/A";
+            String usedDevices = "N/A";
+            String project = "N/A";
+            String inventoryNumber = "N/A";
+            String location = file.getParent()  + "/";
+            String extension = extractExtension(file.getName());
+            String fileName = file.getName();
+
+            if (file.getName().startsWith("ВГМТ")) {
+                decNumber = extractDecNumber(fileName);
+                deviceName = extractDeviceName(fileName);
+                documentType = extractDocumentType(fileName);
+                usedDevices = extractUsedDevices(fileName);
+                project = extractProject(fileName);
+                inventoryNumber = extractInventoryNumber(fileName);
+            } else {
+                return;
+            }
+
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
             BasicFileAttributes attrs = getFileAttributes(file);
@@ -215,24 +235,6 @@ public class FileSearchController {
 
             Date creationDate = attrs != null && attrs.creationTime() != null ? new Date(attrs.creationTime().toMillis()) : null;
             String creationDateStr = creationDate != null ? dateFormat.format(creationDate) : "N/A";
-
-            String decNumber = "N/A";
-            String deviceName = "N/A";
-            String documentType = "N/A";
-            String usedDevices = "N/A";
-            String project = "N/A";
-            String inventoryNumber = "N/A";
-            String location = file.getParent()  + "/";
-            String extension = extractExtension(file.getName());
-
-            if (file.getName().startsWith("ВГМТ")) {
-                decNumber = extractDecNumber(file.getName());
-                deviceName = extractDeviceName(file.getName());
-                documentType = extractDocumentType(file.getName());
-                usedDevices = extractUsedDevices(file.getName());
-                project = extractProject(file.getName());
-                inventoryNumber = extractInventoryNumber(file.getName());
-            }
 
             synchronized (fileInfos) {
                 fileInfos.add(new FileInfo(decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, extension, lastModified, location, creationDateStr));
