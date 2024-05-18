@@ -223,7 +223,7 @@ public class FileSearchController {
                 documentType = fileNameParser.extractDocumentType();
                 usedDevices = fileNameParser.extractUsedDevices();
                 project = fileNameParser.extractProject();
-                inventoryNumber = fileNameParser.extractInventoryNumber();
+                inventoryNumber = fileNameParser.extractInventoryNumber(true);
             } else {
                 return;
             }
