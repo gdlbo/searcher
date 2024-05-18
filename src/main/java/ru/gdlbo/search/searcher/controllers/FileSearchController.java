@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.gdlbo.search.searcher.FileNameParser;
 import ru.gdlbo.search.searcher.config.Config;
 import ru.gdlbo.search.searcher.repository.FileInfo;
 import ru.gdlbo.search.searcher.repository.PaginatedResult;
@@ -19,6 +20,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Controller
@@ -62,7 +64,7 @@ public class FileSearchController {
             fileInfos = filterFileInfosByNumber(fileInfos, query, number);
         }
 
-        PaginatedResult paginatedResult = paginateFileInfos(fileInfos, page, 50);
+        PaginatedResult paginatedResult = paginateFileInfos(fileInfos, page);
 
         addAttributesToModel(model, paginatedResult, query, authentication, sortByLastModified, showHidden);
 
@@ -110,8 +112,8 @@ public class FileSearchController {
                 .toList();
     }
 
-    private PaginatedResult paginateFileInfos(List<FileInfo> fileInfos, int page, int resultsPerPage) {
-        int startIndex = page * resultsPerPage;
+    private PaginatedResult paginateFileInfos(List<FileInfo> fileInfos, int page) {
+        int startIndex = page * 50;
         int endIndex;
         int totalPages;
 
@@ -119,9 +121,9 @@ public class FileSearchController {
             totalPages = 0;
             endIndex = 0;
         } else {
-            totalPages = (int) Math.ceil((double) fileInfos.size() / resultsPerPage);
+            totalPages = (int) Math.ceil((double) fileInfos.size() / 50);
             startIndex = Math.min(startIndex, fileInfos.size());
-            endIndex = Math.min(startIndex + resultsPerPage, fileInfos.size());
+            endIndex = Math.min(startIndex + 50, fileInfos.size());
         }
 
         if (startIndex > endIndex) {
@@ -185,7 +187,7 @@ public class FileSearchController {
 
     private List<File> getDirectories(File[] files, Boolean showHidden) {
         return Arrays.stream(files)
-                .filter(file -> file.isDirectory() && !file.getName().equals(".history") && (showHidden || !file.isHidden()))
+                .filter(file -> file.isDirectory() && !file.getName().equals(".history") && file.getName().startsWith("ВГМТ.") && (showHidden || !file.isHidden()))
                 .toList();
     }
 
@@ -206,22 +208,22 @@ public class FileSearchController {
 
     private void processMatchingFiles(List<File> matchingFiles, List<FileInfo> fileInfos) {
         matchingFiles.parallelStream().forEach(file -> {            String decNumber = "N/A";
+            FileNameParser fileNameParser = new FileNameParser(file.getName());
             String deviceName = "N/A";
             String documentType = "N/A";
             String usedDevices = "N/A";
             String project = "N/A";
             String inventoryNumber = "N/A";
             String location = file.getParent()  + "/";
-            String extension = extractExtension(file.getName());
-            String fileName = file.getName();
+            String extension = fileNameParser.extractExtension();
 
             if (file.getName().startsWith("ВГМТ")) {
-                decNumber = extractDecNumber(fileName);
-                deviceName = extractDeviceName(fileName);
-                documentType = extractDocumentType(fileName);
-                usedDevices = extractUsedDevices(fileName);
-                project = extractProject(fileName);
-                inventoryNumber = extractInventoryNumber(fileName);
+                decNumber = fileNameParser.extractDecNumber();
+                deviceName = fileNameParser.extractDeviceName();
+                documentType = fileNameParser.extractDocumentType();
+                usedDevices = fileNameParser.extractUsedDevices();
+                project = fileNameParser.extractProject();
+                inventoryNumber = fileNameParser.extractInventoryNumber();
             } else {
                 return;
             }
@@ -240,44 +242,6 @@ public class FileSearchController {
                 fileInfos.add(new FileInfo(decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, extension, lastModified, location, creationDateStr));
             }
         });
-    }
-
-    private String extractDecNumber(String fileName) {
-        String[] parts = fileName.split("_");
-        return parts.length > 0 ? parts[0] : "N/A";
-    }
-
-    private String extractDeviceName(String fileName) {
-        String[] parts = fileName.split("_");
-        return parts.length > 1 ? parts[1] : "N/A";
-    }
-
-    private String extractDocumentType(String fileName) {
-        String[] parts = fileName.split("_");
-        return parts.length > 2 ? parts[2] : "N/A";
-    }
-
-    private String extractUsedDevices(String fileName) {
-        String[] parts = fileName.split("_");
-        return parts.length > 3 ? parts[3] : "N/A";
-    }
-
-    private String extractProject(String fileName) {
-        String[] parts = fileName.split("_");
-        return parts.length > 4 ? parts[4] : "N/A";
-    }
-
-    private String extractInventoryNumber(String fileName) {
-        String[] parts = fileName.split("_");
-        return parts.length > 5 ? parts[5] : "N/A";
-    }
-
-    private String extractExtension(String fileName) {
-        int lastIndexOfDot = fileName.lastIndexOf(".");
-        if (lastIndexOfDot == -1 || lastIndexOfDot == 0 || lastIndexOfDot == fileName.length() - 1) {
-            return "none";
-        }
-        return fileName.substring(lastIndexOfDot + 1);
     }
 
     private Runnable createTask(File file, String query, List<FileInfo> fileInfos, Boolean showHidden) {
