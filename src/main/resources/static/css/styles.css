@@ -386,6 +386,10 @@ a {
     padding: 8px;
 }
 
+.dropdown-content.show {
+    display: block;
+}
+
 .dropdown-content a,
 .dropdown-content button {
     color: var(--text-color);

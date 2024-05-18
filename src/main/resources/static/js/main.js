@@ -41,6 +41,15 @@ function openDropdown(event) {
 
     setupGlobalClickListener(dropdownContent);
     setupButtonHandlers(dropdownContent);
+
+    const rect = dropdownContent.getBoundingClientRect();
+    if (rect.bottom > window.innerHeight) {
+        dropdownContent.style.top = 'auto';
+        dropdownContent.style.bottom = '100%';
+    } else {
+        dropdownContent.style.top = '100%';
+        dropdownContent.style.bottom = 'auto';
+    }
 }
 
 function closeAllDropdowns() {
