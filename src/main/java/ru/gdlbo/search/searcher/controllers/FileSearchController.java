@@ -222,8 +222,8 @@ public class FileSearchController {
             String usedDevices = "N/A";
             String project = "N/A";
             String inventoryNumber = "N/A";
-            String location = file.getParent();
-            String extension = extractExtension(file.getName() + "/");
+            String location = file.getParent()  + "/";
+            String extension = extractExtension(file.getName());
 
             if (file.getName().startsWith("ВГМТ")) {
                 decNumber = extractDecNumber(file.getName());
