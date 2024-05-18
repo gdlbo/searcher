@@ -217,7 +217,7 @@ public class FileSearchController {
             String usedDevices = "N/A";
             String project = "N/A";
             String inventoryNumber = "N/A";
-            String location = file.getParent() + "/";
+            String location = file.getAbsolutePath();
             String extension = fileNameParser.extractExtension();
 
             if (file.getName().startsWith("ВГМТ")) {

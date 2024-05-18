@@ -37,7 +37,7 @@ function openDropdown(event) {
     event.stopPropagation();
     closeAllDropdowns();
     const dropdownContent = event.target.nextElementSibling;
-    dropdownContent.style.display = "block";
+    dropdownContent.classList.add("show");
 
     setupGlobalClickListener(dropdownContent);
     setupButtonHandlers(dropdownContent);
@@ -46,6 +46,9 @@ function openDropdown(event) {
     if (rect.bottom > window.innerHeight) {
         dropdownContent.style.top = 'auto';
         dropdownContent.style.bottom = '100%';
+    } else if (rect.top < 0) {
+        dropdownContent.style.top = '100%';
+        dropdownContent.style.bottom = 'auto';
     } else {
         dropdownContent.style.top = '100%';
         dropdownContent.style.bottom = 'auto';
@@ -54,13 +57,15 @@ function openDropdown(event) {
 
 function closeAllDropdowns() {
     const dropdowns = document.querySelectorAll(".dropdown-content");
-    dropdowns.forEach(dropdown => dropdown.style.display = "none");
+    dropdowns.forEach(dropdown => {
+        dropdown.classList.remove("show");
+    });
 }
 
 function setupGlobalClickListener(dropdownContent) {
     window.onclick = function (event) {
         if (!event.target.matches(".options-button") && !dropdownContent.contains(event.target)) {
-            dropdownContent.style.display = "none";
+            dropdownContent.classList.remove("show");
         }
     };
 }
