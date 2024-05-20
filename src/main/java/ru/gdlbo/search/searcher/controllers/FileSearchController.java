@@ -189,13 +189,13 @@ public class FileSearchController {
 
     private List<File> getDirectories(File[] files, Boolean showHidden) {
         return Arrays.stream(files)
-                .filter(file -> file.isDirectory() && !file.getName().equals(".history") && file.getName().startsWith("ВГМТ.") && (showHidden || !file.isHidden()))
+                .filter(file -> file.isDirectory() && !file.getName().equals(".history") && (showHidden || !file.isHidden()))
                 .toList();
     }
 
     private List<File> getMatchingFiles(File[] files, String query, Boolean showHidden) {
         return Arrays.stream(files)
-                .filter(file -> file.isFile() && (query == null || query.isEmpty() || file.getName().contains(query)) && (showHidden || !file.isHidden()))
+                .filter(file -> file.isFile() && file.getName().startsWith("ВГМТ.") && (query == null || query.isEmpty() || file.getName().contains(query)) && (showHidden || !file.isHidden()))
                 .toList();
     }
 
@@ -211,25 +211,14 @@ public class FileSearchController {
     private void processMatchingFiles(List<File> matchingFiles, List<FileInfo> fileInfos) {
         matchingFiles.parallelStream().forEach(file -> {
             FileNameParser fileNameParser = new FileNameParser(file.getName());
-            String decNumber = "N/A";
-            String deviceName = "N/A";
-            String documentType = "N/A";
-            String usedDevices = "N/A";
-            String project = "N/A";
-            String inventoryNumber = "N/A";
+            String decNumber = fileNameParser.extractDecNumber();
+            String deviceName = fileNameParser.extractDeviceName();
+            String documentType = fileNameParser.extractDocumentType();
+            String usedDevices = fileNameParser.extractUsedDevices();
+            String project = fileNameParser.extractProject();
+            String inventoryNumber = fileNameParser.extractInventoryNumber(true);
             String location = file.getAbsolutePath();
             String extension = fileNameParser.extractExtension();
-
-            if (file.getName().startsWith("ВГМТ")) {
-                decNumber = fileNameParser.extractDecNumber();
-                deviceName = fileNameParser.extractDeviceName();
-                documentType = fileNameParser.extractDocumentType();
-                usedDevices = fileNameParser.extractUsedDevices();
-                project = fileNameParser.extractProject();
-                inventoryNumber = fileNameParser.extractInventoryNumber(true);
-            } else {
-                return;
-            }
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
