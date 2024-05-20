@@ -185,6 +185,7 @@
                 <div class="dropdown-content" id="dropdown-content">
                     <input name="filePath" th:value="${file.location}" type="hidden"/>
                     <button class="custom-dropdown-button" id="downloadButton">Download</button>
+                    <button class="custom-dropdown-button" id="copyButton">Copy</button>
                     <div th:if="${isAdmin}">
                         <button class="custom-dropdown-button" id="deleteButton">Delete</button>
                         <button class="custom-dropdown-button" id="replaceButton">Replace</button>

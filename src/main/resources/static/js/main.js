@@ -93,8 +93,20 @@ function setupButtonHandlers(dropdownContent) {
             case "deleteButton":
                 removeFile(filePath);
                 break;
+            case "copyButton":
+                copyPath(filePath);
+                break;
         }
     });
+}
+
+function copyPath(filePath) {
+    navigator.clipboard.writeText(filePath).then(function() {
+        console.log('Async: Copying to clipboard was successful!');
+    }, function(err) {
+        console.error('Async: Could not copy text: ', err);
+    });
+    closeAllDropdowns();
 }
 
 function showFileHistory(filePath) {
