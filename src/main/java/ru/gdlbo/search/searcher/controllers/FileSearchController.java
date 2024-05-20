@@ -1,16 +1,19 @@
 package ru.gdlbo.search.searcher.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.gdlbo.search.searcher.FileNameParser;
 import ru.gdlbo.search.searcher.config.Config;
-import ru.gdlbo.search.searcher.repository.FileInfo;
-import ru.gdlbo.search.searcher.repository.PaginatedResult;
+import ru.gdlbo.search.searcher.repository.*;
+import ru.gdlbo.search.searcher.services.FileService;
+import ru.gdlbo.search.searcher.services.UserService;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,11 +21,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Controller
@@ -30,122 +32,82 @@ public class FileSearchController {
     @Autowired
     private Config config;
 
-    public static BasicFileAttributes getFileAttributes(File file) {
-        Path path = file.toPath();
-        BasicFileAttributes attrs = null;
-        try {
-            attrs = Files.readAttributes(path, BasicFileAttributes.class);
-        } catch (IOException e) {
-            e.fillInStackTrace();
-        }
-        return attrs;
-    }
+    @Autowired
+    private FileService fileService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/search")
-    public String searchFiles(@RequestParam(required = false) String query,
-                              @RequestParam(required = false) String number,
-                              @RequestParam(defaultValue = "0") int page,
+    public String searchFiles(@RequestParam(defaultValue = "0") int page,
                               @RequestParam(required = false) String sortBy,
-                              @RequestParam(required = false, defaultValue = "asc") String sortOrder,
-                              @RequestParam(required = false, defaultValue = "false") Boolean sortByLastModified,
                               @RequestParam(required = false, defaultValue = "false") Boolean showHidden,
+                              @RequestParam(required = false) String decNumber,
+                              @RequestParam(required = false) String deviceName,
+                              @RequestParam(required = false) String documentType,
+                              @RequestParam(required = false) String usedDevices,
+                              @RequestParam(required = false) String project,
+                              @RequestParam(required = false) String inventoryNumber,
+                              @RequestParam(required = false) String lastModified,
+                              @RequestParam(required = false) String location,
+                              @RequestParam(required = false) String creationTime,
                               Authentication authentication,
                               Model model) {
 
         String searchPath = config.getPath();
-
         if (searchPath == null || searchPath.isEmpty()) {
             return "redirect:/start";
         }
 
-        List<FileInfo> fileInfos = performFileSearch(query, showHidden, searchPath);
-
-        sortFileInfos(fileInfos, sortBy, sortOrder, sortByLastModified);
-
-        if (number != null && !number.isEmpty()) {
-            fileInfos = filterFileInfosByNumber(fileInfos, query, number);
+        if (!fileService.hasRecords()) {
+            createDummyFiles(100);
         }
 
-        PaginatedResult paginatedResult = paginateFileInfos(fileInfos, page);
+        User user = userService.findByUsername(authentication.getName());
+        if (user == null) {
+            return "redirect:/error";
+        }
 
-        addAttributesToModel(model, paginatedResult, query, authentication, sortByLastModified, showHidden);
+        Specification<FileInfo> spec = FileInfoSpecification.createSpecification(
+                decNumber, deviceName, documentType, usedDevices, project,
+                inventoryNumber, lastModified, location, creationTime, user);
+
+        List<FileInfo> fileInfos = fileService.findFiles(spec);
+        PaginatedResult paginatedResult = fileService.paginateFileInfos(fileInfos, page);
+
+        addAttributesToModel(model, paginatedResult, sortBy, showHidden, authentication);
 
         return "search";
     }
 
-    private List<FileInfo> performFileSearch(String query, Boolean showHidden, String searchPath) {
-        List<FileInfo> fileInfos = Collections.synchronizedList(new ArrayList<>());
+    public void createDummyFiles(int count) {
+        User defaultUser = userService.findByUsername("admin");
 
-        if (searchPath == null || searchPath.isEmpty()) {
-            return fileInfos;
-        }
-
-        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        List<Future<?>> futures = new ArrayList<>();
-
-        if (query == null || query.isEmpty()) {
-            File defaultLocation = new File(searchPath);
-            searchDirectory(defaultLocation, "", fileInfos, executor, futures, showHidden);
-        } else {
-            File searchLocation = new File(searchPath);
-            searchDirectory(searchLocation, query, fileInfos, executor, futures, showHidden);
-        }
-
-        executor.shutdown();
-        return fileInfos;
-    }
-
-    private void sortFileInfos(List<FileInfo> fileInfos, String sortBy, String sortOrder, Boolean sortByLastModified) {
-        if (sortBy != null && !sortBy.isEmpty()) {
-            fileInfos.sort(getFileInfoComparator(sortBy, sortOrder, sortByLastModified));
-        } else {
-            fileInfos.sort(getFileInfoComparator("name", "asc", sortByLastModified));
+        for (int i = 1; i <= count; i++) {
+            FileInfo dummyFile = new FileInfo(
+                    "ВГМТ." + i + "." + i,
+                    "Device " + i,
+                    "Type " + i,
+                    "Used " + i,
+                    "Project " + i,
+                    String.valueOf(i),
+                    "2024-01-01 00:00:00",
+                    "/path/to/location",
+                    "2024-01-01 00:00:00",
+                    defaultUser
+            );
+            fileService.saveOrUpdateFile(dummyFile);
         }
     }
 
-    private List<FileInfo> filterFileInfosByNumber(List<FileInfo> fileInfos, String query, String number) {
-        Pattern numberPattern = Pattern.compile("ВГМТ\\." + number + "\\.\\d{3}(-\\d{2})?.*");
-        return fileInfos.stream()
-                .filter(fileInfo -> {
-                    boolean matchesQuery = query == null || query.isEmpty() || fileInfo.getLocation().contains(query);
-                    boolean matchesNumber = numberPattern.matcher(fileInfo.getLocation()).find();
-                    return matchesQuery && matchesNumber;
-                })
-                .toList();
-    }
-
-    private PaginatedResult paginateFileInfos(List<FileInfo> fileInfos, int page) {
-        int startIndex = page * 50;
-        int endIndex;
-        int totalPages;
-
-        if (fileInfos.isEmpty()) {
-            totalPages = 0;
-            endIndex = 0;
-        } else {
-            totalPages = (int) Math.ceil((double) fileInfos.size() / 50);
-            startIndex = Math.min(startIndex, fileInfos.size());
-            endIndex = Math.min(startIndex + 50, fileInfos.size());
-        }
-
-        if (startIndex > endIndex) {
-            startIndex = endIndex;
-        }
-
-        List<FileInfo> paginatedFileInfos = fileInfos.subList(startIndex, endIndex);
-
-        return new PaginatedResult(paginatedFileInfos, fileInfos.size() > endIndex, page, totalPages);
-    }
-
-    private void addAttributesToModel(Model model, PaginatedResult paginatedResult, String query, Authentication authentication, Boolean sortByLastModified, Boolean showHidden) {
+    private void addAttributesToModel(Model model, PaginatedResult paginatedResult, String sortBy, Boolean showHidden, Authentication authentication) {
         model.addAttribute("fileInfos", paginatedResult.getPaginatedFileInfos());
         model.addAttribute("hasMoreResults", paginatedResult.isHasMoreResults());
         model.addAttribute("page", paginatedResult.getPage());
         model.addAttribute("pageNumbers", getPageNumbers(paginatedResult.getPage(), paginatedResult.getTotalPages(), 10));
         model.addAttribute("totalPages", paginatedResult.getTotalPages());
-        model.addAttribute("query", query);
         model.addAttribute("nickname", authentication.getName());
-        model.addAttribute("sortByLastModified", sortByLastModified);
+        model.addAttribute("sortBy", sortBy);
         model.addAttribute("showHidden", showHidden);
 
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
@@ -155,106 +117,6 @@ public class FileSearchController {
         }
     }
 
-    private Comparator<FileInfo> getFileInfoComparator(String sortBy, String sortOrder, Boolean sortByLastModified) {
-        Comparator<FileInfo> comparator = switch (sortBy.toLowerCase()) {
-            case "name" -> Comparator.comparing(FileInfo::getLocation);
-            case "date" -> sortByLastModified
-                    ? Comparator.comparing(FileInfo::getLastModified)
-                    : Comparator.comparing(FileInfo::getCreationTime);
-            default -> throw new IllegalArgumentException("Invalid sortBy parameter: " + sortBy);
-        };
-
-        if ("desc".equalsIgnoreCase(sortOrder)) {
-            comparator = comparator.reversed();
-        }
-
-        return comparator;
-    }
-
-    // This method searches a directory for matching files and subdirectories
-    private void searchDirectory(File directory, String query, List<FileInfo> fileInfos, ExecutorService executor, List<Future<?>> futures, Boolean showHidden) {
-        if (directory != null && directory.isDirectory()) {
-            File[] files = directory.listFiles();
-            if (files != null) {
-                List<File> directories = getDirectories(files, showHidden);
-                List<File> matchingFiles = getMatchingFiles(files, query, showHidden);
-
-                submitTasksForDirectories(directories, query, fileInfos, executor, futures, showHidden);
-                processMatchingFiles(matchingFiles, fileInfos);
-            }
-        }
-
-        waitForTasksToComplete(futures);
-    }
-
-    private List<File> getDirectories(File[] files, Boolean showHidden) {
-        return Arrays.stream(files)
-                .filter(file -> file.isDirectory() && !file.getName().equals(".history") && (showHidden || !file.isHidden()))
-                .toList();
-    }
-
-    private List<File> getMatchingFiles(File[] files, String query, Boolean showHidden) {
-        return Arrays.stream(files)
-                .filter(file -> file.isFile() && file.getName().startsWith("ВГМТ.") && (query == null || query.isEmpty() || file.getName().contains(query)) && (showHidden || !file.isHidden()))
-                .toList();
-    }
-
-    private void submitTasksForDirectories(List<File> directories, String query, List<FileInfo> fileInfos, ExecutorService executor, List<Future<?>> futures, Boolean showHidden) {
-        if (directories != null && !directories.isEmpty()) {
-            directories.parallelStream().forEach(dir -> {
-                Runnable task = createTask(dir, query, fileInfos, showHidden);
-                futures.add(executor.submit(task));
-            });
-        }
-    }
-
-    private void processMatchingFiles(List<File> matchingFiles, List<FileInfo> fileInfos) {
-        matchingFiles.parallelStream().forEach(file -> {
-            FileNameParser fileNameParser = new FileNameParser(file.getName());
-            String decNumber = fileNameParser.extractDecNumber();
-            String deviceName = fileNameParser.extractDeviceName();
-            String documentType = fileNameParser.extractDocumentType();
-            String usedDevices = fileNameParser.extractUsedDevices();
-            String project = fileNameParser.extractProject();
-            String inventoryNumber = fileNameParser.extractInventoryNumber(true);
-            String location = file.getAbsolutePath();
-            String extension = fileNameParser.extractExtension();
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-            BasicFileAttributes attrs = getFileAttributes(file);
-
-            Date lastModifiedDate = attrs != null && attrs.lastModifiedTime() != null ? new Date(attrs.lastModifiedTime().toMillis()) : new Date(file.lastModified());
-            String lastModified = dateFormat.format(lastModifiedDate);
-
-            Date creationDate = attrs != null && attrs.creationTime() != null ? new Date(attrs.creationTime().toMillis()) : null;
-            String creationDateStr = creationDate != null ? dateFormat.format(creationDate) : "N/A";
-
-            synchronized (fileInfos) {
-                fileInfos.add(new FileInfo(decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, extension, lastModified, location, creationDateStr));
-            }
-        });
-    }
-
-    private Runnable createTask(File file, String query, List<FileInfo> fileInfos, Boolean showHidden) {
-        return () -> {
-            if (file.isDirectory()) {
-                searchDirectory(file, query, fileInfos, Executors.newSingleThreadExecutor(), new ArrayList<>(), showHidden);
-            }
-        };
-    }
-
-    private void waitForTasksToComplete(List<Future<?>> futures) {
-        for (Future<?> future : futures) {
-            try {
-                future.get();
-            } catch (ExecutionException | InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    // This method returns a list of page numbers based on user input
     public List<Integer> getPageNumbers(int currentPage, int totalPages, int limit) {
         List<Integer> pageNumbers = new ArrayList<>();
         int startPage = Math.max(0, currentPage - limit / 2);

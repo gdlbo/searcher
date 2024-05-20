@@ -75,17 +75,20 @@ body {
 #file-paths thead {
     border-radius: 10px 10px 0 0;
     background-color: #f0f0f0;
+    z-index: 2;
 }
 
 #file-paths {
     border-collapse: separate;
     border-spacing: 0;
     overflow: hidden;
+    z-index: 2;
 }
 
 #file-paths {
     border-radius: 10px;
     border: 1px solid var(--input-border-color);
+    z-index: 2;
 }
 
 .sort {
@@ -174,6 +177,7 @@ input[type="submit"] {
 table {
     width: 100%;
     border-collapse: collapse;
+    z-index: 2;
 }
 
 th,
@@ -181,6 +185,7 @@ td {
     padding: 15px;
     text-align: left;
     border-bottom: 1px solid var(--table-border-color);
+    z-index: 2;
 }
 
 th {
@@ -190,6 +195,7 @@ th {
 
 tr:hover {
     background-color: var(--table-row-hover-background-color);
+    z-index: 2;
 }
 
 a {
@@ -238,7 +244,7 @@ a {
 .dialog-box {
     display: none;
     position: fixed;
-    z-index: 1;
+    z-index: 3;
     left: 0;
     top: 0;
     width: 100%;
@@ -368,10 +374,11 @@ a {
 }
 
 .dropdown {
-    position: relative;
+    position: absolute;
     display: inline-flex;
     align-items: center;
     cursor: pointer;
+    z-index: 3;
 }
 
 .dropdown-content {
@@ -381,7 +388,7 @@ a {
     mt4in-width: 180px;
     background-color: var(--background-color);
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
-    z-index: 1;
+    z-index: 3;
     border-radius: 8px;
     padding: 8px;
 }

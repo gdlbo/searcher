@@ -78,12 +78,13 @@
             <h3>System</h3>
             <div class="input-group">
                 <label for="searcherPath">Path to search:</label>
-                <input id="searcherPath" th:value="${searchPath}" placeholder="/path/to/search" type="text">
+                <input id="searcherPath" placeholder="/path/to/search" th:value="${searchPath}" type="text">
             </div>
             <div class="button-group margin-bottom">
                 <button class="custom-button" onclick="applyCustomPath()" type="button">Apply</button>
             </div>
             <button class="custom-button" onclick="resetDatabase()" type="button">Reset Database</button>
+            <button class="custom-button" onclick="resetFileDatabase()" type="button">Reset File Database</button>
             <button class="custom-button" onclick="restartServer()" type="button">Restart Server</button>
             <button class="custom-button" id="toggleDebug" onclick="toggleDebug()">Debug: Off</button>
         </div>
@@ -110,15 +111,15 @@
     </div>
 </div>
 
-<form action="/search" method="get" onsubmit="storeSearch();">
-    <label>
-        <input id="searchQuery" name="query" placeholder="Search by name" type="text"/>
-    </label>
-    <label>
-        <input id="searchNumber" name="number" placeholder="Search by number" type="text"/>
-    </label>
-    <input type="submit" value="Search"/>
-</form>
+<!--<form action="/search" method="get" onsubmit="storeSearch();">-->
+<!--    <label>-->
+<!--        <input id="searchQuery" name="query" placeholder="Search by name" type="text"/>-->
+<!--    </label>-->
+<!--    <label>-->
+<!--        <input id="searchNumber" name="number" placeholder="Search by number" type="text"/>-->
+<!--    </label>-->
+<!--    <input type="submit" value="Search"/>-->
+<!--</form>-->
 
 <div th:replace="~{::pagination}"></div>
 
@@ -126,43 +127,48 @@
     <thead>
     <tr>
         <th>
-            <a class="sort" data-sortby="decNumber" th:href="@{/search(query=${query}, page=${page}, sortBy='decNumber')}">
+            <a class="sort" data-sortby="decNumber" th:href="@{/search(page=${page}, sortBy='decNumber', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
                 Dec. Number <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
-            <a class="sort" data-sortby="deviceName" th:href="@{/search(query=${query}, page=${page}, sortBy='deviceName')}">
+            <a class="sort" data-sortby="deviceName" th:href="@{/search(page=${page}, sortBy='deviceName', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
                 Device Name <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
-            <a class="sort" data-sortby="documentType" th:href="@{/search(query=${query}, page=${page}, sortBy='documentType')}">
-                Document Type <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+            <a class="sort" data-sortby="documentType" th:href="@{/search(page=${page}, sortBy='documentType', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
+                Doc. Type <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
-            <a class="sort" data-sortby="usedDevices" th:href="@{/search(query=${query}, page=${page}, sortBy='usedDevices')}">
+            <a class="sort" data-sortby="usedDevices" th:href="@{/search(page=${page}, sortBy='usedDevices', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
                 Used Devices <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
-            <a class="sort" data-sortby="project" th:href="@{/search(query=${query}, page=${page}, sortBy='project')}">
+            <a class="sort" data-sortby="project" th:href="@{/search(page=${page}, sortBy='project', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
                 Project <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
-            <a class="sort" data-sortby="location" th:href="@{/search(query=${query}, page=${page}, sortBy='location')}">
+            <a class="sort" data-sortby="date" th:href="@{/search(page=${page}, sortBy='date', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
+                Date <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+            </a>
+        </th>
+        <th>
+            <a class="sort" data-sortby="user" th:href="@{/search(page=${page}, sortBy='user', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
+                User <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+            </a>
+        </th>
+        <th>
+            <a class="sort" data-sortby="location" th:href="@{/search(page=${page}, sortBy='location', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
                 Location <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
-            <a class="sort" data-sortby="inventoryNumber" th:href="@{/search(query=${query}, page=${page}, sortBy='inventoryNumber')}">
+            <a class="sort" data-sortby="inventoryNumber" th:href="@{/search(page=${page}, sortBy='inventoryNumber', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
                 Inventory Number <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
-            </a>
-        </th>
-        <th>
-            <a class="sort" data-sortby="extension" th:href="@{/search(query=${query}, page=${page}, sortBy='extension')}">
-                Extension <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th></th>
@@ -176,9 +182,10 @@
         <td><span th:text="${file.documentType}"></span></td>
         <td><span th:text="${file.usedDevices}"></span></td>
         <td><span th:text="${file.project}"></span></td>
+        <td><span th:text="${file.creationTime}"></span><br><span th:text="${file.lastModified}"></span></td>
+        <td><span th:text="${file.user.username}"></span></td>
         <td><span th:text="${file.location}"></span></td>
         <td><span th:text="${file.inventoryNumber}"></span></td>
-        <td><span th:text="${file.extension}"></span></td>
         <td>
             <div class="dropdown">
                 <button class="options-button" onclick="openDropdown(event)">...</button>

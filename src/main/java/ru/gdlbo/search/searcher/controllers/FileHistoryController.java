@@ -40,13 +40,13 @@ public class FileHistoryController {
         fileList.sort(Comparator.comparingLong(File::lastModified));
         String location = file.getAbsolutePath();
 
-        List<FileInfo> fileHistory = fileList.stream()
-                .map(f -> new FileInfo(null, null, null, null, null, null, null, null, location, null))
-                .collect(Collectors.toList());
+//        List<FileInfo> fileHistory = fileList.stream()
+//                .map(f -> new FileInfo(null, null, null, null, null, null, null, location, null))
+//                .collect(Collectors.toList());
 
         System.out.println("Returning history for file: " + fileName);
 
-        return ResponseEntity.ok(fileHistory);
+        return ResponseEntity.ok(null);
     }
 
     // This method is responsible for removing a file from the history

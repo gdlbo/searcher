@@ -71,6 +71,25 @@ function applyDebugStatus(status) {
     }, 2000);
 }
 
+function resetFileDatabase() {
+    fetch('/api/resetFileDatabase', {
+        method: 'GET',
+        credentials: 'include'
+    }).then(response => {
+        if (response.ok) {
+            response.text().then(text => console.log(text));
+        } else {
+            console.error('Failed to reset database with status:', response.status);
+        }
+    }).catch(error => {
+        console.error('Reset database failed with error:', error);
+    });
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 2500);
+}
+
 function resetDatabase() {
     fetch('/api/resetDatabase', {
         method: 'GET',

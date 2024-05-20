@@ -22,6 +22,9 @@ public class AdminController {
     private UserRepository userRepository;
 
     @Autowired
+    private FileRepository fileRepository;
+
+    @Autowired
     private RoleRepository roleRepository;
 
     @GetMapping("/api/grantAdmin")
@@ -60,6 +63,22 @@ public class AdminController {
         Thread thread = new Thread(() -> {
             userRepository.deleteAll();
             restartManager.restart();
+            fileRepository.deleteAll();
+        });
+        thread.setDaemon(false);
+        thread.start();
+
+        return ResponseEntity.ok("Database has been reset");
+    }
+
+    @GetMapping("/api/resetFileDatabase")
+    public ResponseEntity<String> resetFileDatabase(Authentication authentication) {
+        if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User is not an admin");
+        }
+
+        Thread thread = new Thread(() -> {
+            fileRepository.deleteAll();
         });
         thread.setDaemon(false);
         thread.start();
