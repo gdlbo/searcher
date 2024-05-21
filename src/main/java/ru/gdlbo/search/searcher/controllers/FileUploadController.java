@@ -88,7 +88,7 @@ public class FileUploadController {
             String formattedLastModified = formatDateTime(lastModified);
             String formattedCreationTime = formatDateTime(creationTime);
 
-            FileInfo fileInfo = new FileInfo(decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, formattedLastModified, location, formattedCreationTime, user);
+            FileInfo fileInfo = new FileInfo(id, decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, formattedLastModified, location, formattedCreationTime, user);
 
             fileService.saveOrUpdateFile(fileInfo);
             return "redirect:/search";

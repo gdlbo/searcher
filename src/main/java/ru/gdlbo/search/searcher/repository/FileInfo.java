@@ -39,4 +39,18 @@ public class FileInfo {
         this.creationTime = creationTime;
         this.user = user;
     }
+
+    public FileInfo(Long id, String decNumber, String deviceName, String documentType, String usedDevices, String project, String inventoryNumber, String lastModified, String location, String creationTime, User user) {
+        this.id = id;
+        this.decNumber = decNumber;
+        this.deviceName = deviceName;
+        this.documentType = documentType;
+        this.usedDevices = usedDevices;
+        this.project = project;
+        this.inventoryNumber = inventoryNumber;
+        this.lastModified = lastModified;
+        this.location = location;
+        this.creationTime = creationTime;
+        this.user = user;
+    }
 }
