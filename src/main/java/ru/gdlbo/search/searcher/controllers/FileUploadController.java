@@ -45,8 +45,8 @@ public class FileUploadController {
             throw new Exception("File is empty");
         }
 
-        String creationTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String lastModified = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String creationTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        String lastModified = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         String locationWithFileName = location + "/" + file.getOriginalFilename();
 
         FileInfo fileInfo = new FileInfo(decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, lastModified, locationWithFileName, creationTime, user);
@@ -85,7 +85,10 @@ public class FileUploadController {
                 return "redirect:/error";
             }
 
-            FileInfo fileInfo = new FileInfo(decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, lastModified, location, creationTime, user);
+            String formattedLastModified = formatDateTime(lastModified);
+            String formattedCreationTime = formatDateTime(creationTime);
+
+            FileInfo fileInfo = new FileInfo(decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, formattedLastModified, location, formattedCreationTime, user);
 
             fileService.saveOrUpdateFile(fileInfo);
             return "redirect:/search";
@@ -93,5 +96,10 @@ public class FileUploadController {
             System.out.println("Failed to find file with id: " + id);
             return "redirect:/error";
         }
+    }
+
+    private String formatDateTime(String dateTime) {
+        LocalDateTime localDateTime = LocalDateTime.parse(dateTime);
+        return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 }

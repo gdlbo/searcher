@@ -59,6 +59,22 @@ function setupGlobalClickListener(dropdownContent) {
     };
 }
 
+function updateFile(id) {
+    fetch('/api/searchFile?id=' + id)
+        .then(response => response.json())
+        .then(data => {
+            if (data.user != null) {
+                openUpdateDialog(data.id, data.decNumber, data.deviceName, data.documentType, data.usedDevices, data.project, data.inventoryNumber, data.location, data.lastModified, data.creationTime, data.user.username)
+            } else {
+                console.error('Error:', data);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    closeAllDropdowns();
+}
+
 function setupButtonHandlers(dropdownContent) {
     dropdownContent.addEventListener('click', function(event) {
         event.stopPropagation();
@@ -82,7 +98,10 @@ function setupButtonHandlers(dropdownContent) {
                 closeAllDropdowns();
                 break;
             case "deleteButton":
-                removeFile(location);
+                removeFile(id);
+                break;
+            case "updateButton":
+                updateFile(id);
                 break;
             case "copyButton":
                 copyPath(location);
@@ -197,6 +216,12 @@ function closeUploadDialog() {
     uploadDialog.style.display = 'none';
 }
 
+function formatDateTimeString(dateTimeString) {
+    let datePart = dateTimeString.split(' ')[0];
+    let timePart = dateTimeString.split(' ')[1];
+    return `${datePart}T${timePart.substring(0, 5)}`;
+}
+
 function openUpdateDialog(fileId, decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, location, lastModified, creationTime, userName) {
     document.getElementById('fileId').value = fileId;
     document.getElementById('updateDecNumber').value = decNumber;
@@ -206,8 +231,8 @@ function openUpdateDialog(fileId, decNumber, deviceName, documentType, usedDevic
     document.getElementById('updateProject').value = project;
     document.getElementById('updateInventoryNumber').value = inventoryNumber;
     document.getElementById('updateLocation').value = location;
-    document.getElementById('updateLastModified').value = lastModified;
-    document.getElementById('updateCreationTime').value = creationTime;
+    document.getElementById('updateLastModified').value = formatDateTimeString(lastModified);
+    document.getElementById('updateCreationTime').value = formatDateTimeString(creationTime);
     document.getElementById('updateUserName').value = userName;
     document.getElementById('updateDialog').style.display = 'block';
 }

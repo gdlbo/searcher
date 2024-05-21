@@ -131,11 +131,14 @@ public class AdminController {
     }
 
     @GetMapping("/api/removeFile")
-    public String removeFileFromHistory(@RequestParam Long id) {
+    public String removeFileFromHistory(@RequestParam Long id, Authentication authentication) {
         System.out.println("Request received to remove file: " + id);
 
         fileRepository.findById(id).ifPresent(file -> {
             File fileToDelete = new File(file.getLocation());
+
+            new FileHistoryController().deleteFileHistory(fileToDelete.getAbsolutePath());
+
             if (fileToDelete.exists()) {
                 fileToDelete.delete();
             }

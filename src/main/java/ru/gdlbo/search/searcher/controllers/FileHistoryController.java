@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.gdlbo.search.searcher.repository.FileHistory;
@@ -23,25 +24,7 @@ public class FileHistoryController {
         System.out.println("Request received to get history for file: " + fileName);
 
         File file = new File(fileName);
-        File parentDir = file.getParentFile();
-        File hiddenDir = new File(parentDir, ".history");
-
-        // Get all files in the hidden directory with the given file name
-        File[] files = hiddenDir.listFiles((dir, name) -> {
-            String baseName = file.getName();
-            int lastDotIndex = baseName.lastIndexOf('.');
-            if (lastDotIndex != -1) {
-                baseName = baseName.substring(0, lastDotIndex);
-            }
-
-            String currentFileNameWithoutExtension = name;
-            int currentFileLastDotIndex = currentFileNameWithoutExtension.lastIndexOf('.');
-            if (currentFileLastDotIndex != -1) {
-                currentFileNameWithoutExtension = currentFileNameWithoutExtension.substring(0, currentFileLastDotIndex);
-            }
-
-            return currentFileNameWithoutExtension.startsWith(baseName);
-        });
+        File[] files = getFiles(fileName);
 
         // If there are no files, return an empty list
         if (files == null) {
@@ -63,9 +46,52 @@ public class FileHistoryController {
         return ResponseEntity.ok(fileHistory);
     }
 
+    @DeleteMapping("/api/removeAllFromHistory")
+    public ResponseEntity<Void> deleteFileHistory(@RequestParam String fileName) {
+        System.out.println("Request received to delete all history for file: " + fileName);
+
+        File[] files = getFiles(fileName);
+
+        if (files != null) {
+            for (File historyFile : files) {
+                if (historyFile.delete()) {
+                    System.out.println("Deleted history file: " + historyFile.getName());
+                } else {
+                    System.out.println("Failed to delete history file: " + historyFile.getName());
+                }
+            }
+        } else {
+            System.out.println("No history found for file: " + fileName);
+        }
+
+        return ResponseEntity.noContent().build();
+    }
+
+    private static File[] getFiles(String path) {
+        File file = new File(path);
+        File parentDir = file.getParentFile();
+        File hiddenDir = new File(parentDir, ".history");
+
+        return hiddenDir.listFiles((dir, name) -> {
+            String baseName = file.getName();
+            int lastDotIndex = baseName.lastIndexOf('.');
+            if (lastDotIndex != -1) {
+                baseName = baseName.substring(0, lastDotIndex);
+            }
+
+            String currentFileNameWithoutExtension = name;
+            int currentFileLastDotIndex = currentFileNameWithoutExtension.lastIndexOf('.');
+            if (currentFileLastDotIndex != -1) {
+                currentFileNameWithoutExtension = currentFileNameWithoutExtension.substring(0, currentFileLastDotIndex);
+            }
+
+            return currentFileNameWithoutExtension.startsWith(baseName);
+        });
+    }
+
     private static String extractDateFromFileName(File file) {
         String fileName = file.getName();
-        String datePattern = "\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2}";
+        String datePattern = "\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}";
 
         Pattern pattern = Pattern.compile(datePattern);
         Matcher matcher = pattern.matcher(fileName);
@@ -80,7 +106,7 @@ public class FileHistoryController {
     // This method is responsible for removing a file from the history
     @GetMapping("/api/removeFromHistory")
     public String removeFileFromHistory(@RequestParam String filePath, Authentication authentication) {
-        System.out.println("Request received to remove file: " + filePath);
+        System.out.println("Request received to remove file history: " + filePath);
 
         File fileToRemove = new File(filePath);
 

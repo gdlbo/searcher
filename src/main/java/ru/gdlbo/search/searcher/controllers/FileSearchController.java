@@ -2,6 +2,8 @@ package ru.gdlbo.search.searcher.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import ru.gdlbo.search.searcher.services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class FileSearchController {
@@ -67,6 +70,11 @@ public class FileSearchController {
         setAttr(model, "location", location);
 
         return "search";
+    }
+
+    @GetMapping("/api/searchFile")
+    public ResponseEntity<FileInfo> searchFiles(@RequestParam Long id, Authentication authentication) {
+        return fileService.getFileById(id).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     public void createDummyFiles(int count) {

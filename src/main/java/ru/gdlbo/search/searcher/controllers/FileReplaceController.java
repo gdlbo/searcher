@@ -45,7 +45,7 @@ public class FileReplaceController {
     }
 
     private String moveOldFileToHistory(File oldFile, File hiddenDir) throws Exception {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm");
         LocalDateTime now = LocalDateTime.now();
         String timestamp = dtf.format(now);
 
