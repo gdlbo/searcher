@@ -31,7 +31,7 @@ function displayFileName(input) {
 }
 
 function closeDialog() {
-    const dialogBox = document.getElementById("dialog-box");
+    const dialogBox = document.getElementById("replaceDialog");
     dialogBox.style.display = "none";
 
     const fileInput = document.querySelector("#file-input");

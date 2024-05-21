@@ -147,8 +147,8 @@ function downloadFile(filePath) {
     window.location.href = `/api/download?filePath=${encodeURIComponent(filePath)}`;
 }
 
-function removeFile(filePath) {
-    fetch('/api/remove?filePath=' + encodeURIComponent(filePath), {
+function removeFile(id) {
+    fetch('/api/removeFile?id=' + id, {
         method: 'GET',
         credentials: 'include'
     }).then(response => {

@@ -60,30 +60,32 @@ function setupGlobalClickListener(dropdownContent) {
 }
 
 function setupButtonHandlers(dropdownContent) {
-    dropdownContent.addEventListener('click', function (event) {
+    dropdownContent.addEventListener('click', function(event) {
         event.stopPropagation();
-        const buttonType = event.target.closest('button')?.id;
+        const button = event.target.closest('button');
+        const buttonType = button?.id;
         if (!buttonType) return;
 
-        const dialogBox = document.getElementById("dialog-box");
-        const filePath = event.target.closest('.dropdown-content').querySelector('input[name="filePath"]').value;
+        const content = event.target.closest('.dropdown-content');
+        const location = content.getAttribute('data-location')
+        const id = content.getAttribute('data-id')
 
         switch (buttonType) {
             case "historyButton":
-                showFileHistory(filePath);
+                showFileHistory(location);
                 break;
             case "downloadButton":
-                downloadFile(filePath);
+                downloadFile(location);
                 break;
             case "replaceButton":
-                dialogBox.style.display = "block";
+                document.getElementById("replaceDialog").style.display = "block";
                 closeAllDropdowns();
                 break;
             case "deleteButton":
-                removeFile(filePath);
+                removeFile(location);
                 break;
             case "copyButton":
-                copyPath(filePath);
+                copyPath(location);
                 break;
         }
     });
@@ -193,4 +195,23 @@ function openUploadDialog() {
 function closeUploadDialog() {
     const uploadDialog = document.getElementById('uploadDialog');
     uploadDialog.style.display = 'none';
+}
+
+function openUpdateDialog(fileId, decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, location, lastModified, creationTime, userName) {
+    document.getElementById('fileId').value = fileId;
+    document.getElementById('updateDecNumber').value = decNumber;
+    document.getElementById('updateDeviceName').value = deviceName;
+    document.getElementById('updateDocumentType').value = documentType;
+    document.getElementById('updateUsedDevices').value = usedDevices;
+    document.getElementById('updateProject').value = project;
+    document.getElementById('updateInventoryNumber').value = inventoryNumber;
+    document.getElementById('updateLocation').value = location;
+    document.getElementById('updateLastModified').value = lastModified;
+    document.getElementById('updateCreationTime').value = creationTime;
+    document.getElementById('updateUserName').value = userName;
+    document.getElementById('updateDialog').style.display = 'block';
+}
+
+function closeUpdateDialog() {
+    document.getElementById('updateDialog').style.display = 'none';
 }

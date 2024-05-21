@@ -78,7 +78,7 @@ public class FileHistoryController {
     }
 
     // This method is responsible for removing a file from the history
-    @GetMapping("/api/remove")
+    @GetMapping("/api/removeFromHistory")
     public String removeFileFromHistory(@RequestParam String filePath, Authentication authentication) {
         System.out.println("Request received to remove file: " + filePath);
 

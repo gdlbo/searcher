@@ -13,6 +13,8 @@ import ru.gdlbo.search.searcher.config.RestartManager;
 import ru.gdlbo.search.searcher.config.WebSecurityConfig;
 import ru.gdlbo.search.searcher.repository.*;
 
+import java.io.File;
+
 @RestController
 public class AdminController {
     @Autowired
@@ -126,5 +128,20 @@ public class AdminController {
         userRepository.save(currentUser);
 
         return ResponseEntity.ok("Credentials updated successfully");
+    }
+
+    @GetMapping("/api/removeFile")
+    public String removeFileFromHistory(@RequestParam Long id) {
+        System.out.println("Request received to remove file: " + id);
+
+        fileRepository.findById(id).ifPresent(file -> {
+            File fileToDelete = new File(file.getLocation());
+            if (fileToDelete.exists()) {
+                fileToDelete.delete();
+            }
+        });
+
+        fileRepository.deleteById(id);
+        return "redirect:/search";
     }
 }

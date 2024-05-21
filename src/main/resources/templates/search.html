@@ -105,20 +105,19 @@
         <td>
             <div class="dropdown">
                 <button class="options-button" onclick="openDropdown(event)">...</button>
-                <div class="dropdown-content" id="dropdown-content">
-                    <input name="filePath" th:value="${file.location}" type="hidden"/>
-                    <input name="filePath" th:value="${file.location}" type="hidden"/>
+                <div class="dropdown-content" id="dropdown-content" th:data-id="${file.id}" th:data-location="${file.location}">
                     <button class="custom-dropdown-button" id="downloadButton">Скачать</button>
                     <button class="custom-dropdown-button" id="copyButton">Копировать путь</button>
                     <div th:if="${isAdmin}">
                         <button class="custom-dropdown-button" id="deleteButton">Удалить</button>
                         <button class="custom-dropdown-button" id="replaceButton">Заменить</button>
+                        <button class="custom-dropdown-button" id="updateButton">Редактировать</button>
                     </div>
                     <button class="custom-dropdown-button" id="historyButton">История</button>
                 </div>
             </div>
 
-            <div class="dialog-box" id="dialog-box">
+            <div class="dialog-box" id="replaceDialog">
                 <div class="dialog-content">
                     <h2>Замена файла</h2>
                     <form action="/api/replace" enctype="multipart/form-data" method="post">
@@ -197,7 +196,7 @@
                     <input id="inventoryNumber" name="inventoryNumber" type="text">
                 </div>
                 <div class="input-group margin-bottom">
-                    <label for="location">Местоположение:</label>
+                    <label for="location">Путь до документа:</label>
                     <input id="location" name="location" type="text">
                 </div>
                 <div class="form-group margin-bottom">
@@ -208,6 +207,62 @@
                     <button class="custom-button" type="submit">Загрузить</button>
                 </div>
                 <button class="custom-button" onclick="closeUploadDialog()" type="button">Отменить</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="dialog-box" id="updateDialog" style="display: none;">
+    <div class="dialog-content">
+        <div class="settings-section margin-bottom">
+            <h2>Изменение информации о файле</h2>
+            <form action="/api/update" enctype="multipart/form-data" id="updateForm" method="post">
+                <input type="hidden" id="fileId" name="id">
+
+                <div class="input-group margin-bottom">
+                    <label for="updateDecNumber">Децимальный номер:</label>
+                    <input id="updateDecNumber" name="decNumber" required type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="updateDeviceName">Наименование устройства:</label>
+                    <input id="updateDeviceName" name="deviceName" required type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="updateDocumentType">Тип документа:</label>
+                    <input id="updateDocumentType" name="documentType" required type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="updateUsedDevices">Применяемые устройства (через запятую):</label>
+                    <input id="updateUsedDevices" name="usedDevices" type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="updateProject">Проект:</label>
+                    <input id="updateProject" name="project" type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="updateInventoryNumber">Инвентарный номер:</label>
+                    <input id="updateInventoryNumber" name="inventoryNumber" type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="updateLocation">Путь до документа:</label>
+                    <input id="updateLocation" name="location" type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="updateLastModified">Дата последнего изменения:</label>
+                    <input id="updateLastModified" name="lastModified" required type="datetime-local">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="updateCreationTime">Дата создания:</label>
+                    <input id="updateCreationTime" name="creationTime" required type="datetime-local">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="updateUserName">Имя пользователя:</label>
+                    <input id="updateUserName" name="userName" required type="text">
+                </div>
+                <div class="button-group margin-bottom">
+                    <button class="custom-button" type="submit">Сохранить изменения</button>
+                </div>
+                <button class="custom-button" onclick="closeUpdateDialog()" type="button">Отменить</button>
             </form>
         </div>
     </div>
