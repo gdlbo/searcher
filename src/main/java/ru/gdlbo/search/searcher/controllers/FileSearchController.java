@@ -17,9 +17,12 @@ import ru.gdlbo.search.searcher.repository.User;
 import ru.gdlbo.search.searcher.services.FileService;
 import ru.gdlbo.search.searcher.services.UserService;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @Controller
 public class FileSearchController {
@@ -45,14 +48,17 @@ public class FileSearchController {
         String location = formData.get("location");
         String creationTime = formData.get("creationTime");
 
-//
-//        if (!fileService.hasRecords()) {
-//            createDummyFiles(100);
-//        }
-
         User user = userService.findByUsername(authentication.getName());
         if (user == null) {
             return "redirect:/error";
+        }
+
+        if (!fileService.isAnyFilePresent()) {
+            createDummyFiles(500);
+        }
+
+        if (decNumber != null && !decNumber.isEmpty() && !decNumber.startsWith("ВГМТ.")) {
+            decNumber = "ВГМТ." + decNumber;
         }
 
         Specification<FileInfo> spec = FileInfoSpecification.createSpecification(
@@ -84,18 +90,26 @@ public class FileSearchController {
 
     public void createDummyFiles(int count) {
         User defaultUser = userService.findByUsername("admin");
+        Random random = new Random();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         for (int i = 1; i <= count; i++) {
+            int randomNumber = random.nextInt(1000);
+            String fileName = String.format("ВГМТ.%06d.%03d МАРШРУТИЗАТОР INCARNET %d.pdf", 465245 + i, 7, randomNumber);
+
+            LocalDateTime randomDateTime = LocalDateTime.now().plusDays(random.nextInt(365));
+            String formattedDateTime = randomDateTime.format(formatter);
+
             FileInfo dummyFile = new FileInfo(
-                    "ВГМТ." + i + "." + i,
+                    fileName,
                     "Device " + i,
                     "Type " + i,
                     "Used " + i,
                     "Project " + i,
                     String.valueOf(i),
-                    "2024-01-01 00:00:00",
+                    formattedDateTime,
                     "/path/to/location",
-                    "2024-01-01 00:00:00",
+                    formattedDateTime,
                     defaultUser
             );
             fileService.saveOrUpdateFile(dummyFile);
@@ -126,7 +140,7 @@ public class FileSearchController {
         int startPage = Math.max(0, currentPage - limit / 2);
         int endPage = Math.min(startPage + limit, totalPages);
 
-        if (currentPage > 0) {
+        if (startPage > 0) {
             pageNumbers.add(-1);
         }
 
@@ -134,7 +148,7 @@ public class FileSearchController {
             pageNumbers.add(i);
         }
 
-        if (currentPage < totalPages - 1) {
+        if (endPage < totalPages) {
             pageNumbers.add(totalPages);
         }
 

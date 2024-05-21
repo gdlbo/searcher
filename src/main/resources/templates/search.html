@@ -142,15 +142,18 @@
 
 <div class="pagination" th:fragment="pagination" th:if="${fileInfos.size() gt 0}">
     <span th:each="i : ${pageNumbers}">
-        <a onclick="storeSearch(); return true;" th:href="@{/search(page=0, query=${query})}" th:if="${i == -1}">«</a>
+        <a onclick="storeSearch(); return true;" th:href="@{/search(page=0)}" th:if="${i == -1}">«</a>
+
         <a onclick="storeSearch(); return true;" th:classappend="${i == page} ? 'selected-page'"
-           th:href="@{/search(page=${i}, query=${query})}" th:if="${i >= 0 && i < totalPages}">
+           th:href="@{/search(page=${i})}" th:if="${i >= 0 && i < totalPages}">
             <span th:text="${i + 1}"></span>
         </a>
-        <a onclick="storeSearch(); return true;" th:href="@{/search(page=${totalPages - 1}, query=${query})}"
-           th:if="${i == totalPages - 1}">»</a>
+
+        <a onclick="storeSearch(); return true;" th:href="@{/search(page=${totalPages - 1})}"
+           th:if="${i == totalPages}">»</a>
     </span>
 </div>
+
 
 <div class="dialog-box" id="uploadDialog" style="display: none;">
     <div class="dialog-content">

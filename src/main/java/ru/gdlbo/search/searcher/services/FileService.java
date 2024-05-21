@@ -37,9 +37,14 @@ public class FileService {
         return fileRepository.findById(id);
     }
 
-    public boolean hasRecords() {
-        return fileRepository.existsById(1L);
+    public boolean isAnyFilePresent() {
+        return fileRepository.count() > 0;
     }
+
+    public boolean doesFileExist(Long id) {
+        return fileRepository.existsById(id);
+    }
+
 
     public boolean existsByDecNumber(String decNumber) {
         return fileRepository.existsByDecNumber(decNumber);
