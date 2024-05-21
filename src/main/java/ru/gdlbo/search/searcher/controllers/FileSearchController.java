@@ -10,13 +10,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.gdlbo.search.searcher.repository.*;
+import ru.gdlbo.search.searcher.repository.FileInfo;
+import ru.gdlbo.search.searcher.repository.FileInfoSpecification;
+import ru.gdlbo.search.searcher.repository.PaginatedResult;
+import ru.gdlbo.search.searcher.repository.User;
 import ru.gdlbo.search.searcher.services.FileService;
 import ru.gdlbo.search.searcher.services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @Controller
 public class FileSearchController {
@@ -28,18 +31,20 @@ public class FileSearchController {
 
     @GetMapping("/search")
     public String searchFiles(@RequestParam(defaultValue = "0") int page,
-                              @RequestParam(required = false) String sortBy,
-                              @RequestParam(required = false) String decNumber,
-                              @RequestParam(required = false) String deviceName,
-                              @RequestParam(required = false) String documentType,
-                              @RequestParam(required = false) String usedDevices,
-                              @RequestParam(required = false) String project,
-                              @RequestParam(required = false) String inventoryNumber,
-                              @RequestParam(required = false) String lastModified,
-                              @RequestParam(required = false) String location,
-                              @RequestParam(required = false) String creationTime,
+                              @RequestParam Map<String, String> formData,
                               Authentication authentication,
                               Model model) {
+
+        String decNumber = formData.get("decNumber");
+        String deviceName = formData.get("deviceName");
+        String documentType = formData.get("documentType");
+        String usedDevices = formData.get("usedDevices");
+        String project = formData.get("project");
+        String inventoryNumber = formData.get("inventoryNumber");
+        String lastModified = formData.get("lastModified");
+        String location = formData.get("location");
+        String creationTime = formData.get("creationTime");
+
 //
 //        if (!fileService.hasRecords()) {
 //            createDummyFiles(100);
@@ -52,12 +57,12 @@ public class FileSearchController {
 
         Specification<FileInfo> spec = FileInfoSpecification.createSpecification(
                 decNumber, deviceName, documentType, usedDevices, project,
-                inventoryNumber, lastModified, location, creationTime, user);
+                inventoryNumber, lastModified, location, creationTime);
 
         List<FileInfo> fileInfos = fileService.findFiles(spec);
         PaginatedResult paginatedResult = fileService.paginateFileInfos(fileInfos, page);
 
-        addAttributesToModel(model, paginatedResult, sortBy, authentication);
+        addAttributesToModel(model, paginatedResult, authentication);
 
         setAttr(model, "decNumber", decNumber);
         setAttr(model, "deviceName", deviceName);
@@ -73,7 +78,7 @@ public class FileSearchController {
     }
 
     @GetMapping("/api/searchFile")
-    public ResponseEntity<FileInfo> searchFiles(@RequestParam Long id, Authentication authentication) {
+    public ResponseEntity<FileInfo> searchFiles(@RequestParam Long id) {
         return fileService.getFileById(id).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
@@ -97,14 +102,13 @@ public class FileSearchController {
         }
     }
 
-    private void addAttributesToModel(Model model, PaginatedResult paginatedResult, String sortBy, Authentication authentication) {
+    private void addAttributesToModel(Model model, PaginatedResult paginatedResult, Authentication authentication) {
         model.addAttribute("fileInfos", paginatedResult.getPaginatedFileInfos());
         model.addAttribute("hasMoreResults", paginatedResult.isHasMoreResults());
         model.addAttribute("page", paginatedResult.getPage());
         model.addAttribute("pageNumbers", getPageNumbers(paginatedResult.getPage(), paginatedResult.getTotalPages(), 10));
         model.addAttribute("totalPages", paginatedResult.getTotalPages());
         model.addAttribute("nickname", authentication.getName());
-        model.addAttribute("sortBy", sortBy);
 
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             model.addAttribute("isAdmin", true);

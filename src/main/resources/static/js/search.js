@@ -1,11 +1,17 @@
 function storeSearch() {
-    const searchQuery = document.getElementById("searchQuery").value;
     const searchNumber = document.getElementById("searchNumber").value;
-    if (searchQuery === "") {
-        localStorage.removeItem("searchQuery");
-    } else {
-        localStorage.setItem("searchQuery", searchQuery);
-    }
+    const searchInputs = document.querySelectorAll("[data-search-field]");
+    searchInputs.forEach((input) => {
+        const searchField = input.dataset.searchField;
+        const value = input.value;
+
+        if (value === "") {
+            localStorage.removeItem(searchField);
+        } else {
+            localStorage.setItem(searchField, value);
+        }
+    });
+
     if (searchNumber === "") {
         localStorage.removeItem("searchNumber");
     } else {
@@ -14,54 +20,43 @@ function storeSearch() {
 }
 
 function loadSearch() {
-    const searchQuery = localStorage.getItem("searchQuery");
-    const searchNumber = localStorage.getItem("searchNumber");
-    if (searchQuery !== null) {
-        document.getElementById("searchQuery").value = searchQuery;
-    }
-    if (searchNumber !== null) {
-        document.getElementById("searchNumber").value = searchNumber;
-    }
-}
+    // const searchInputs = document.querySelectorAll('.search-input');
+    // searchInputs.forEach((input) => {
+    //     input.addEventListener('keypress', (event) => {
+    //         if (event.key === 'Enter') {
+    //             // document.querySelector('form').submit();
+    //             console.log('Enter pressed');
+    //         }
+    //     });
+    // });
+    const searchInputs = document.querySelectorAll("[data-search-field]");
+    const searchButton = document.getElementById("search-button");
 
-function getCurrentParams() {
-    const url = new URL(window.location.href);
-    return {
-        query: url.searchParams.get("query") || "",
-        page: parseInt(url.searchParams.get("page")) || 0,
-        currentSortBy: url.searchParams.get("sortBy"),
-        currentSortOrder: url.searchParams.get("sortOrder"),
-        currentSort: localStorage.getItem('sortByLastModified') || 'false'
-    };
-}
+    searchInputs.forEach((input) => {
+        const searchField = input.dataset.searchField;
+        const savedValue = localStorage.getItem(searchField);
+        if (savedValue) {
+            input.value = savedValue;
+        }
+    });
+    searchButton.addEventListener("click", () => {
+        const queryParams = new URLSearchParams();
 
-function updateURLAndLocalStorage(sortBy, newSortOrder, params) {
-    const url = new URL(window.location.href);
-    url.searchParams.set("query", params.query);
-    url.searchParams.set("page", params.page);
-    if (newSortOrder === "none") {
-        url.searchParams.delete("sortBy");
-        url.searchParams.delete("sortOrder");
-        localStorage.removeItem("sortBy");
-        localStorage.removeItem("sortOrder");
-    } else {
-        url.searchParams.set("sortBy", sortBy);
-        url.searchParams.set("sortOrder", newSortOrder);
-        localStorage.setItem("sortBy", sortBy);
-        localStorage.setItem("sortOrder", newSortOrder);
-    }
-    url.searchParams.set("sortByLastModified", params.currentSort);
-    return url;
-}
+        searchInputs.forEach((input) => {
+            const searchField = input.dataset.searchField;
+            const value = input.value;
 
-function redirectTo(url) {
-    window.location.href = url.toString();
-}
+            if (value) {
+                queryParams.append(searchField, value);
+                localStorage.setItem(searchField, value);
+            } else {
+                localStorage.removeItem(searchField);
+            }
+        });
 
-function updateURLAndRedirect(sortBy, newSortOrder) {
-    const params = getCurrentParams();
-    if (params.currentSortBy !== sortBy || params.currentSortOrder !== newSortOrder) {
-        const updatedUrl = updateURLAndLocalStorage(sortBy, newSortOrder, params);
-        redirectTo(updatedUrl);
-    }
+        // Redirect the user to the search results page with the query parameters
+        window.location.href = `/search?${queryParams.toString()}`;
+    });
+
+
 }

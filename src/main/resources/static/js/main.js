@@ -5,20 +5,10 @@ window.onload = function () {
     initDropZone();
     loadSearch();
 };
+
 document.addEventListener("DOMContentLoaded", function () {
-    const savedSortBy = localStorage.getItem("sortBy");
-    const savedSortOrder = localStorage.getItem("sortOrder");
-    const url = new URL(window.location.href);
-    const currentSortBy = url.searchParams.get("sortBy");
-    const currentSortOrder = url.searchParams.get("sortOrder");
-
-    if (savedSortBy !== currentSortBy || savedSortOrder !== currentSortOrder) {
-        updateURLAndRedirect(savedSortBy, savedSortOrder);
-    }
-
     isAdmin = document.body.getAttribute('data-is-admin') === 'true';
 
-    initSortLinks();
     initThemeButtons()
 });
 
@@ -76,7 +66,7 @@ function updateFile(id) {
 }
 
 function setupButtonHandlers(dropdownContent) {
-    dropdownContent.addEventListener('click', function(event) {
+    dropdownContent.addEventListener('click', function (event) {
         event.stopPropagation();
         const button = event.target.closest('button');
         const buttonType = button?.id;
@@ -111,9 +101,9 @@ function setupButtonHandlers(dropdownContent) {
 }
 
 function copyPath(filePath) {
-    navigator.clipboard.writeText(filePath).then(function() {
+    navigator.clipboard.writeText(filePath).then(function () {
         console.log('Async: Copying to clipboard was successful!');
-    }, function(err) {
+    }, function (err) {
         console.error('Async: Could not copy text: ', err);
     });
     closeAllDropdowns();

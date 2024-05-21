@@ -6,7 +6,6 @@
     <script th:src="@{/js/themes.js}"></script>
     <script th:src="@{/js/requests.js}"></script>
     <script th:src="@{/js/dropzone.js}"></script>
-    <script th:src="@{/js/sorting.js}"></script>
     <script th:src="@{/js/search.js}"></script>
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 </head>
@@ -17,6 +16,7 @@
     <div th:if="${isAdmin}">
         <button class="settings-button" onclick="openUploadDialog()">Загрузить файл</button>
     </div>
+    <button class="settings-button" id="search-button">Искать</button>
     <button class="settings-button" onclick="openSettingsDialog()" type="button">Настройки</button>
 </div>
 
@@ -26,68 +26,50 @@
     <thead>
     <tr>
         <th>
-            <a class="sort" data-sortby="decNumber"
-               th:href="@{/search(page=${page}, sortBy='decNumber', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
-                Дец. номер <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+            <a class="sort">
+                Дец. номер
             </a>
-            <input type="text" id="searchDecNumber">
-        </th>
+            <input class="search-input" data-search-field="decNumber" id="decNumber" type="text"></th>
         <th>
-            <a class="sort" data-sortby="deviceName"
-               th:href="@{/search(page=${page}, sortBy='deviceName', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
-                Наименование <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+            <a class="sort">
+                Наименование
             </a>
-            <input type="text" id="searchDeviceName">
-        </th>
+            <input class="search-input" data-search-field="deviceName" id="deviceName" type="text"></th>
         <th>
-            <a class="sort" data-sortby="documentType"
-               th:href="@{/search(page=${page}, sortBy='documentType', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
-                Тип документа <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+            <a class="sort">
+                Тип документа
             </a>
-            <input type="text" id="searchDocumentType">
-        </th>
+            <input class="search-input" data-search-field="documentType" id="documentType" type="text"></th>
         <th>
-            <a class="sort" data-sortby="usedDevices"
-               th:href="@{/search(page=${page}, sortBy='usedDevices', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
-                Прим. устройства <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+            <a class="sort">
+                Прим. устройства
             </a>
-            <input type="text" id="searchUsedDevices">
-        </th>
+            <input class="search-input" data-search-field="usedDevices" id="usedDevices" type="text"></th>
         <th>
-            <a class="sort" data-sortby="project"
-               th:href="@{/search(page=${page}, sortBy='project', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
-                Проект <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+            <a class="sort">
+                Проект
             </a>
-            <input type="text" id="searchProject">
-        </th>
+            <input class="search-input" data-search-field="project" id="project" type="text"></th>
         <th>
-            <a class="sort" data-sortby="date"
-               th:href="@{/search(page=${page}, sortBy='date', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
-                Дата внес./изм. <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+            <a class="sort">
+                Дата внес./изм.
             </a>
-            <input type="text" id="searchDate">
-        </th>
+            <input class="search-input" data-search-field="date" id="date" type="text"></th>
         <th>
-            <a class="sort" data-sortby="user"
-               th:href="@{/search(page=${page}, sortBy='user', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
-                Кем внесено <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+            <a class="sort">
+                Кем внесено
             </a>
-            <input type="text" id="searchUser">
-        </th>
+            <input class="search-input" data-search-field="user" id="user" type="text"></th>
         <th>
-            <a class="sort" data-sortby="location"
-               th:href="@{/search(page=${page}, sortBy='location', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
-                Местоположение <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+            <a class="sort">
+                Местоположение
             </a>
-            <input type="text" id="searchLocation">
-        </th>
+            <input class="search-input" data-search-field="location" id="location" type="text"></th>
         <th>
-            <a class="sort" data-sortby="inventoryNumber"
-               th:href="@{/search(page=${page}, sortBy='inventoryNumber', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
-                Инвентарный номер <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+            <a class="sort">
+                Инвентарный номер
             </a>
-            <input type="text" id="searchInventoryNumber">
-        </th>
+            <input class="search-input" data-search-field="inventoryNumber" id="inventoryNumber" type="text"></th>
         <th></th>
     </tr>
     </thead>
@@ -106,7 +88,8 @@
         <td>
             <div class="dropdown">
                 <button class="options-button" onclick="openDropdown(event)">...</button>
-                <div class="dropdown-content" id="dropdown-content" th:data-id="${file.id}" th:data-location="${file.location}">
+                <div class="dropdown-content" id="dropdown-content" th:data-id="${file.id}"
+                     th:data-location="${file.location}">
                     <button class="custom-dropdown-button" id="downloadButton">Скачать</button>
                     <button class="custom-dropdown-button" id="copyButton">Копировать путь</button>
                     <div th:if="${isAdmin}">
@@ -173,40 +156,40 @@
             <h2>Загрузка файла</h2>
             <form id="uploadForm">
                 <div class="input-group margin-bottom">
-                    <label for="decNumber">Децимальный номер:</label>
-                    <input id="decNumber" name="decNumber" required type="text">
+                    <label for="uploadDecNumber">Децимальный номер:</label>
+                    <input id="uploadDecNumber" name="decNumber" required type="text">
                 </div>
                 <div class="input-group margin-bottom">
-                    <label for="deviceName">Наименование устройства:</label>
-                    <input id="deviceName" name="deviceName" required type="text">
+                    <label for="uploadDeviceName">Наименование устройства:</label>
+                    <input id="uploadDeviceName" name="deviceName" required type="text">
                 </div>
                 <div class="input-group margin-bottom">
-                    <label for="documentType">Тип документа:</label>
-                    <input id="documentType" name="documentType" required type="text">
+                    <label for="uploadDocumentType">Тип документа:</label>
+                    <input id="uploadDocumentType" name="documentType" required type="text">
                 </div>
                 <div class="input-group margin-bottom">
-                    <label for="usedDevices">Применяемые устройства (через запятую):</label>
-                    <input id="usedDevices" name="usedDevices" type="text">
+                    <label for="uploadUsedDevices">Применяемые устройства (через запятую):</label>
+                    <input id="uploadUsedDevices" name="usedDevices" type="text">
                 </div>
                 <div class="input-group margin-bottom">
-                    <label for="project">Проект:</label>
-                    <input id="project" name="project" type="text">
+                    <label for="uploadProject">Проект:</label>
+                    <input id="uploadProject" name="project" type="text">
                 </div>
                 <div class="input-group margin-bottom">
-                    <label for="inventoryNumber">Инвентарный номер:</label>
-                    <input id="inventoryNumber" name="inventoryNumber" type="text">
+                    <label for="uploadInventoryNumber">Инвентарный номер:</label>
+                    <input id="uploadInventoryNumber" name="inventoryNumber" type="text">
                 </div>
                 <div class="input-group margin-bottom">
-                    <label for="location">Путь до документа:</label>
-                    <input id="location" name="location" type="text">
+                    <label for="uploadLocation">Путь до документа:</label>
+                    <input id="uploadLocation" name="location" type="text">
                 </div>
                 <div class="form-group margin-bottom">
                     <label for="fileInput">Выберите файл:</label>
                     <input id="fileInput" name="file" required type="file">
                 </div>
-                <div id="error-message" class="margin-bottom" style="color: red; display: none;"></div>
+                <div class="margin-bottom" id="error-message" style="color: red; display: none;"></div>
                 <div class="button-group margin-bottom">
-                    <button class="custom-button" type="button" onclick="submitForm()">Загрузить</button>
+                    <button class="custom-button" onclick="submitForm()" type="button">Загрузить</button>
                 </div>
                 <button class="custom-button" onclick="closeUploadDialog()" type="button">Отменить</button>
             </form>
@@ -220,7 +203,7 @@
         <div class="settings-section margin-bottom">
             <h2>Изменение информации о файле</h2>
             <form action="/api/update" enctype="multipart/form-data" id="updateForm" method="post">
-                <input type="hidden" id="fileId" name="id">
+                <input id="fileId" name="id" type="hidden">
 
                 <div class="input-group margin-bottom">
                     <label for="updateDecNumber">Децимальный номер:</label>
