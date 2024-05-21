@@ -38,54 +38,63 @@
                th:href="@{/search(page=${page}, sortBy='decNumber', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
                 Дец. номер <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
+            <input type="text" id="searchDecNumber">
         </th>
         <th>
             <a class="sort" data-sortby="deviceName"
                th:href="@{/search(page=${page}, sortBy='deviceName', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
                 Наименование <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
+            <input type="text" id="searchDeviceName">
         </th>
         <th>
             <a class="sort" data-sortby="documentType"
                th:href="@{/search(page=${page}, sortBy='documentType', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
                 Тип документа <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
+            <input type="text" id="searchDocumentType">
         </th>
         <th>
             <a class="sort" data-sortby="usedDevices"
                th:href="@{/search(page=${page}, sortBy='usedDevices', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
-                Применяемые устройства <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+                Прим. устройства <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
+            <input type="text" id="searchUsedDevices">
         </th>
         <th>
             <a class="sort" data-sortby="project"
                th:href="@{/search(page=${page}, sortBy='project', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
                 Проект <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
+            <input type="text" id="searchProject">
         </th>
         <th>
             <a class="sort" data-sortby="date"
                th:href="@{/search(page=${page}, sortBy='date', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
-                Дата внесения/изменения <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+                Дата внес./изм. <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
+            <input type="text" id="searchDate">
         </th>
         <th>
             <a class="sort" data-sortby="user"
                th:href="@{/search(page=${page}, sortBy='user', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
                 Кем внесено <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
+            <input type="text" id="searchUser">
         </th>
         <th>
             <a class="sort" data-sortby="location"
                th:href="@{/search(page=${page}, sortBy='location', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
                 Местоположение <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
+            <input type="text" id="searchLocation">
         </th>
         <th>
             <a class="sort" data-sortby="inventoryNumber"
                th:href="@{/search(page=${page}, sortBy='inventoryNumber', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
                 Инвентарный номер <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
+            <input type="text" id="searchInventoryNumber">
         </th>
         <th></th>
     </tr>
