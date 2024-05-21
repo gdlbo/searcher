@@ -14,19 +14,11 @@
 <body th:data-is-admin="${isAdmin}">
 <div class="header-container">
     <h1>Поисковик</h1>
-    <button class="settings-button" onclick="openUploadDialog()">Загрузить файл</button>
+    <div th:if="${isAdmin}">
+        <button class="settings-button" onclick="openUploadDialog()">Загрузить файл</button>
+    </div>
     <button class="settings-button" onclick="openSettingsDialog()" type="button">Настройки</button>
 </div>
-
-<!--<form action="/search" method="get" onsubmit="storeSearch();">-->
-<!--    <label>-->
-<!--        <input id="searchQuery" name="query" placeholder="Search by name" type="text"/>-->
-<!--    </label>-->
-<!--    <label>-->
-<!--        <input id="searchNumber" name="number" placeholder="Search by number" type="text"/>-->
-<!--    </label>-->
-<!--    <input type="submit" value="Search"/>-->
-<!--</form>-->
 
 <div th:replace="~{::pagination}"></div>
 
