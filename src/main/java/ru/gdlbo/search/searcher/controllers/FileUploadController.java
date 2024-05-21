@@ -1,12 +1,14 @@
 package ru.gdlbo.search.searcher.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import ru.gdlbo.search.searcher.repository.FileInfo;
 import ru.gdlbo.search.searcher.repository.User;
@@ -16,6 +18,8 @@ import ru.gdlbo.search.searcher.services.UserService;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -26,23 +30,33 @@ public class FileUploadController {
     private UserService userService;
 
     @PostMapping("/api/upload")
-    public String uploadFile(@RequestParam String decNumber,
-                             @RequestParam String deviceName,
-                             @RequestParam String documentType,
-                             @RequestParam String usedDevices,
-                             @RequestParam String project,
-                             @RequestParam String inventoryNumber,
-                             @RequestParam String location,
-                             @RequestParam MultipartFile file,
-                             Authentication authentication) throws Exception {
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> uploadFile(@RequestParam String decNumber,
+                                                          @RequestParam String deviceName,
+                                                          @RequestParam String documentType,
+                                                          @RequestParam String usedDevices,
+                                                          @RequestParam String project,
+                                                          @RequestParam String inventoryNumber,
+                                                          @RequestParam String location,
+                                                          @RequestParam MultipartFile file,
+                                                          Authentication authentication) throws Exception {
+
+        Map<String, String> response = new HashMap<>();
 
         User user = userService.findByUsername(authentication.getName());
         if (user == null) {
-            return "redirect:/error?status=Failed to find user with username " + authentication.getName();
+            response.put("error", "Ошибка: Не удалось найти пользователя " + authentication.getName());
+            return ResponseEntity.badRequest().body(response);
         }
 
         if (file.isEmpty()) {
-            throw new Exception("File is empty");
+            response.put("error", "Файл не может быть пустым");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        if (fileService.existsByDecNumber(decNumber)) {
+            response.put("error", "Такой децимальный номер уже существует");
+            return ResponseEntity.badRequest().body(response);
         }
 
         String creationTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
@@ -55,8 +69,10 @@ public class FileUploadController {
         FileCopyUtils.copy(file.getInputStream().readAllBytes(), new File(locationWithFileName));
         System.out.println("Uploaded file: " + locationWithFileName);
 
-        return "redirect:/search";
+        response.put("success", "Файл успешно загружен");
+        return ResponseEntity.ok(response);
     }
+
 
     @PostMapping("/api/update")
     public String updateFile(@RequestParam Long id,

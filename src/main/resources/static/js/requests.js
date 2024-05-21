@@ -161,3 +161,25 @@ function removeFile(id) {
         console.error('Failed to remove file:', error);
     });
 }
+
+function submitForm() {
+    const formData = new FormData(document.getElementById('uploadForm'));
+
+    fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById('error-message').innerText = data.error;
+                document.getElementById('error-message').style.display = 'block';
+            } else {
+                document.getElementById('error-message').style.display = 'none';
+                window.location.href = '/search';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}

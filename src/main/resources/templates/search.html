@@ -171,7 +171,7 @@
     <div class="dialog-content">
         <div class="settings-section margin-bottom">
             <h2>Загрузка файла</h2>
-            <form action="/api/upload" enctype="multipart/form-data" id="uploadForm" method="post">
+            <form id="uploadForm">
                 <div class="input-group margin-bottom">
                     <label for="decNumber">Децимальный номер:</label>
                     <input id="decNumber" name="decNumber" required type="text">
@@ -204,14 +204,16 @@
                     <label for="fileInput">Выберите файл:</label>
                     <input id="fileInput" name="file" required type="file">
                 </div>
+                <div id="error-message" class="margin-bottom" style="color: red; display: none;"></div>
                 <div class="button-group margin-bottom">
-                    <button class="custom-button" type="submit">Загрузить</button>
+                    <button class="custom-button" type="button" onclick="submitForm()">Загрузить</button>
                 </div>
                 <button class="custom-button" onclick="closeUploadDialog()" type="button">Отменить</button>
             </form>
         </div>
     </div>
 </div>
+
 
 <div class="dialog-box" id="updateDialog" style="display: none;">
     <div class="dialog-content">

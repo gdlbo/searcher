@@ -18,4 +18,5 @@ public interface FileRepository extends JpaRepository<FileInfo, Long>, JpaSpecif
     List<FileInfo> findByLocation(String location);
     List<FileInfo> findByCreationTime(String creationTime);
     List<FileInfo> findByUser(User user);
+    boolean existsByDecNumber(String decNumber);
 }

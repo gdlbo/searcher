@@ -40,5 +40,9 @@ public class FileService {
     public boolean hasRecords() {
         return fileRepository.existsById(1L);
     }
+
+    public boolean existsByDecNumber(String decNumber) {
+        return fileRepository.existsByDecNumber(decNumber);
+    }
 }
 
