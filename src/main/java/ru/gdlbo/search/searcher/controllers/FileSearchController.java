@@ -7,31 +7,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.gdlbo.search.searcher.FileNameParser;
-import ru.gdlbo.search.searcher.config.Config;
 import ru.gdlbo.search.searcher.repository.*;
 import ru.gdlbo.search.searcher.services.FileService;
 import ru.gdlbo.search.searcher.services.UserService;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import java.util.regex.Pattern;
 
 @Controller
 public class FileSearchController {
-    @Autowired
-    private Config config;
-
     @Autowired
     private FileService fileService;
 
@@ -53,15 +38,10 @@ public class FileSearchController {
                               @RequestParam(required = false) String creationTime,
                               Authentication authentication,
                               Model model) {
-
-        String searchPath = config.getPath();
-        if (searchPath == null || searchPath.isEmpty()) {
-            return "redirect:/start";
-        }
-
-        if (!fileService.hasRecords()) {
-            createDummyFiles(100);
-        }
+//
+//        if (!fileService.hasRecords()) {
+//            createDummyFiles(100);
+//        }
 
         User user = userService.findByUsername(authentication.getName());
         if (user == null) {
@@ -76,6 +56,16 @@ public class FileSearchController {
         PaginatedResult paginatedResult = fileService.paginateFileInfos(fileInfos, page);
 
         addAttributesToModel(model, paginatedResult, sortBy, showHidden, authentication);
+
+        setAttr(model, "decNumber", decNumber);
+        setAttr(model, "deviceName", deviceName);
+        setAttr(model, "documentType", documentType);
+        setAttr(model, "usedDevices", usedDevices);
+        setAttr(model, "project", project);
+        setAttr(model, "inventoryNumber", inventoryNumber);
+        setAttr(model, "creationTime", creationTime);
+        setAttr(model, "lastModified", lastModified);
+        setAttr(model, "location", location);
 
         return "search";
     }
@@ -112,8 +102,12 @@ public class FileSearchController {
 
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             model.addAttribute("isAdmin", true);
-            model.addAttribute("isDebug", config.getIsDebug());
-            model.addAttribute("searchPath", config.getPath());
+        }
+    }
+
+    private void setAttr(Model model, String attr, String value) {
+        if (value != null && !value.isEmpty()) {
+            model.addAttribute(attr, value);
         }
     }
 

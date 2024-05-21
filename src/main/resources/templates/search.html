@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="https://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <head>
-    <title>Searcher</title>
+    <title>Поисковик</title>
     <script th:src="@{/js/main.js}"></script>
     <script th:src="@{/js/themes.js}"></script>
     <script th:src="@{/js/requests.js}"></script>
@@ -13,102 +13,8 @@
 
 <body th:data-is-admin="${isAdmin}" th:data-is-debug="${isDebug}" th:data-path="${searchPath}">
 <div class="header-container">
-    <h1>Searcher</h1>
-    <button class="settings-button" onclick="openSettingsDialog()" type="button">Settings</button>
-</div>
-
-<div class="dialog-box" id="settingsDialog">
-    <div class="dialog-content">
-        <h2>Settings</h2>
-        <div class="settings-section margin-bottom">
-            <h3>Themes</h3>
-            <div class="theme-switcher margin-bottom">
-                <label class="theme-dropdown-label" for="theme-dropdown">Theme:</label>
-                <select class="theme-dropdown" id="theme-dropdown" onchange="changeTheme()">
-                    <option value="system">Follow system</option>
-                    <option value="dark">Dark</option>
-                    <option value="light">Light</option>
-                </select>
-            </div>
-            <div class="input-group margin-bottom">
-                <label class="theme-dropdown-label" for="colorPicker">Color:</label>
-                <select class="theme-dropdown" id="colorPicker" onchange="handleAccentColorPicker()">
-                    <option value="">Select a color</option>
-                    <option value="#a14242">Dark red</option>
-                    <option value="#588163">Olive green</option>
-                    <option value="#6e57d2">Lavender</option>
-                    <option value="#ff8a22">Orange</option>
-                    <option value="#e00a97">Magenta</option>
-                    <option value="#843c54">Maroon</option>
-                    <option value="#1a4f76">Navy blue</option>
-                    <option value="#ffd700">Gold</option>
-                    <option value="#8b4513">Saddle brown</option>
-                    <option value="#4682b4">Steel blue</option>
-                    <option value="#ff69b4">Hot pink</option>
-                    <option value="#20b2aa">Light sea green</option>
-                </select>
-            </div>
-            <div class="input-group margin-bottom">
-                <label for="accentColor">Custom accent (HEX):</label>
-                <input id="accentColor" placeholder="Enter color" type="text">
-            </div>
-            <div class="button-group">
-                <button class="custom-button" onclick="handleAccentColorHex()" type="button">Apply color</button>
-                <button class="custom-button" onclick="resetAccentColor()">Reset Accent Color</button>
-            </div>
-        </div>
-        <div class="settings-section margin-bottom">
-            <h3>Search</h3>
-            <button class="custom-button" id="toggleSortByLastModified" onclick="toggleSortByLastModified()">Sort by
-                last modified: Off
-            </button>
-            <button class="custom-button" id="toggleShowHidden" onclick="toggleShowHidden()">Show hidden: Off</button>
-        </div>
-        <div class="margin-bottom" th:if="${isAdmin}">
-            <h3>Admin</h3>
-            <div class="input-group">
-                <label for="userName">Give admin:</label>
-                <input id="username" placeholder="Enter username" type="text">
-            </div>
-            <div class="button-group">
-                <button class="custom-button" onclick="grantAdmin()" type="button">Apply</button>
-            </div>
-        </div>
-        <div class="margin-bottom" th:if="${isAdmin}">
-            <h3>System</h3>
-            <div class="input-group">
-                <label for="searcherPath">Path to search:</label>
-                <input id="searcherPath" placeholder="/path/to/search" th:value="${searchPath}" type="text">
-            </div>
-            <div class="button-group margin-bottom">
-                <button class="custom-button" onclick="applyCustomPath()" type="button">Apply</button>
-            </div>
-            <button class="custom-button" onclick="resetDatabase()" type="button">Reset Database</button>
-            <button class="custom-button" onclick="resetFileDatabase()" type="button">Reset File Database</button>
-            <button class="custom-button" onclick="restartServer()" type="button">Restart Server</button>
-            <button class="custom-button" id="toggleDebug" onclick="toggleDebug()">Debug: Off</button>
-        </div>
-        <div class="account-credentials margin-bottom">
-            <h3>Account</h3>
-            <div class="input-group">
-                <label for="nickname">Nickname:</label>
-                <input id="nickname" th:placeholder="${nickname}" type="text">
-            </div>
-            <div class="input-group">
-                <label for="old-password">Old Password:</label>
-                <input id="old-password" placeholder="Old password" type="password">
-            </div>
-            <div class="input-group">
-                <label for="new-password">New Password:</label>
-                <input id="new-password" placeholder="New password" type="password">
-            </div>
-            <div class="button-group">
-                <button class="custom-button" onclick="changePassword()" type="button">Apply Changes</button>
-            </div>
-            <button class="custom-button" onclick="logout()" type="button">Logout</button>
-        </div>
-        <button class="custom-button" onclick="closeSettingsDialog()" type="button">Close</button>
-    </div>
+    <h1>Поисковик</h1>
+    <button class="settings-button" onclick="openSettingsDialog()" type="button">Настройки</button>
 </div>
 
 <!--<form action="/search" method="get" onsubmit="storeSearch();">-->
@@ -128,47 +34,47 @@
     <tr>
         <th>
             <a class="sort" data-sortby="decNumber" th:href="@{/search(page=${page}, sortBy='decNumber', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
-                Dec. Number <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+                Дец. номер <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
             <a class="sort" data-sortby="deviceName" th:href="@{/search(page=${page}, sortBy='deviceName', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
-                Device Name <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+                Наименование <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
             <a class="sort" data-sortby="documentType" th:href="@{/search(page=${page}, sortBy='documentType', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
-                Doc. Type <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+                Тип документа <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
             <a class="sort" data-sortby="usedDevices" th:href="@{/search(page=${page}, sortBy='usedDevices', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
-                Used Devices <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+                Применяемые устройства <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
             <a class="sort" data-sortby="project" th:href="@{/search(page=${page}, sortBy='project', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
-                Project <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+                Проект <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
             <a class="sort" data-sortby="date" th:href="@{/search(page=${page}, sortBy='date', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
-                Date <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+                Дата внесения/изменения <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
             <a class="sort" data-sortby="user" th:href="@{/search(page=${page}, sortBy='user', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
-                User <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+                Кем внесено <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
             <a class="sort" data-sortby="location" th:href="@{/search(page=${page}, sortBy='location', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
-                Location <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+                Местоположение <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
             <a class="sort" data-sortby="inventoryNumber" th:href="@{/search(page=${page}, sortBy='inventoryNumber', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified}, showHidden=${showHidden})}">
-                Inventory Number <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
+                Инвентарный номер <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th></th>
@@ -191,13 +97,13 @@
                 <button class="options-button" onclick="openDropdown(event)">...</button>
                 <div class="dropdown-content" id="dropdown-content">
                     <input name="filePath" th:value="${file.location}" type="hidden"/>
-                    <button class="custom-dropdown-button" id="downloadButton">Download</button>
-                    <button class="custom-dropdown-button" id="copyButton">Copy</button>
+                    <button class="custom-dropdown-button" id="downloadButton">Скачать</button>
+                    <button class="custom-dropdown-button" id="copyButton">Копировать путь</button>
                     <div th:if="${isAdmin}">
-                        <button class="custom-dropdown-button" id="deleteButton">Delete</button>
-                        <button class="custom-dropdown-button" id="replaceButton">Replace</button>
+                        <button class="custom-dropdown-button" id="deleteButton">Удалить</button>
+                        <button class="custom-dropdown-button" id="replaceButton">Заменить</button>
                     </div>
-                    <button class="custom-dropdown-button" id="historyButton">History</button>
+                    <button class="custom-dropdown-button" id="historyButton">История</button>
                 </div>
             </div>
 
@@ -210,13 +116,13 @@
                             <div class="drop-zone-container">
                                 <div class="drop-zone">
                                     <input id="file-input" name="file" type="file"/>
-                                    <label class="drop-zone__prompt" for="file-input">Choose or drop a file here</label>
+                                    <label class="drop-zone__prompt" for="file-input">Выберите или переместите файл сюда</label>
                                     <span id="file-name"></span>
                                 </div>
                             </div>
                             <div class="buttons">
-                                <button class="custom-button" type="submit">Replace</button>
-                                <button class="custom-button" onclick="closeDialog()" type="button">Cancel</button>
+                                <button class="custom-button" type="submit">Заменить</button>
+                                <button class="custom-button" onclick="closeDialog()" type="button">Отменить</button>
                             </div>
                         </div>
                     </form>
@@ -225,11 +131,11 @@
 
             <div class="dialog-box" id="fileHistoryDialog" style="display: none;">
                 <div class="dialog-content">
-                    <h2>File History</h2>
+                    <h2>История файла</h2>
                     <div class="file-history-list" id="fileHistoryList">
                         <!-- files -->
                     </div>
-                    <button class="custom-button" onclick="closeFileHistoryDialog()" type="button">Close</button>
+                    <button class="custom-button" onclick="closeFileHistoryDialog()" type="button">Закрыть</button>
                 </div>
             </div>
         </td>
@@ -247,6 +153,93 @@
         <a onclick="storeSearch(); return true;" th:href="@{/search(page=${totalPages - 1}, query=${query})}"
            th:if="${i == totalPages - 1}">»</a>
     </span>
+</div>
+
+<div class="dialog-box" id="settingsDialog">
+    <div class="dialog-content">
+        <h2>Настройки</h2>
+        <div class="settings-section margin-bottom">
+            <h3>Темы</h3>
+            <div class="theme-switcher margin-bottom">
+                <label class="theme-dropdown-label" for="theme-dropdown">Тема:</label>
+                <select class="theme-dropdown" id="theme-dropdown" onchange="changeTheme()">
+                    <option value="system">Системная</option>
+                    <option value="dark">Тёмная</option>
+                    <option value="light">Светлая</option>
+                </select>
+            </div>
+            <div class="input-group margin-bottom">
+                <label class="theme-dropdown-label" for="colorPicker">Цвет:</label>
+                <select class="theme-dropdown" id="colorPicker" onchange="handleAccentColorPicker()">
+                    <option value="">Выберите цвет</option>
+                    <option value="#a14242">Темно-красный</option>
+                    <option value="#588163">Оливково-зеленый</option>
+                    <option value="#6e57d2">Лавандовый</option>
+                    <option value="#ff8a22">Оранжевый</option>
+                    <option value="#e00a97">Маджента</option>
+                    <option value="#843c54">Коричневый</option>
+                    <option value="#1a4f76">Темно-синий</option>
+                    <option value="#ffd700">Золотой</option>
+                    <option value="#8b4513">Седло коричневый</option>
+                    <option value="#4682b4">Стальной голубой</option>
+                    <option value="#ff69b4">Ярко-розовый</option>
+                    <option value="#20b2aa">Светло-морской зеленый</option>
+                </select>
+            </div>
+            <div class="input-group margin-bottom">
+                <label for="accentColor">Сторонний цвет (HEX):</label>
+                <input id="accentColor" placeholder="Enter color" type="text">
+            </div>
+            <div class="button-group">
+                <button class="custom-button" onclick="handleAccentColorHex()" type="button">Применить цвет</button>
+                <button class="custom-button" onclick="resetAccentColor()">Сбросить цвет</button>
+            </div>
+        </div>
+        <div class="margin-bottom" th:if="${isAdmin}">
+            <h3>Admin</h3>
+            <div class="input-group">
+                <label for="userName">Дать админку:</label>
+                <input id="username" placeholder="Введите имя" type="text">
+            </div>
+            <div class="button-group">
+                <button class="custom-button" onclick="grantAdmin()" type="button">Применить</button>
+            </div>
+        </div>
+        <div class="margin-bottom" th:if="${isAdmin}">
+            <h3>Системное</h3>
+            <div class="input-group">
+                <label for="searcherPath">Путь для поиска:</label>
+                <input id="searcherPath" placeholder="/путь/для/поиска" th:value="${searchPath}" type="text">
+            </div>
+            <div class="button-group margin-bottom">
+                <button class="custom-button" onclick="applyCustomPath()" type="button">Применить</button>
+            </div>
+            <button class="custom-button" onclick="resetDatabase()" type="button">Сбросить все базы</button>
+            <button class="custom-button" onclick="resetFileDatabase()" type="button">Сбросить базу файлов</button>
+            <button class="custom-button" onclick="restartServer()" type="button">Перезапустить сервер</button>
+            <button class="custom-button" id="toggleDebug" onclick="toggleDebug()">Debug: Off</button>
+        </div>
+        <div class="account-credentials margin-bottom">
+            <h3>Аккаунт</h3>
+            <div class="input-group">
+                <label for="nickname">Имя:</label>
+                <input id="nickname" th:placeholder="${nickname}" type="text">
+            </div>
+            <div class="input-group">
+                <label for="old-password">Старый пароль:</label>
+                <input id="old-password" placeholder="Старый пароль" type="password">
+            </div>
+            <div class="input-group">
+                <label for="new-password">Новый пароль:</label>
+                <input id="new-password" placeholder="Новый пароль" type="password">
+            </div>
+            <div class="button-group">
+                <button class="custom-button" onclick="changePassword()" type="button">Применить изменения</button>
+            </div>
+            <button class="custom-button" onclick="logout()" type="button">Выйти из аккаунта</button>
+        </div>
+        <button class="custom-button" onclick="closeSettingsDialog()" type="button">Закрыть</button>
+    </div>
 </div>
 
 </body>

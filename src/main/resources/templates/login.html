@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Login Page</title>
+    <title>Вход в аккаунт</title>
     <link rel="stylesheet" th:href="@{/css/login.css}"/>
     <script th:src="@{/js/themes.js}"></script>
     <script>
@@ -13,18 +13,18 @@
 <body>
 <div class="login-container">
     <form class="login-form" method="post" th:action="@{/auth/login}">
-        <h2>Login to Your Account</h2>
+        <h2>Войдите в аккаунт</h2>
         <div class="input-group">
             <input id="username" name="username" required type="text">
-            <label for="username">Username</label>
+            <label for="username">Имя пользователя</label>
         </div>
         <div class="input-group">
             <input id="password" name="password" required type="password">
-            <label for="password">Password</label>
+            <label for="password">Пароль</label>
         </div>
-        <button type="submit">Login</button>
-        <p class="error" th:if="${param.error}">Invalid username or password.</p>
-        <button onclick="window.location.href='/auth/register'" type="button">Register</button>
+        <button type="submit">Войти</button>
+        <p class="error" th:if="${param.error}">Неверное имя пользователя или пароль.</p>
+        <button onclick="window.location.href='/auth/register'" type="button">Зарегистрироваться</button>
     </form>
 </div>
 </body>

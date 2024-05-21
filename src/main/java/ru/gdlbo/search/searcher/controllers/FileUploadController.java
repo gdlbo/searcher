@@ -6,15 +6,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-import ru.gdlbo.search.searcher.config.Config;
 import ru.gdlbo.search.searcher.repository.FileInfo;
 import ru.gdlbo.search.searcher.repository.User;
 import ru.gdlbo.search.searcher.services.FileService;
 import ru.gdlbo.search.searcher.services.UserService;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
 
 @Controller

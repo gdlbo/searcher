@@ -1,15 +1,12 @@
 package ru.gdlbo.search.searcher.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import ru.gdlbo.search.searcher.config.Config;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -17,9 +14,6 @@ import java.time.format.DateTimeFormatter;
 
 @Controller
 public class FileReplaceController {
-    @Autowired
-    private Config config;
-
     // This method is responsible for replacing a file with a new version
     @PostMapping("/api/replace")
     public String replaceFile(@RequestParam String filePath, @RequestParam MultipartFile file) throws Exception {
@@ -27,11 +21,6 @@ public class FileReplaceController {
 
         if (file.isEmpty()) {
             throw new Exception("File is empty");
-        }
-
-        // Securely check if the user has access to the file
-        if (!filePath.contains(config.getPath())) {
-            throw new IOException("Do not have access to this path");
         }
 
         File oldFile = new File(filePath);
