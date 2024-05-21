@@ -13,11 +13,13 @@
 <body th:data-is-admin="${isAdmin}">
 <div class="header-container">
     <h1>Поисковик</h1>
-    <div th:if="${isAdmin}">
-        <button class="settings-button" onclick="openUploadDialog()">Загрузить файл</button>
+    <div class="button-list">
+        <button class="settings-button" onclick="openSettingsDialog()" type="button">Настройки</button>
+        <div th:if="${isAdmin}">
+            <button class="settings-button" onclick="openUploadDialog()">Загрузить файл</button>
+        </div>
+        <button class="settings-button" id="search-button">Искать</button>
     </div>
-    <button class="settings-button" id="search-button">Искать</button>
-    <button class="settings-button" onclick="openSettingsDialog()" type="button">Настройки</button>
 </div>
 
 <div th:replace="~{::pagination}"></div>

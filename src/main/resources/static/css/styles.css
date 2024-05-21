@@ -541,3 +541,12 @@ form {
     margin-bottom: 10px;
 }
 
+.button-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button-list button {
+    margin-bottom: 10px;
+}
