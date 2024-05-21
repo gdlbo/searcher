@@ -31,8 +31,7 @@ function getCurrentParams() {
         page: parseInt(url.searchParams.get("page")) || 0,
         currentSortBy: url.searchParams.get("sortBy"),
         currentSortOrder: url.searchParams.get("sortOrder"),
-        currentSort: localStorage.getItem('sortByLastModified') || 'false',
-        showHidden: localStorage.getItem('showHidden') || 'false'
+        currentSort: localStorage.getItem('sortByLastModified') || 'false'
     };
 }
 
@@ -52,20 +51,7 @@ function updateURLAndLocalStorage(sortBy, newSortOrder, params) {
         localStorage.setItem("sortOrder", newSortOrder);
     }
     url.searchParams.set("sortByLastModified", params.currentSort);
-    url.searchParams.set("showHidden", params.showHidden);
     return url;
-}
-
-function setHideParameter(show) {
-    const url = new URL(window.location.href);
-    localStorage.setItem('showHidden', show);
-    url.searchParams.set("showHidden", show);
-    return url;
-}
-
-function updateURLWithShowHidden(showHidden) {
-    const url = setHideParameter(showHidden);
-    redirectTo(url);
 }
 
 function redirectTo(url) {

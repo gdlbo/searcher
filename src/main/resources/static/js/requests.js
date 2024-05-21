@@ -56,21 +56,6 @@ function applyCustomPath() {
     }, 2000);
 }
 
-function applyDebugStatus(status) {
-    fetch('/api/submit?isDebug=' + status, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        }
-    }).catch(error => {
-        console.error('Error:', error);
-    });
-
-    setTimeout(() => {
-        window.location.reload();
-    }, 2000);
-}
-
 function resetFileDatabase() {
     fetch('/api/resetFileDatabase', {
         method: 'GET',

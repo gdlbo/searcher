@@ -26,7 +26,6 @@ public class FileSearchController {
     @GetMapping("/search")
     public String searchFiles(@RequestParam(defaultValue = "0") int page,
                               @RequestParam(required = false) String sortBy,
-                              @RequestParam(required = false, defaultValue = "false") Boolean showHidden,
                               @RequestParam(required = false) String decNumber,
                               @RequestParam(required = false) String deviceName,
                               @RequestParam(required = false) String documentType,
@@ -55,7 +54,7 @@ public class FileSearchController {
         List<FileInfo> fileInfos = fileService.findFiles(spec);
         PaginatedResult paginatedResult = fileService.paginateFileInfos(fileInfos, page);
 
-        addAttributesToModel(model, paginatedResult, sortBy, showHidden, authentication);
+        addAttributesToModel(model, paginatedResult, sortBy, authentication);
 
         setAttr(model, "decNumber", decNumber);
         setAttr(model, "deviceName", deviceName);
@@ -90,7 +89,7 @@ public class FileSearchController {
         }
     }
 
-    private void addAttributesToModel(Model model, PaginatedResult paginatedResult, String sortBy, Boolean showHidden, Authentication authentication) {
+    private void addAttributesToModel(Model model, PaginatedResult paginatedResult, String sortBy, Authentication authentication) {
         model.addAttribute("fileInfos", paginatedResult.getPaginatedFileInfos());
         model.addAttribute("hasMoreResults", paginatedResult.isHasMoreResults());
         model.addAttribute("page", paginatedResult.getPage());
@@ -98,7 +97,6 @@ public class FileSearchController {
         model.addAttribute("totalPages", paginatedResult.getTotalPages());
         model.addAttribute("nickname", authentication.getName());
         model.addAttribute("sortBy", sortBy);
-        model.addAttribute("showHidden", showHidden);
 
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             model.addAttribute("isAdmin", true);

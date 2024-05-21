@@ -1,5 +1,4 @@
 let isAdmin = false;
-let isDebug = false;
 
 window.onload = function () {
     initTheme();
@@ -9,27 +8,17 @@ window.onload = function () {
 document.addEventListener("DOMContentLoaded", function () {
     const savedSortBy = localStorage.getItem("sortBy");
     const savedSortOrder = localStorage.getItem("sortOrder");
-    const savedShowHidden = localStorage.getItem("showHidden");
     const url = new URL(window.location.href);
     const currentSortBy = url.searchParams.get("sortBy");
     const currentSortOrder = url.searchParams.get("sortOrder");
-    const currentShowHidden = url.searchParams.get("showHidden");
 
-    if (savedSortBy !== currentSortBy || savedSortOrder !== currentSortOrder || savedShowHidden !== currentShowHidden) {
-        if (savedSortBy && savedSortOrder) {
-            updateURLAndRedirect(savedSortBy, savedSortOrder);
-        } else {
-            updateURLWithShowHidden(savedShowHidden);
-        }
+    if (savedSortBy !== currentSortBy || savedSortOrder !== currentSortOrder) {
+        updateURLAndRedirect(savedSortBy, savedSortOrder);
     }
 
     isAdmin = document.body.getAttribute('data-is-admin') === 'true';
-    isDebug = document.body.getAttribute('data-is-debug') === 'true';
 
     initSortLinks();
-    initSortByLastModified();
-    initShowHidden();
-    initDebug();
     initThemeButtons()
 });
 
@@ -194,17 +183,4 @@ function closeSettingsDialog() {
     settingsDialog.querySelector('.dialog-content').scrollTop = 0;
     document.body.style.overflow = '';
     settingsDialog.style.display = "none";
-}
-
-function toggleDebug() {
-    let button = document.getElementById('toggleDebug');
-    let debug = !isDebug;
-
-    button.textContent = `Debug: ${debug ? 'On' : 'Off'}`;
-    applyDebugStatus(debug)
-}
-
-function initDebug() {
-    let button = document.getElementById('toggleDebug');
-    button.textContent = `Debug: ${isDebug === true ? 'On' : 'Off'}`;
 }
