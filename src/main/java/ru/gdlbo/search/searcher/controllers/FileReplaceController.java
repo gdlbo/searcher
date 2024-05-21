@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -14,7 +15,6 @@ import java.time.format.DateTimeFormatter;
 
 @Controller
 public class FileReplaceController {
-    // This method is responsible for replacing a file with a new version
     @PostMapping("/api/replace")
     public String replaceFile(@RequestParam String filePath, @RequestParam MultipartFile file) throws Exception {
         System.out.println("Request received to replace file: " + filePath);
@@ -25,24 +25,44 @@ public class FileReplaceController {
 
         File oldFile = new File(filePath);
 
-        // Create a hidden directory to store old versions of the file
+        File hiddenDir = createHiddenDirectory(oldFile);
+        String newFilePath = moveOldFileToHistory(oldFile, hiddenDir);
+        checkAndDeleteOldVersions(hiddenDir, oldFile.getName());
+
+        replaceOldFileWithNew(file, filePath);
+
+        return "redirect:/search";
+    }
+
+    private File createHiddenDirectory(File oldFile) throws Exception {
         File hiddenDir = new File(oldFile.getParentFile(), ".history");
         if (!hiddenDir.exists()) {
             if (!hiddenDir.mkdir()) {
                 throw new Exception("Failed to create directory");
             }
         }
+        return hiddenDir;
+    }
 
-        // Move the old file to the hidden directory with a timestamp
+    private String moveOldFileToHistory(File oldFile, File hiddenDir) throws Exception {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         LocalDateTime now = LocalDateTime.now();
         String timestamp = dtf.format(now);
-        String newFilePath = hiddenDir.getPath() + File.separator + oldFile.getName() + "_" + timestamp;
+
+        String oldFileName = oldFile.getName();
+        int dotIndex = oldFileName.lastIndexOf('.');
+        String nameWithoutExtension = (dotIndex == -1) ? oldFileName : oldFileName.substring(0, dotIndex);
+        String extension = (dotIndex == -1) ? "" : oldFileName.substring(dotIndex);
+
+        String newFilePath = hiddenDir.getPath() + File.separator + nameWithoutExtension + "_" + timestamp + extension;
         Files.move(oldFile.toPath(), Paths.get(newFilePath));
         System.out.println("Moved old file to history: " + newFilePath);
 
-        // Check if the hidden directory has more than 10 old versions of the file, and if so, delete the oldest one
-        File[] files = hiddenDir.listFiles((dir, name) -> name.startsWith(oldFile.getName()));
+        return newFilePath;
+    }
+
+    private void checkAndDeleteOldVersions(File hiddenDir, String oldFileName) throws Exception {
+        File[] files = hiddenDir.listFiles((dir, name) -> name.startsWith(oldFileName.substring(0, oldFileName.lastIndexOf('.'))));
         if (files != null && files.length > 10) {
             File oldestFile = files[0];
             for (int i = 1; i < files.length; i++) {
@@ -57,11 +77,10 @@ public class FileReplaceController {
 
             System.out.println("Deleted oldest file: " + oldestFile.getName());
         }
+    }
 
-        // Replace the old file with the new one
+    private void replaceOldFileWithNew(MultipartFile file, String filePath) throws IOException {
         FileCopyUtils.copy(file.getInputStream().readAllBytes(), new File(filePath));
         System.out.println("Replaced file: " + filePath);
-
-        return "redirect:/search";
     }
 }

@@ -117,15 +117,15 @@ function showFileHistory(filePath) {
                     listItem.style.marginBottom = '30px';
 
                     const dateSpan = document.createElement('span');
-                    dateSpan.textContent = new Date(parseInt(file.lastModified)).toLocaleString();
+                    dateSpan.textContent = file.lastModified;
 
                     const deleteButton = document.createElement('button');
-                    deleteButton.textContent = 'Delete';
+                    deleteButton.textContent = 'Удалить';
                     deleteButton.onclick = () => deleteFileFromHistory(file.location);
                     deleteButton.classList.add('small-button');
 
                     const downloadButton = document.createElement('button');
-                    downloadButton.textContent = 'Download';
+                    downloadButton.textContent = 'Скачать';
                     downloadButton.onclick = () => downloadFile(file.location);
                     downloadButton.classList.add('small-button');
 
@@ -183,4 +183,14 @@ function closeSettingsDialog() {
     settingsDialog.querySelector('.dialog-content').scrollTop = 0;
     document.body.style.overflow = '';
     settingsDialog.style.display = "none";
+}
+
+function openUploadDialog() {
+    const uploadDialog = document.getElementById('uploadDialog');
+    uploadDialog.style.display = 'block';
+}
+
+function closeUploadDialog() {
+    const uploadDialog = document.getElementById('uploadDialog');
+    uploadDialog.style.display = 'none';
 }

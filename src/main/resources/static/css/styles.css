@@ -373,6 +373,11 @@ a {
     margin-right: 0;
 }
 
+form {
+    display: flex;
+    flex-direction: column;
+}
+
 .dropdown {
     position: absolute;
     display: inline-flex;

@@ -14,6 +14,7 @@
 <body th:data-is-admin="${isAdmin}">
 <div class="header-container">
     <h1>Поисковик</h1>
+    <button class="settings-button" onclick="openUploadDialog()">Загрузить файл</button>
     <button class="settings-button" onclick="openSettingsDialog()" type="button">Настройки</button>
 </div>
 
@@ -33,47 +34,56 @@
     <thead>
     <tr>
         <th>
-            <a class="sort" data-sortby="decNumber" th:href="@{/search(page=${page}, sortBy='decNumber', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
+            <a class="sort" data-sortby="decNumber"
+               th:href="@{/search(page=${page}, sortBy='decNumber', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
                 Дец. номер <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
-            <a class="sort" data-sortby="deviceName" th:href="@{/search(page=${page}, sortBy='deviceName', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
+            <a class="sort" data-sortby="deviceName"
+               th:href="@{/search(page=${page}, sortBy='deviceName', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
                 Наименование <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
-            <a class="sort" data-sortby="documentType" th:href="@{/search(page=${page}, sortBy='documentType', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
+            <a class="sort" data-sortby="documentType"
+               th:href="@{/search(page=${page}, sortBy='documentType', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
                 Тип документа <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
-            <a class="sort" data-sortby="usedDevices" th:href="@{/search(page=${page}, sortBy='usedDevices', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
+            <a class="sort" data-sortby="usedDevices"
+               th:href="@{/search(page=${page}, sortBy='usedDevices', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
                 Применяемые устройства <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
-            <a class="sort" data-sortby="project" th:href="@{/search(page=${page}, sortBy='project', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
+            <a class="sort" data-sortby="project"
+               th:href="@{/search(page=${page}, sortBy='project', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
                 Проект <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
-            <a class="sort" data-sortby="date" th:href="@{/search(page=${page}, sortBy='date', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
+            <a class="sort" data-sortby="date"
+               th:href="@{/search(page=${page}, sortBy='date', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
                 Дата внесения/изменения <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
-            <a class="sort" data-sortby="user" th:href="@{/search(page=${page}, sortBy='user', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
+            <a class="sort" data-sortby="user"
+               th:href="@{/search(page=${page}, sortBy='user', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
                 Кем внесено <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
-            <a class="sort" data-sortby="location" th:href="@{/search(page=${page}, sortBy='location', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
+            <a class="sort" data-sortby="location"
+               th:href="@{/search(page=${page}, sortBy='location', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
                 Местоположение <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
         <th>
-            <a class="sort" data-sortby="inventoryNumber" th:href="@{/search(page=${page}, sortBy='inventoryNumber', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
+            <a class="sort" data-sortby="inventoryNumber"
+               th:href="@{/search(page=${page}, sortBy='inventoryNumber', sortOrder=${sortOrder}, sortByLastModified=${sortByLastModified})}">
                 Инвентарный номер <span class="arrow">&uarr;</span><span class="arrow">&darr;</span>
             </a>
         </th>
@@ -97,6 +107,7 @@
                 <button class="options-button" onclick="openDropdown(event)">...</button>
                 <div class="dropdown-content" id="dropdown-content">
                     <input name="filePath" th:value="${file.location}" type="hidden"/>
+                    <input name="filePath" th:value="${file.location}" type="hidden"/>
                     <button class="custom-dropdown-button" id="downloadButton">Скачать</button>
                     <button class="custom-dropdown-button" id="copyButton">Копировать путь</button>
                     <div th:if="${isAdmin}">
@@ -116,7 +127,8 @@
                             <div class="drop-zone-container">
                                 <div class="drop-zone">
                                     <input id="file-input" name="file" type="file"/>
-                                    <label class="drop-zone__prompt" for="file-input">Выберите или переместите файл сюда</label>
+                                    <label class="drop-zone__prompt" for="file-input">Выберите или переместите файл
+                                        сюда</label>
                                     <span id="file-name"></span>
                                 </div>
                             </div>
@@ -153,6 +165,52 @@
         <a onclick="storeSearch(); return true;" th:href="@{/search(page=${totalPages - 1}, query=${query})}"
            th:if="${i == totalPages - 1}">»</a>
     </span>
+</div>
+
+<div class="dialog-box" id="uploadDialog" style="display: none;">
+    <div class="dialog-content">
+        <div class="settings-section margin-bottom">
+            <h2>Загрузка файла</h2>
+            <form action="/api/upload" enctype="multipart/form-data" id="uploadForm" method="post">
+                <div class="input-group margin-bottom">
+                    <label for="decNumber">Децимальный номер:</label>
+                    <input id="decNumber" name="decNumber" required type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="deviceName">Наименование устройства:</label>
+                    <input id="deviceName" name="deviceName" required type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="documentType">Тип документа:</label>
+                    <input id="documentType" name="documentType" required type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="usedDevices">Применяемые устройства (через запятую):</label>
+                    <input id="usedDevices" name="usedDevices" type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="project">Проект:</label>
+                    <input id="project" name="project" type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="inventoryNumber">Инвентарный номер:</label>
+                    <input id="inventoryNumber" name="inventoryNumber" type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="location">Местоположение:</label>
+                    <input id="location" name="location" type="text">
+                </div>
+                <div class="form-group margin-bottom">
+                    <label for="fileInput">Выберите файл:</label>
+                    <input id="fileInput" name="file" required type="file">
+                </div>
+                <div class="button-group margin-bottom">
+                    <button class="custom-button" type="submit">Загрузить</button>
+                </div>
+                <button class="custom-button" onclick="closeUploadDialog()" type="button">Отменить</button>
+            </form>
+        </div>
+    </div>
 </div>
 
 <div class="dialog-box" id="settingsDialog">
