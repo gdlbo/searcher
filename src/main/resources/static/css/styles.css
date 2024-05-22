@@ -223,11 +223,11 @@ a {
     margin-top: 10px;
 }
 
-.theme-dropdown-label {
+.dropdown-label {
     margin-right: 10px;
 }
 
-.theme-dropdown {
+.dropdown {
     padding: 5px;
     font-size: 16px;
     border: 1px solid var(--input-border-color);
@@ -237,7 +237,7 @@ a {
     color: var(--input-text-color);
 }
 
-.theme-dropdown:focus {
+.dropdown:focus {
     outline: none;
     box-shadow: 0 0 0 2px var(--primary-color);
 }

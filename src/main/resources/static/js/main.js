@@ -196,6 +196,34 @@ function closeFileHistoryDialog() {
     fileHistoryDialog.style.display = 'none';
 }
 
+function uploadDropdown() {
+    const uploadDocumentType = document.getElementById("uploadDocumentType");
+    const dropdown = document.getElementById("type-doc-upload-dropdown");
+    let newText;
+
+    if (dropdown.value !== "") {
+        newText = dropdown.value;
+    } else {
+        newText = "";
+    }
+
+    uploadDocumentType.value = newText;
+}
+
+function updateDropdown() {
+    const updateDocumentType = document.getElementById("updateDocumentType");
+    const dropdown = document.getElementById("type-doc-update-dropdown");
+    let newText;
+
+    if (dropdown.value !== "") {
+        newText = dropdown.value;
+    } else {
+        newText = "";
+    }
+
+    updateDocumentType.value = newText;
+}
+
 function deleteFileFromHistory(filePath) {
     // Send a GET request to the server to delete the file from history
     const encodedFilePath = encodeURIComponent(filePath);

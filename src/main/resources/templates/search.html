@@ -172,6 +172,23 @@
                     <input id="uploadDocumentType" name="documentType" required type="text">
                 </div>
                 <div class="input-group margin-bottom">
+                    <select class="dropdown" id="type-doc-upload-dropdown" onchange="uploadDropdown()">
+                        <option value="">Выберите тип технической документации</option>
+                        <option value="СП">Спецификация (СП)</option>
+                        <option value="СБ">Сборочный чертеж (СБ)</option>
+                        <option value="КТП">Карта технологических процессов (КТП)</option>
+                        <option value="МК">Маршрутная карта (МК)</option>
+                        <option value="Деталь">Деталь</option>
+                        <option value="ПС">Паспорт (ПС)</option>
+                        <option value="ТУ">Технические условия (ТУ)</option>
+                        <option value="РЭ">Руководство по эксплуатации (РЭ)</option>
+                        <option value="Ведомость">Ведомость спецификаций</option>
+                        <option value="ГЧ">Габаритный чертеж (ГЧ)</option>
+                        <option value="95">Схема электрических подключений (95)</option>
+                        <option value="Е1">Схема деления структурная (Е1)</option>
+                    </select>
+                </div>
+                <div class="input-group margin-bottom">
                     <label for="uploadUsedDevices">Применяемые устройства:</label>
                     <input id="uploadUsedDevices" name="usedDevices" type="text">
                 </div>
@@ -218,6 +235,23 @@
                     <input id="updateDocumentType" name="documentType" required type="text">
                 </div>
                 <div class="input-group margin-bottom">
+                    <select class="dropdown" id="type-doc-update-dropdown" onchange="updateDropdown()">
+                        <option value="">Выберите тип технической документации</option>
+                        <option value="СП">Спецификация (СП)</option>
+                        <option value="СБ">Сборочный чертеж (СБ)</option>
+                        <option value="КТП">Карта технологических процессов (КТП)</option>
+                        <option value="МК">Маршрутная карта (МК)</option>
+                        <option value="Деталь">Деталь</option>
+                        <option value="ПС">Паспорт (ПС)</option>
+                        <option value="ТУ">Технические условия (ТУ)</option>
+                        <option value="РЭ">Руководство по эксплуатации (РЭ)</option>
+                        <option value="Ведомость">Ведомость спецификаций</option>
+                        <option value="ГЧ">Габаритный чертеж (ГЧ)</option>
+                        <option value="95">Схема электрических подключений (95)</option>
+                        <option value="Е1">Схема деления структурная (Е1)</option>
+                    </select>
+                </div>
+                <div class="input-group margin-bottom">
                     <label for="updateUsedDevices">Применяемые устройства:</label>
                     <input id="updateUsedDevices" name="usedDevices" type="text">
                 </div>
@@ -258,16 +292,16 @@
         <div class="settings-section margin-bottom">
             <h3>Темы</h3>
             <div class="theme-switcher margin-bottom">
-                <label class="theme-dropdown-label" for="theme-dropdown">Тема:</label>
-                <select class="theme-dropdown" id="theme-dropdown" onchange="changeTheme()">
+                <label class="dropdown-label" for="theme-dropdown">Тема:</label>
+                <select class="dropdown" id="theme-dropdown" onchange="changeTheme()">
                     <option value="system">Системная</option>
                     <option value="dark">Тёмная</option>
                     <option value="light">Светлая</option>
                 </select>
             </div>
             <div class="input-group margin-bottom">
-                <label class="theme-dropdown-label" for="colorPicker">Цвет:</label>
-                <select class="theme-dropdown" id="colorPicker" onchange="handleAccentColorPicker()">
+                <label class="dropdown-label" for="colorPicker">Цвет:</label>
+                <select class="dropdown" id="colorPicker" onchange="handleAccentColorPicker()">
                     <option value="">Выберите цвет</option>
                     <option value="#a14242">Темно-красный</option>
                     <option value="#588163">Оливково-зеленый</option>
