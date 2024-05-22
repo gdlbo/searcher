@@ -25,43 +25,39 @@ function updateFile(id) {
         .catch(error => {
             console.error('Error:', error);
         });
-    
+
 }
 
-function openOptionsButton(dropdown) {
-    const location = dropdown.getAttribute('data-location')
-    const id = dropdown.getAttribute('data-id')
-
+function openOptionsButton() {
     const optionsDialog = document.getElementById('optionsDialog');
     optionsDialog.style.display = 'block';
-    // dropdown.addEventListener('click', function (event) {
-    //     const content = event.target;
-    //     const location = content.getAttribute('data-location')
-    //     const id = content.getAttribute('data-id')
-    //
-    //     console.log(location, id);
-    //     // switch (buttonType) {
-    //     //     case "historyButton":
-    //     //         showFileHistory(location);
-    //     //         break;
-    //     //     case "downloadButton":
-    //     //         downloadFile(location);
-    //     //         break;
-    //     //     case "replaceButton":
-    //     //         document.getElementById("replaceDialog").style.display = "block";
-    //     //         
-    //     //         break;
-    //     //     case "deleteButton":
-    //     //         removeFile(id);
-    //     //         break;
-    //     //     case "updateButton":
-    //     //         updateFile(id);
-    //     //         break;
-    //     //     case "copyButton":
-    //     //         copyPath(location);
-    //     //         break;
-    //     // }
-    // });
+
+    const optionsDialogContent = optionsDialog.firstElementChild
+
+    const location = optionsDialogContent.getAttribute('data-location')
+    const id = optionsDialogContent.getAttribute('data-id')
+
+    const buttonsList = optionsDialogContent.querySelector(".button-list")
+
+    const createButton = (text, eventClick) => {
+        const button = document.createElement("button");
+        button.textContent = text;
+        button.setAttribute("data-location", location);
+        button.addEventListener("click", eventClick);
+        buttonsList.appendChild(button);
+    }
+
+    createButton("Скачать", () => downloadFile(location));
+    createButton("Копировать путь", () => copyPath(location));
+    if (isAdmin) {
+        createButton("Заменить", () => {
+            document.getElementById("replaceDialog").style.display = "block";
+        });
+        createButton("Удалить", () => removeFile(location));
+        createButton("Редактировать", () => updateFile(id));
+    }
+    createButton("История", () => showFileHistory(location));
+    createButton("Закрыть", () => closeOptionsDialog());
 }
 
 function copyPath(filePath) {
@@ -211,7 +207,9 @@ function closeUpdateDialog() {
 
 function closeOptionsDialog() {
     const optionsDialog = document.getElementById('optionsDialog');
+    const buttonsList = optionsDialog.querySelector('.button-list');
     optionsDialog.querySelector('.dialog-content').scrollTop = 0;
+    buttonsList.innerHTML = '';
     document.body.style.overflow = '';
     optionsDialog.style.display = 'none';
 }

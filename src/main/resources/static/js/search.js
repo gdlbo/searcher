@@ -35,7 +35,7 @@ function loadSearch() {
     searchInputs.forEach((input) => {
         const searchField = input.dataset.searchField;
         const value = params.get(searchField);
-        if(value)input.value = value;
+        if (value) input.value = value;
     });
 
     //add other parameters to page query
@@ -52,14 +52,14 @@ function loadSearch() {
         // Redirect the user to the search results page with the query parameters
         window.location.href = `/search?${buildQuery()}`;
     });
-} 
+}
 
 function buildQuery() {
     const params = new URLSearchParams();
     const searchInputs = document.querySelectorAll("[data-search-field]");
     searchInputs.forEach((input) => {
         let value = input.value.trim();
-        if(value !== "")params.append(input.dataset.searchField, value);
+        if (value !== "") params.append(input.dataset.searchField, value);
     });
     return params;
 }
