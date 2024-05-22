@@ -166,8 +166,9 @@ function showFileHistory(filePath) {
             // Show the file history dialog
             const fileHistoryDialog = document.getElementById('fileHistoryDialog');
             document.body.style.overflow = 'hidden';
+            fileHistoryDialog.querySelector('.dialog-content').scrollTop = 0;
+            document.body.style.overflow = '';
             fileHistoryDialog.style.display = 'block';
-
         });
 }
 
@@ -212,6 +213,8 @@ function openUploadDialog() {
 
 function closeUploadDialog() {
     const uploadDialog = document.getElementById('uploadDialog');
+    uploadDialog.querySelector('.dialog-content').scrollTop = 0;
+    document.body.style.overflow = '';
     uploadDialog.style.display = 'none';
 }
 
@@ -238,4 +241,6 @@ function openUpdateDialog(fileId, decNumber, deviceName, documentType, usedDevic
 
 function closeUpdateDialog() {
     document.getElementById('updateDialog').style.display = 'none';
+    document.querySelector('.dialog-content').scrollTop = 0;
+    document.body.style.overflow = '';
 }
