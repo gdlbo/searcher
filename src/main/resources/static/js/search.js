@@ -29,34 +29,37 @@ function loadSearch() {
     //         }
     //     });
     // });
+    //set search field values from query
+    const params = new URLSearchParams(window.location.search);
     const searchInputs = document.querySelectorAll("[data-search-field]");
-    const searchButton = document.getElementById("search-button");
-
     searchInputs.forEach((input) => {
         const searchField = input.dataset.searchField;
-        const savedValue = localStorage.getItem(searchField);
-        if (savedValue) {
-            input.value = savedValue;
-        }
+        const value = params.get(searchField);
+        if(value)input.value = value;
     });
+
+    //add other parameters to page query
+    const tabs = document.querySelectorAll("div[class=pagination] a");
+    tabs.forEach((tab) => {
+        const tabUrl = new URL(tab.href);
+        const tabParams = new URLSearchParams(tabUrl.search);
+        params.set("page", tabParams.get("page"));
+        tab.href = `/search?${params}`;
+    })
+
+    const searchButton = document.getElementById("search-button");
     searchButton.addEventListener("click", () => {
-        const queryParams = new URLSearchParams();
-
-        searchInputs.forEach((input) => {
-            const searchField = input.dataset.searchField;
-            const value = input.value;
-
-            if (value) {
-                queryParams.append(searchField, value);
-                localStorage.setItem(searchField, value);
-            } else {
-                localStorage.removeItem(searchField);
-            }
-        });
-
         // Redirect the user to the search results page with the query parameters
-        window.location.href = `/search?${queryParams.toString()}`;
+        window.location.href = `/search?${buildQuery()}`;
     });
+}
 
-
+function buildQuery() {
+    const params = new URLSearchParams();
+    const searchInputs = document.querySelectorAll("[data-search-field]");
+    searchInputs.forEach((input) => {
+        let value = input.value.trim();
+        if(value !== "")params.append(input.dataset.searchField, value);
+    });
+    return params;
 }

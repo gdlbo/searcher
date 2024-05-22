@@ -53,15 +53,19 @@
             </a>
             <input class="search-input" data-search-field="project" id="project" type="text"></th>
         <th>
-            <a class="sort">
-                Дата внес./изм.
-            </a>
-            <input class="search-input" data-search-field="date" id="date" type="text"></th>
+            <a class="sort">Дата внес.</a>
+            <input class="search-input" data-search-field="creationTime" id="creationTime" type="text"/>
+        </th>
+        <th>
+            <a class="sort">Дата изм.</a>
+            <input class="search-input" data-search-field="lastModified" id="lastModified" type="text"/>
+        </th>
         <th>
             <a class="sort">
                 Кем внесено
             </a>
             <input class="search-input" data-search-field="user" id="user" type="text"></th>
+        </th>
         <th>
             <a class="sort">
                 Местоположение
@@ -71,7 +75,8 @@
             <a class="sort">
                 Инвентарный номер
             </a>
-            <input class="search-input" data-search-field="inventoryNumber" id="inventoryNumber" type="text"></th>
+            <input class="search-input" data-search-field="inventoryNumber" id="inventoryNumber" type="text">
+        </th>
         <th></th>
     </tr>
     </thead>
@@ -83,7 +88,8 @@
         <td><span th:text="${file.documentType}"></span></td>
         <td><span th:text="${file.usedDevices}"></span></td>
         <td><span th:text="${file.project}"></span></td>
-        <td><span th:text="${file.creationTime}"></span><br><span th:text="${file.lastModified}"></span></td>
+        <td><span th:text="${file.creationTime}"></span></td>
+        <td><span th:text="${file.lastModified}"></span></td>
         <td><span th:text="${file.user.username}"></span></td>
         <td><span th:text="${file.location}"></span></td>
         <td><span th:text="${file.inventoryNumber}"></span></td>
@@ -141,19 +147,21 @@
 </table>
 
 <div class="pagination" th:fragment="pagination" th:if="${fileInfos.size() gt 0}">
-    <span th:each="i : ${pageNumbers}">
-        <a onclick="storeSearch(); return true;" th:href="@{/search(page=0)}" th:if="${i == -1}">«</a>
+    <span th:if="${page>0}">
+        <a th:href="@{/search(page=0)}">«</a>
+    </span>
 
-        <a onclick="storeSearch(); return true;" th:classappend="${i == page} ? 'selected-page'"
+    <span th:each="i : ${pageNumbers}">
+        <a th:classappend="${i == page} ? 'selected-page'"
            th:href="@{/search(page=${i})}" th:if="${i >= 0 && i < totalPages}">
             <span th:text="${i + 1}"></span>
         </a>
+    </span>
 
-        <a onclick="storeSearch(); return true;" th:href="@{/search(page=${totalPages - 1})}"
-           th:if="${i == totalPages}">»</a>
+    <span th:if="${page < totalPages - 1}">
+        <a th:href="@{/search(page=${totalPages - 1})}">»</a>
     </span>
 </div>
-
 
 <div class="dialog-box" id="uploadDialog" style="display: none;">
     <div class="dialog-content">
@@ -201,7 +209,6 @@
         </div>
     </div>
 </div>
-
 
 <div class="dialog-box" id="updateDialog" style="display: none;">
     <div class="dialog-content">

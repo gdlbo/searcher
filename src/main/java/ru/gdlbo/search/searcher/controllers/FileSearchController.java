@@ -91,7 +91,7 @@ public class FileSearchController {
     public void createDummyFiles(int count) {
         User defaultUser = userService.findByUsername("admin");
         Random random = new Random();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         for (int i = 1; i <= count; i++) {
             int randomNumber = random.nextInt(1000);
