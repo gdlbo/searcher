@@ -91,16 +91,32 @@ function openOptionsButton() {
         buttonsList.appendChild(button);
     }
 
-    createButton("Скачать", () => downloadFile(location));
-    createButton("Копировать путь", () => copyPath(location));
+    createButton("Скачать", () => {
+        downloadFile(location);
+        closeOptionsDialog();
+    });
+    createButton("Копировать путь", () => {
+        copyPath(location);
+        closeOptionsDialog();
+    });
     if (isAdmin) {
         createButton("Заменить", () => {
             document.getElementById("replaceDialog").style.display = "block";
+            closeOptionsDialog();
         });
-        createButton("Удалить", () => removeFile(location));
-        createButton("Редактировать", () => updateFile(id));
+        createButton("Удалить", () => {
+            removeFile(location);
+            closeOptionsDialog();
+        });
+        createButton("Редактировать", () => {
+            updateFile(id);
+            closeOptionsDialog();
+        });
     }
-    createButton("История", () => showFileHistory(location));
+    createButton("История", () => {
+        showFileHistory(location);
+        closeOptionsDialog();
+    });
     createButton("Закрыть", () => closeOptionsDialog());
 }
 
