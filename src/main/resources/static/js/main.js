@@ -123,28 +123,36 @@ function showFileHistory(filePath) {
                 files.forEach(file => {
                     const listItem = document.createElement('div');
                     listItem.style.display = 'flex';
-                    listItem.style.justifyContent = 'space-between';
+                    listItem.style.flexDirection = 'column';
                     listItem.style.alignItems = 'center';
-                    listItem.style.marginBottom = '30px';
+                    listItem.style.border = '1px solid #ccc';
+                    listItem.style.padding = '20px';
+                    listItem.style.marginBottom = '20px';
+                    listItem.style.width = '200px';
 
                     const dateSpan = document.createElement('span');
                     dateSpan.textContent = file.lastModified;
+                    dateSpan.style.marginBottom = '10px';
+
+                    const buttonDiv = document.createElement('div');
+                    buttonDiv.style.display = 'flex';
+                    buttonDiv.style.justifyContent = 'space-between';
+                    buttonDiv.style.width = '100%';
 
                     const deleteButton = document.createElement('button');
                     deleteButton.textContent = 'Удалить';
                     deleteButton.onclick = () => deleteFileFromHistory(file.location);
                     deleteButton.classList.add('small-button');
+                    deleteButton.style.flex = '1';
+                    deleteButton.style.marginRight = '10px';
 
                     const downloadButton = document.createElement('button');
                     downloadButton.textContent = 'Скачать';
                     downloadButton.onclick = () => downloadFile(file.location);
                     downloadButton.classList.add('small-button');
+                    downloadButton.style.flex = '1';
 
-                    const buttonDiv = document.createElement('div');
-                    buttonDiv.style.float = 'right';
-                    buttonDiv.style.display = 'flex';
                     buttonDiv.appendChild(downloadButton);
-
                     if (isAdmin) {
                         buttonDiv.appendChild(deleteButton);
                     }
@@ -159,6 +167,7 @@ function showFileHistory(filePath) {
             const fileHistoryDialog = document.getElementById('fileHistoryDialog');
             document.body.style.overflow = 'hidden';
             fileHistoryDialog.style.display = 'block';
+
         });
 }
 
