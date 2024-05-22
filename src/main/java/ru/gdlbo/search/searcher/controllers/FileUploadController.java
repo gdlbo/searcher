@@ -32,13 +32,13 @@ public class FileUploadController {
     @PostMapping("/api/upload")
     @ResponseBody
     public ResponseEntity<Map<String, String>> uploadFile(
-            @RequestParam(name = "uploadDecNumber") String decNumber,
-            @RequestParam(name = "uploadDeviceName") String deviceName,
-            @RequestParam(name = "uploadDocumentType") String documentType,
-            @RequestParam(name = "uploadUsedDevices") String usedDevices,
-            @RequestParam(name = "uploadProject") String project,
-            @RequestParam(name = "uploadInventoryNumber") String inventoryNumber,
-            @RequestParam(name = "uploadLocation") String location,
+            @RequestParam String decNumber,
+            @RequestParam String deviceName,
+            @RequestParam String documentType,
+            @RequestParam String usedDevices,
+            @RequestParam String project,
+            @RequestParam String inventoryNumber,
+            @RequestParam String location,
             @RequestParam MultipartFile file,
             Authentication authentication) throws Exception {
 

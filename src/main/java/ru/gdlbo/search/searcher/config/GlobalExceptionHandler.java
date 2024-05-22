@@ -6,11 +6,15 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<String> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
-        String message = "Required request parameter '" + ex.getParameterName() + "' is not present";
-        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Map<String, String>> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Required request parameter '" + ex.getParameterName() + "' is not present");
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
