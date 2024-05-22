@@ -12,43 +12,6 @@ document.addEventListener("DOMContentLoaded", function () {
     initThemeButtons()
 });
 
-function openDropdown(event) {
-    event.stopPropagation();
-    closeAllDropdowns();
-    const dropdownContent = event.target.nextElementSibling;
-    dropdownContent.classList.add("show");
-
-    setupGlobalClickListener(dropdownContent);
-    setupButtonHandlers(dropdownContent);
-
-    const rect = dropdownContent.getBoundingClientRect();
-    if (rect.bottom > window.innerHeight) {
-        dropdownContent.style.top = 'auto';
-        dropdownContent.style.bottom = '100%';
-    } else if (rect.top < 0) {
-        dropdownContent.style.top = '100%';
-        dropdownContent.style.bottom = 'auto';
-    } else {
-        dropdownContent.style.top = '100%';
-        dropdownContent.style.bottom = 'auto';
-    }
-}
-
-function closeAllDropdowns() {
-    const dropdowns = document.querySelectorAll(".dropdown-content");
-    dropdowns.forEach(dropdown => {
-        dropdown.classList.remove("show");
-    });
-}
-
-function setupGlobalClickListener(dropdownContent) {
-    window.onclick = function (event) {
-        if (!event.target.matches(".options-button") && !dropdownContent.contains(event.target)) {
-            dropdownContent.classList.remove("show");
-        }
-    };
-}
-
 function updateFile(id) {
     fetch('/api/searchFile?id=' + id)
         .then(response => response.json())
@@ -62,42 +25,43 @@ function updateFile(id) {
         .catch(error => {
             console.error('Error:', error);
         });
-    closeAllDropdowns();
+    
 }
 
-function setupButtonHandlers(dropdownContent) {
-    dropdownContent.addEventListener('click', function (event) {
-        event.stopPropagation();
-        const button = event.target.closest('button');
-        const buttonType = button?.id;
-        if (!buttonType) return;
+function openOptionsButton(dropdown) {
+    const location = dropdown.getAttribute('data-location')
+    const id = dropdown.getAttribute('data-id')
 
-        const content = event.target.closest('.dropdown-content');
-        const location = content.getAttribute('data-location')
-        const id = content.getAttribute('data-id')
-
-        switch (buttonType) {
-            case "historyButton":
-                showFileHistory(location);
-                break;
-            case "downloadButton":
-                downloadFile(location);
-                break;
-            case "replaceButton":
-                document.getElementById("replaceDialog").style.display = "block";
-                closeAllDropdowns();
-                break;
-            case "deleteButton":
-                removeFile(id);
-                break;
-            case "updateButton":
-                updateFile(id);
-                break;
-            case "copyButton":
-                copyPath(location);
-                break;
-        }
-    });
+    const optionsDialog = document.getElementById('optionsDialog');
+    optionsDialog.style.display = 'block';
+    // dropdown.addEventListener('click', function (event) {
+    //     const content = event.target;
+    //     const location = content.getAttribute('data-location')
+    //     const id = content.getAttribute('data-id')
+    //
+    //     console.log(location, id);
+    //     // switch (buttonType) {
+    //     //     case "historyButton":
+    //     //         showFileHistory(location);
+    //     //         break;
+    //     //     case "downloadButton":
+    //     //         downloadFile(location);
+    //     //         break;
+    //     //     case "replaceButton":
+    //     //         document.getElementById("replaceDialog").style.display = "block";
+    //     //         
+    //     //         break;
+    //     //     case "deleteButton":
+    //     //         removeFile(id);
+    //     //         break;
+    //     //     case "updateButton":
+    //     //         updateFile(id);
+    //     //         break;
+    //     //     case "copyButton":
+    //     //         copyPath(location);
+    //     //         break;
+    //     // }
+    // });
 }
 
 function copyPath(filePath) {
@@ -106,7 +70,6 @@ function copyPath(filePath) {
     }, function (err) {
         console.error('Async: Could not copy text: ', err);
     });
-    closeAllDropdowns();
 }
 
 function showFileHistory(filePath) {
@@ -244,4 +207,11 @@ function closeUpdateDialog() {
     updateDialog.querySelector('.dialog-content').scrollTop = 0;
     document.body.style.overflow = '';
     updateDialog.style.display = 'none';
+}
+
+function closeOptionsDialog() {
+    const optionsDialog = document.getElementById('optionsDialog');
+    optionsDialog.querySelector('.dialog-content').scrollTop = 0;
+    document.body.style.overflow = '';
+    optionsDialog.style.display = 'none';
 }
