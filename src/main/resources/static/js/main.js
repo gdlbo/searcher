@@ -69,7 +69,6 @@ function updateFile(id) {
         .catch(error => {
             console.error('Error:', error);
         });
-
 }
 
 function openOptionsButton() {
@@ -105,7 +104,7 @@ function openOptionsButton() {
             closeOptionsDialog();
         });
         createButton("Удалить", () => {
-            removeFile(location);
+            removeFile(id);
             closeOptionsDialog();
         });
         createButton("Редактировать", () => {
