@@ -42,7 +42,22 @@ function applyCustomPath() {
         return;
     }
 
-    fetch('/api/submit?searcherPath=' + encodeURIComponent(path), {
+    fetch('/api/submitCustomPath?searcherPath=' + encodeURIComponent(path), {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
+    }).catch(error => {
+        console.error('Error:', error);
+    });
+
+    setTimeout(() => {
+        window.location.href = '/';
+    }, 2000);
+}
+
+function dropCustomPath() {
+    fetch('/api/dropCustomPath', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import ru.gdlbo.search.searcher.config.Config;
 import ru.gdlbo.search.searcher.repository.FileInfo;
 import ru.gdlbo.search.searcher.repository.User;
 import ru.gdlbo.search.searcher.services.FileService;
@@ -28,6 +29,8 @@ public class FileUploadController {
     private FileService fileService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private Config config;
 
     @PostMapping("/api/upload")
     @ResponseBody
@@ -38,7 +41,7 @@ public class FileUploadController {
             @RequestParam String usedDevices,
             @RequestParam String project,
             @RequestParam String inventoryNumber,
-            @RequestParam String location,
+            @RequestParam(required = false) String location,
             @RequestParam MultipartFile file,
             Authentication authentication) throws Exception {
 
@@ -58,6 +61,10 @@ public class FileUploadController {
         if (fileService.existsByDecNumber(decNumber)) {
             response.put("error", "Такой децимальный номер уже существует");
             return ResponseEntity.badRequest().body(response);
+        }
+
+        if (config.getPath() != null) {
+            location = config.getPath();
         }
 
         String creationTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));

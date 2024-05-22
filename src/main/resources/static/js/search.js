@@ -20,16 +20,6 @@ function storeSearch() {
 }
 
 function loadSearch() {
-    // const searchInputs = document.querySelectorAll('.search-input');
-    // searchInputs.forEach((input) => {
-    //     input.addEventListener('keypress', (event) => {
-    //         if (event.key === 'Enter') {
-    //             // document.querySelector('form').submit();
-    //             console.log('Enter pressed');
-    //         }
-    //     });
-    // });
-    //set search field values from query
     const params = new URLSearchParams(window.location.search);
     const searchInputs = document.querySelectorAll("[data-search-field]");
     searchInputs.forEach((input) => {

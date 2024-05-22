@@ -14,6 +14,12 @@ import ru.gdlbo.search.searcher.config.WebSecurityConfig;
 import ru.gdlbo.search.searcher.repository.*;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Properties;
 
 @RestController
 public class AdminController {
@@ -131,7 +137,7 @@ public class AdminController {
     }
 
     @GetMapping("/api/removeFile")
-    public String removeFileFromHistory(@RequestParam Long id, Authentication authentication) {
+    public String removeFileFromHistory(@RequestParam Long id) {
         System.out.println("Request received to remove file: " + id);
 
         fileRepository.findById(id).ifPresent(file -> {
@@ -146,5 +152,45 @@ public class AdminController {
 
         fileRepository.deleteById(id);
         return "redirect:/search";
+    }
+
+    @GetMapping("/api/submitCustomPath")
+    public ResponseEntity<String> submitCustomPath(@RequestParam String searcherPath) throws IOException {
+        Path propertiesPath = Paths.get(System.getProperty("user.dir"), "application.properties");
+
+        if (!propertiesPath.toFile().exists()) {
+            propertiesPath.toFile().createNewFile();
+        }
+
+        Properties properties = new Properties();
+
+        try (FileInputStream inStream = new FileInputStream(propertiesPath.toFile())) {
+            properties.load(inStream);
+        }
+
+        if (searcherPath == null || searcherPath.isEmpty()) {
+            searcherPath = properties.getProperty("searcher.path");
+        }
+
+        properties.setProperty("searcher.path", searcherPath);
+
+        try (FileOutputStream outStream = new FileOutputStream(propertiesPath.toFile())) {
+            properties.store(outStream, null);
+        }
+
+        restartManager.restart();
+
+        return ResponseEntity.ok("Restarting...");
+    }
+
+    @GetMapping("/api/dropCustomPath")
+    public ResponseEntity<String> dropCustomPath() {
+        Path propertiesPath = Paths.get(System.getProperty("user.dir"), "application.properties");
+
+        propertiesPath.toFile().delete();
+
+        restartManager.restart();
+
+        return ResponseEntity.ok("Restarting...");
     }
 }

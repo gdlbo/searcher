@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.gdlbo.search.searcher.config.Config;
 import ru.gdlbo.search.searcher.repository.FileInfo;
 import ru.gdlbo.search.searcher.repository.FileInfoSpecification;
 import ru.gdlbo.search.searcher.repository.PaginatedResult;
@@ -28,9 +29,10 @@ import java.util.Random;
 public class FileSearchController {
     @Autowired
     private FileService fileService;
-
     @Autowired
     private UserService userService;
+    @Autowired
+    private Config config;
 
     @GetMapping("/search")
     public String searchFiles(@RequestParam(defaultValue = "0") int page,
@@ -47,6 +49,8 @@ public class FileSearchController {
         String lastModified = formData.get("lastModified");
         String location = formData.get("location");
         String creationTime = formData.get("creationTime");
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        boolean hasCustomPath = config.getPath() != null;
 
         User user = userService.findByUsername(authentication.getName());
         if (user == null) {
@@ -75,6 +79,12 @@ public class FileSearchController {
         setAttr(model, "creationTime", creationTime);
         setAttr(model, "lastModified", lastModified);
         setAttr(model, "location", location);
+
+        model.addAttribute("isCustomPathDisabled", !hasCustomPath);
+
+        if (hasCustomPath && isAdmin) {
+            model.addAttribute("path", config.getPath());
+        }
 
         return "search";
     }

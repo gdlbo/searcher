@@ -47,7 +47,7 @@ function addCheckboxEventListeners() {
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
 
     checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
+        checkbox.addEventListener('change', function () {
             const column = this.dataset.column;
             const isChecked = this.checked;
             saveCheckboxState(column, isChecked);

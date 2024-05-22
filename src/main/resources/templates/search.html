@@ -10,7 +10,7 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 </head>
 
-<body th:data-is-admin="${isAdmin}">
+<body th:data-is-admin="${isAdmin}" th:data-is-custom-path="${isCustomPathDisabled}" th:data-path="${path}">
 <div class="header-container">
     <h1>Поисковик</h1>
     <div class="button-list">
@@ -183,9 +183,9 @@
                     <label for="uploadInventoryNumber">Инвентарный номер:</label>
                     <input id="uploadInventoryNumber" name="inventoryNumber" type="text">
                 </div>
-                <div class="input-group margin-bottom">
+                <div class="input-group margin-bottom" th:if="${isCustomPathDisabled}">
                     <label for="uploadLocation">Путь куда загрузить:</label>
-                    <input id="uploadLocation" name="location" type="text">
+                    <input id="uploadLocation" name="location" placeholder="/путь/до/папки" type="text">
                 </div>
                 <div class="form-group margin-bottom">
                     <label for="fileInput">Выберите файл:</label>
@@ -205,7 +205,6 @@
             <h2>Изменение информации о файле</h2>
             <form action="/api/update" enctype="multipart/form-data" id="updateForm" method="post">
                 <input id="fileId" name="id" type="hidden">
-
                 <div class="input-group margin-bottom">
                     <label for="updateDecNumber">Децимальный номер:</label>
                     <input id="updateDecNumber" name="decNumber" required type="text">
@@ -296,16 +295,16 @@
         <div class="input-group margin-bottom checkbox-container">
             <h3>Вкладки</h3>
             <div>
-                <label><input type="checkbox" data-column="decNumber" checked> Дец. номер</label>
-                <label><input type="checkbox" data-column="deviceName" checked> Наименование</label>
-                <label><input type="checkbox" data-column="documentType" checked> Тип документа</label>
-                <label><input type="checkbox" data-column="usedDevices" checked> Прим. устройства</label>
-                <label><input type="checkbox" data-column="project" checked> Проект</label>
-                <label><input type="checkbox" data-column="creationTime" checked> Дата внес.</label>
-                <label><input type="checkbox" data-column="lastModified" checked> Дата изм.</label>
-                <label><input type="checkbox" data-column="user" checked> Кем внесено</label>
-                <label><input type="checkbox" data-column="location" checked> Путь</label>
-                <label><input type="checkbox" data-column="inventoryNumber" checked> Инвентарный номер</label>
+                <label><input checked data-column="decNumber" type="checkbox"> Дец. номер</label>
+                <label><input checked data-column="deviceName" type="checkbox"> Наименование</label>
+                <label><input checked data-column="documentType" type="checkbox"> Тип документа</label>
+                <label><input checked data-column="usedDevices" type="checkbox"> Прим. устройства</label>
+                <label><input checked data-column="project" type="checkbox"> Проект</label>
+                <label><input checked data-column="creationTime" type="checkbox"> Дата внес.</label>
+                <label><input checked data-column="lastModified" type="checkbox"> Дата изм.</label>
+                <label><input checked data-column="user" type="checkbox"> Кем внесено</label>
+                <label><input checked data-column="location" type="checkbox"> Путь</label>
+                <label><input checked data-column="inventoryNumber" type="checkbox"> Инвентарный номер</label>
             </div>
         </div>
         <div class="margin-bottom" th:if="${isAdmin}">
@@ -320,9 +319,19 @@
         </div>
         <div class="margin-bottom" th:if="${isAdmin}">
             <h3>Системное</h3>
+            <div class="input-group">
+                <label for="searcherPath">Путь для загрузки файлов по умолчанию:</label>
+                <input id="searcherPath" placeholder="/путь/до/папки" th:value="${path}" type="text">
+            </div>
+            <div class="button-group margin-bottom">
+                <button class="custom-button" onclick="applyCustomPath()" type="button">Применить</button>
+                <button class="custom-button" onclick="dropCustomPath()" type="button">Сбросить</button>
+            </div>
             <button class="custom-button" onclick="resetDatabase()" type="button">Сбросить все базы</button>
             <button class="custom-button" onclick="resetFileDatabase()" type="button">Сбросить базу файлов</button>
-            <button class="custom-button" onclick="setDummyFiles()" type="button">Заполнить базу пустышками (тестирование)</button>
+            <button class="custom-button" onclick="setDummyFiles()" type="button">Заполнить базу пустышками
+                (тестирование)
+            </button>
             <button class="custom-button" onclick="restartServer()" type="button">Перезапустить сервер</button>
         </div>
         <div class="account-credentials margin-bottom">
