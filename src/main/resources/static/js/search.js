@@ -52,7 +52,7 @@ function loadSearch() {
         // Redirect the user to the search results page with the query parameters
         window.location.href = `/search?${buildQuery()}`;
     });
-}
+} 
 
 function buildQuery() {
     const params = new URLSearchParams();

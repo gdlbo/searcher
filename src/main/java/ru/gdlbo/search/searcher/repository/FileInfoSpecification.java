@@ -33,7 +33,8 @@ public class FileInfoSpecification {
 
     private static void addStringPredicate(String value, String fieldName, Root<FileInfo> root, CriteriaBuilder criteriaBuilder, List<Predicate> predicates) {
         if (value != null && !value.isEmpty()) {
-            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(fieldName)), value.toLowerCase()));
+            String pattern = "%" + value.toLowerCase() + "%";
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(fieldName)), pattern));
         }
     }
 }
