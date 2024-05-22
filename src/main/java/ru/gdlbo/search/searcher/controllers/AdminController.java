@@ -35,6 +35,9 @@ public class AdminController {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @GetMapping("/api/grantAdmin")
     public ResponseEntity<String> grantAdminPrivileges(@RequestParam String username, Authentication authentication) {
         if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
@@ -110,15 +113,13 @@ public class AdminController {
     }
 
     @GetMapping("/api/changeCredentials")
-    public ResponseEntity<String> changeCredentials(@RequestParam(required = false) String username, @RequestParam String oldPassword, @RequestParam String newPassword, Authentication authentication) {
+    public ResponseEntity<String> changeCredentials(@RequestParam(required = false) String username, @RequestParam String oldPassword, @RequestParam(required = false) String newPassword, Authentication authentication) {
         User currentUser = userRepository.findByUsername(authentication.getName()).orElse(null);
         if (currentUser == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Current user not found");
         }
 
-        PasswordEncoder encoder = new WebSecurityConfig().passwordEncoder();
-
-        if (!encoder.matches(oldPassword, currentUser.getPassword())) {
+        if (!passwordEncoder.matches(oldPassword, currentUser.getPassword())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Old password is incorrect");
         }
 
@@ -130,7 +131,10 @@ public class AdminController {
             currentUser.setUsername(username);
         }
 
-        currentUser.setPassword(encoder.encode(newPassword));
+        if (newPassword != null && !newPassword.isEmpty()) {
+            currentUser.setPassword(passwordEncoder.encode(newPassword));
+        }
+
         userRepository.save(currentUser);
 
         return ResponseEntity.ok("Credentials updated successfully");
