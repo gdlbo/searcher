@@ -55,6 +55,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/history").permitAll() // Allow access to '/api/history' for all users
                         .requestMatchers("/api/download").permitAll() // Allow access to '/api/download' for all users
+                        .requestMatchers("/api/changeCredentials").permitAll() // Allow access to '/api/changeCredentials' for all users
                         .requestMatchers("/api/**").hasRole("ADMIN") // Only allow access to other '/api/**' endpoints if the user has the 'ADMIN' role
                         .anyRequest().authenticated()
                 )
