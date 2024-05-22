@@ -320,13 +320,6 @@
         </div>
         <div class="margin-bottom" th:if="${isAdmin}">
             <h3>Системное</h3>
-            <div class="input-group">
-                <label for="searcherPath">Путь для поиска:</label>
-                <input id="searcherPath" placeholder="/путь/для/поиска" th:value="${searchPath}" type="text">
-            </div>
-            <div class="button-group margin-bottom">
-                <button class="custom-button" onclick="applyCustomPath()" type="button">Применить</button>
-            </div>
             <button class="custom-button" onclick="resetDatabase()" type="button">Сбросить все базы</button>
             <button class="custom-button" onclick="resetFileDatabase()" type="button">Сбросить базу файлов</button>
             <button class="custom-button" onclick="setDummyFiles()" type="button">Заполнить базу пустышками (тестирование)</button>
