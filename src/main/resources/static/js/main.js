@@ -240,7 +240,8 @@ function openUpdateDialog(fileId, decNumber, deviceName, documentType, usedDevic
 }
 
 function closeUpdateDialog() {
-    document.getElementById('updateDialog').style.display = 'none';
-    document.querySelector('.dialog-content').scrollTop = 0;
+    const updateDialog = document.getElementById('updateDialog');
+    updateDialog.querySelector('.dialog-content').scrollTop = 0;
     document.body.style.overflow = '';
+    updateDialog.style.display = 'none';
 }
