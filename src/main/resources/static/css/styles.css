@@ -180,6 +180,12 @@ table {
     z-index: 2;
 }
 
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 1em;
+}
+
 th,
 td {
     padding: 10px;

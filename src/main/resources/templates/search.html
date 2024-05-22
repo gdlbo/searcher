@@ -24,127 +24,130 @@
 
 <div th:replace="~{::pagination}"></div>
 
-<table id="file-paths">
-    <thead>
-    <tr>
-        <th>
-            <a class="sort">
-                Дец. номер
-            </a>
-            <input class="search-input" data-search-field="decNumber" id="decNumber" type="text"></th>
-        <th>
-            <a class="sort">
-                Наименование
-            </a>
-            <input class="search-input" data-search-field="deviceName" id="deviceName" type="text"></th>
-        <th>
-            <a class="sort">
-                Тип документа
-            </a>
-            <input class="search-input" data-search-field="documentType" id="documentType" type="text"></th>
-        <th>
-            <a class="sort">
-                Прим. устройства
-            </a>
-            <input class="search-input" data-search-field="usedDevices" id="usedDevices" type="text"></th>
-        <th>
-            <a class="sort">
-                Проект
-            </a>
-            <input class="search-input" data-search-field="project" id="project" type="text"></th>
-        <th>
-            <a class="sort">Дата внес.</a>
-            <input class="search-input" data-search-field="creationTime" id="creationTime" type="text"/>
-        </th>
-        <th>
-            <a class="sort">Дата изм.</a>
-            <input class="search-input" data-search-field="lastModified" id="lastModified" type="text"/>
-        </th>
-        <th>
-            <a class="sort">
-                Кем внесено
-            </a>
-            <input class="search-input" data-search-field="user" id="user" type="text"></th>
-        </th>
-        <th>
-            <a class="sort">
-                Местоположение
-            </a>
-            <input class="search-input" data-search-field="location" id="location" type="text"></th>
-        <th>
-            <a class="sort">
-                Инвентарный номер
-            </a>
-            <input class="search-input" data-search-field="inventoryNumber" id="inventoryNumber" type="text">
-        </th>
-        <th></th>
-    </tr>
-    </thead>
+<div class="table-container">
+    <table id="file-paths">
+        <thead>
+        <tr>
+            <th>
+                <a class="sort">
+                    Дец. номер
+                </a>
+                <input class="search-input" data-search-field="decNumber" id="decNumber" type="text"></th>
+            <th>
+                <a class="sort">
+                    Наименование
+                </a>
+                <input class="search-input" data-search-field="deviceName" id="deviceName" type="text"></th>
+            <th>
+                <a class="sort">
+                    Тип документа
+                </a>
+                <input class="search-input" data-search-field="documentType" id="documentType" type="text"></th>
+            <th>
+                <a class="sort">
+                    Прим. устройства
+                </a>
+                <input class="search-input" data-search-field="usedDevices" id="usedDevices" type="text"></th>
+            <th>
+                <a class="sort">
+                    Проект
+                </a>
+                <input class="search-input" data-search-field="project" id="project" type="text"></th>
+            <th>
+                <a class="sort">Дата внес.</a>
+                <input class="search-input" data-search-field="creationTime" id="creationTime" type="text"/>
+            </th>
+            <th>
+                <a class="sort">Дата изм.</a>
+                <input class="search-input" data-search-field="lastModified" id="lastModified" type="text"/>
+            </th>
+            <th>
+                <a class="sort">
+                    Кем внесено
+                </a>
+                <input class="search-input" data-search-field="user" id="user" type="text"></th>
+            </th>
+            <th>
+                <a class="sort">
+                    Местоположение
+                </a>
+                <input class="search-input" data-search-field="location" id="location" type="text"></th>
+            <th>
+                <a class="sort">
+                    Инвентарный номер
+                </a>
+                <input class="search-input" data-search-field="inventoryNumber" id="inventoryNumber" type="text">
+            </th>
+            <th></th>
+        </tr>
+        </thead>
 
-    <tbody>
-    <tr th:each="file : ${fileInfos}">
-        <td><span th:text="${file.decNumber}"></span></td>
-        <td><span th:text="${file.deviceName}"></span></td>
-        <td><span th:text="${file.documentType}"></span></td>
-        <td><span th:text="${file.usedDevices}"></span></td>
-        <td><span th:text="${file.project}"></span></td>
-        <td><span th:text="${file.creationTime}"></span></td>
-        <td><span th:text="${file.lastModified}"></span></td>
-        <td><span th:text="${file.user.username}"></span></td>
-        <td><span th:text="${file.location}"></span></td>
-        <td><span th:text="${file.inventoryNumber}"></span></td>
-        <td>
-            <div class="dropdown">
-                <button class="options-button" onclick="openDropdown(event)">...</button>
-                <div class="dropdown-content" id="dropdown-content" th:data-id="${file.id}"
-                     th:data-location="${file.location}">
-                    <button class="custom-dropdown-button" id="downloadButton">Скачать</button>
-                    <button class="custom-dropdown-button" id="copyButton">Копировать путь</button>
-                    <div th:if="${isAdmin}">
-                        <button class="custom-dropdown-button" id="deleteButton">Удалить</button>
-                        <button class="custom-dropdown-button" id="replaceButton">Заменить</button>
-                        <button class="custom-dropdown-button" id="updateButton">Редактировать</button>
-                    </div>
-                    <button class="custom-dropdown-button" id="historyButton">История</button>
-                </div>
-            </div>
+        <tbody>
+        <tr th:each="file : ${fileInfos}">
+            <td><span th:text="${file.decNumber}"></span></td>
+            <td><span th:text="${file.deviceName}"></span></td>
+            <td><span th:text="${file.documentType}"></span></td>
+            <td><span th:text="${file.usedDevices}"></span></td>
+            <td><span th:text="${file.project}"></span></td>
+            <td><span th:text="${file.creationTime}"></span></td>
+            <td><span th:text="${file.lastModified}"></span></td>
+            <td><span th:text="${file.user.username}"></span></td>
+            <td><span th:text="${file.location}"></span></td>
+            <td><span th:text="${file.inventoryNumber}"></span></td>
+            <td>
+<!--                <div class="dropdown">-->
+<!--                    <button class="options-button" onclick="openDropdown(event)">...</button>-->
+<!--                    <div class="dropdown-content" id="dropdown-content" th:data-id="${file.id}"-->
+<!--                         th:data-location="${file.location}">-->
+<!--                        <button class="custom-dropdown-button" id="downloadButton">Скачать</button>-->
+<!--                        <button class="custom-dropdown-button" id="copyButton">Копировать путь</button>-->
+<!--                        <div th:if="${isAdmin}">-->
+<!--                            <button class="custom-dropdown-button" id="deleteButton">Удалить</button>-->
+<!--                            <button class="custom-dropdown-button" id="replaceButton">Заменить</button>-->
+<!--                            <button class="custom-dropdown-button" id="updateButton">Редактировать</button>-->
+<!--                        </div>-->
+<!--                        <button class="custom-dropdown-button" id="historyButton">История</button>-->
+<!--                    </div>-->
+<!--                </div>-->
 
-            <div class="dialog-box" id="replaceDialog">
-                <div class="dialog-content">
-                    <h2>Замена файла</h2>
-                    <form action="/api/replace" enctype="multipart/form-data" method="post">
-                        <input name="filePath" th:value="${file.location}" type="hidden"/>
-                        <div class="form-group">
-                            <div class="drop-zone-container">
-                                <div class="drop-zone">
-                                    <input id="file-input" name="file" type="file"/>
-                                    <label class="drop-zone__prompt" for="file-input">Выберите или переместите файл
-                                        сюда</label>
-                                    <span id="file-name"></span>
+                <div class="dialog-box" id="replaceDialog">
+                    <div class="dialog-content">
+                        <h2>Замена файла</h2>
+                        <form action="/api/replace" enctype="multipart/form-data" method="post">
+                            <input name="filePath" th:value="${file.location}" type="hidden"/>
+                            <div class="form-group">
+                                <div class="drop-zone-container">
+                                    <div class="drop-zone">
+                                        <input id="file-input" name="file" type="file"/>
+                                        <label class="drop-zone__prompt" for="file-input">Выберите или переместите файл
+                                            сюда</label>
+                                        <span id="file-name"></span>
+                                    </div>
+                                </div>
+                                <div class="buttons">
+                                    <button class="custom-button" type="submit">Заменить</button>
+                                    <button class="custom-button" onclick="closeDialog()" type="button">Отменить
+                                    </button>
                                 </div>
                             </div>
-                            <div class="buttons">
-                                <button class="custom-button" type="submit">Заменить</button>
-                                <button class="custom-button" onclick="closeDialog()" type="button">Отменить</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <div class="dialog-box" id="fileHistoryDialog" style="display: none;">
-                <div class="dialog-content">
-                    <h2>История файла</h2>
-                    <div class="file-history-list" id="fileHistoryList">
-                        <!-- files -->
+                        </form>
                     </div>
-                    <button class="custom-button" onclick="closeFileHistoryDialog()" type="button">Закрыть</button>
                 </div>
-            </div>
-        </td>
-    </tr>
-    </tbody>
-</table>
+
+                <div class="dialog-box" id="fileHistoryDialog" style="display: none;">
+                    <div class="dialog-content">
+                        <h2>История файла</h2>
+                        <div class="file-history-list" id="fileHistoryList">
+                            <!-- files -->
+                        </div>
+                        <button class="custom-button" onclick="closeFileHistoryDialog()" type="button">Закрыть</button>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 <div class="pagination" th:fragment="pagination" th:if="${fileInfos.size() gt 0}">
     <span th:if="${page>0}">
