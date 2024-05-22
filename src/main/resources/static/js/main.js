@@ -10,7 +10,51 @@ document.addEventListener("DOMContentLoaded", function () {
     isAdmin = document.body.getAttribute('data-is-admin') === 'true';
 
     initThemeButtons()
+    loadCheckboxStates();
+    addCheckboxEventListeners();
 });
+
+function loadCheckboxStates() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+    checkboxes.forEach(checkbox => {
+        const column = checkbox.dataset.column;
+        const storedValue = localStorage.getItem(column);
+        const isChecked = storedValue === null ? true : storedValue === 'true';
+        checkbox.checked = isChecked;
+        updateColumnVisibility(column, isChecked);
+    });
+}
+
+function updateColumnVisibility(column, isChecked) {
+    const thElements = document.querySelectorAll(`th[data-column="${column}"]`);
+    const tdElements = document.querySelectorAll(`td[data-column="${column}"]`);
+
+    thElements.forEach(th => {
+        th.style.display = isChecked ? '' : 'none';
+    });
+
+    tdElements.forEach(td => {
+        td.style.display = isChecked ? '' : 'none';
+    });
+}
+
+function saveCheckboxState(column, isChecked) {
+    localStorage.setItem(column, isChecked);
+}
+
+function addCheckboxEventListeners() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const column = this.dataset.column;
+            const isChecked = this.checked;
+            saveCheckboxState(column, isChecked);
+            updateColumnVisibility(column, isChecked);
+        });
+    });
+}
 
 function updateFile(id) {
     fetch('/api/searchFile?id=' + id)

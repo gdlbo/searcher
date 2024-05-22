@@ -93,7 +93,7 @@ body {
 
 .sort {
     padding: 10px;
-    display: inline-block;
+    display: block;
 }
 
 #file-paths th {
@@ -486,4 +486,28 @@ form {
 
 .button-list button {
     margin-bottom: 10px;
+}
+
+.checkbox-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.checkbox-container label {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+.checkbox-container label:hover {
+    color: var(--text-color);
 }

@@ -28,54 +28,44 @@
     <table id="file-paths">
         <thead>
         <tr>
-            <th>
-                <a class="sort">
-                    Дец. номер
-                </a>
-                <input class="search-input" data-search-field="decNumber" id="decNumber" type="text"></th>
-            <th>
-                <a class="sort">
-                    Наименование
-                </a>
-                <input class="search-input" data-search-field="deviceName" id="deviceName" type="text"></th>
-            <th>
-                <a class="sort">
-                    Тип документа
-                </a>
-                <input class="search-input" data-search-field="documentType" id="documentType" type="text"></th>
-            <th>
-                <a class="sort">
-                    Прим. устройства
-                </a>
-                <input class="search-input" data-search-field="usedDevices" id="usedDevices" type="text"></th>
-            <th>
-                <a class="sort">
-                    Проект
-                </a>
-                <input class="search-input" data-search-field="project" id="project" type="text"></th>
-            <th>
+            <th data-column="decNumber">
+                <a class="sort">Дец. номер</a>
+                <input class="search-input" data-search-field="decNumber" id="decNumber" type="text">
+            </th>
+            <th data-column="deviceName">
+                <a class="sort">Наименование</a>
+                <input class="search-input" data-search-field="deviceName" id="deviceName" type="text">
+            </th>
+            <th data-column="documentType">
+                <a class="sort">Тип документа</a>
+                <input class="search-input" data-search-field="documentType" id="documentType" type="text">
+            </th>
+            <th data-column="usedDevices">
+                <a class="sort">Прим. устройства</a>
+                <input class="search-input" data-search-field="usedDevices" id="usedDevices" type="text">
+            </th>
+            <th data-column="project">
+                <a class="sort">Проект</a>
+                <input class="search-input" data-search-field="project" id="project" type="text">
+            </th>
+            <th data-column="creationTime">
                 <a class="sort">Дата внес.</a>
-                <input class="search-input" data-search-field="creationTime" id="creationTime" type="text"/>
+                <input class="search-input" data-search-field="creationTime" id="creationTime" type="text">
             </th>
-            <th>
+            <th data-column="lastModified">
                 <a class="sort">Дата изм.</a>
-                <input class="search-input" data-search-field="lastModified" id="lastModified" type="text"/>
+                <input class="search-input" data-search-field="lastModified" id="lastModified" type="text">
             </th>
-            <th>
-                <a class="sort">
-                    Кем внесено
-                </a>
-                <input class="search-input" data-search-field="user" id="user" type="text"></th>
+            <th data-column="user">
+                <a class="sort">Кем внесено</a>
+                <input class="search-input" data-search-field="user" id="user" type="text">
             </th>
-            <th>
-                <a class="sort">
-                    Местоположение
-                </a>
-                <input class="search-input" data-search-field="location" id="location" type="text"></th>
-            <th>
-                <a class="sort">
-                    Инвентарный номер
-                </a>
+            <th data-column="location">
+                <a class="sort">Местоположение</a>
+                <input class="search-input" data-search-field="location" id="location" type="text">
+            </th>
+            <th data-column="inventoryNumber">
+                <a class="sort">Инвентарный номер</a>
                 <input class="search-input" data-search-field="inventoryNumber" id="inventoryNumber" type="text">
             </th>
             <th></th>
@@ -84,16 +74,16 @@
 
         <tbody>
         <tr th:each="file : ${fileInfos}">
-            <td><span th:text="${file.decNumber}"></span></td>
-            <td><span th:text="${file.deviceName}"></span></td>
-            <td><span th:text="${file.documentType}"></span></td>
-            <td><span th:text="${file.usedDevices}"></span></td>
-            <td><span th:text="${file.project}"></span></td>
-            <td><span th:text="${file.creationTime}"></span></td>
-            <td><span th:text="${file.lastModified}"></span></td>
-            <td><span th:text="${file.user.username}"></span></td>
-            <td><span th:text="${file.location}"></span></td>
-            <td><span th:text="${file.inventoryNumber}"></span></td>
+            <td data-column="decNumber"><span th:text="${file.decNumber}"></span></td>
+            <td data-column="deviceName"><span th:text="${file.deviceName}"></span></td>
+            <td data-column="documentType"><span th:text="${file.documentType}"></span></td>
+            <td data-column="usedDevices"><span th:text="${file.usedDevices}"></span></td>
+            <td data-column="project"><span th:text="${file.project}"></span></td>
+            <td data-column="creationTime"><span th:text="${file.creationTime}"></span></td>
+            <td data-column="lastModified"><span th:text="${file.lastModified}"></span></td>
+            <td data-column="user"><span th:text="${file.user.username}"></span></td>
+            <td data-column="location"><span th:text="${file.location}"></span></td>
+            <td data-column="inventoryNumber"><span th:text="${file.inventoryNumber}"></span></td>
             <td>
                 <div class="optionsButton">
                     <button class="options-button" onclick="openOptionsButton(this)">...</button>
@@ -301,6 +291,21 @@
             <div class="button-group">
                 <button class="custom-button" onclick="handleAccentColorHex()" type="button">Применить цвет</button>
                 <button class="custom-button" onclick="resetAccentColor()">Сбросить цвет</button>
+            </div>
+        </div>
+        <div class="input-group margin-bottom checkbox-container">
+            <h3>Вкладки</h3>
+            <div>
+                <label><input type="checkbox" data-column="decNumber" checked> Дец. номер</label>
+                <label><input type="checkbox" data-column="deviceName" checked> Наименование</label>
+                <label><input type="checkbox" data-column="documentType" checked> Тип документа</label>
+                <label><input type="checkbox" data-column="usedDevices" checked> Прим. устройства</label>
+                <label><input type="checkbox" data-column="project" checked> Проект</label>
+                <label><input type="checkbox" data-column="creationTime" checked> Дата внес.</label>
+                <label><input type="checkbox" data-column="lastModified" checked> Дата изм.</label>
+                <label><input type="checkbox" data-column="user" checked> Кем внесено</label>
+                <label><input type="checkbox" data-column="location" checked> Местоположение</label>
+                <label><input type="checkbox" data-column="inventoryNumber" checked> Инвентарный номер</label>
             </div>
         </div>
         <div class="margin-bottom" th:if="${isAdmin}">
