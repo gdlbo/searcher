@@ -137,19 +137,30 @@ public class FileSearchController {
 
     public List<Integer> getPageNumbers(int currentPage, int totalPages, int limit) {
         List<Integer> pageNumbers = new ArrayList<>();
-        int startPage = Math.max(0, currentPage - limit / 2);
-        int endPage = Math.min(startPage + limit, totalPages);
 
-        if (startPage > 0) {
-            pageNumbers.add(-1);
-        }
+        if (totalPages <= limit) {
+            for (int i = 0; i < totalPages; i++) {
+                pageNumbers.add(i);
+            }
+        } else {
+            int startPage = Math.max(0, currentPage - limit / 2);
+            int endPage = Math.min(startPage + limit, totalPages);
 
-        for (int i = startPage; i < endPage; i++) {
-            pageNumbers.add(i);
-        }
+            if (endPage - startPage < limit) {
+                startPage = Math.max(0, endPage - limit);
+            }
 
-        if (endPage < totalPages) {
-            pageNumbers.add(totalPages);
+            if (startPage > 0) {
+                pageNumbers.add(-1);
+            }
+
+            for (int i = startPage; i < endPage; i++) {
+                pageNumbers.add(i);
+            }
+
+            if (endPage < totalPages) {
+                pageNumbers.add(totalPages);
+            }
         }
 
         return pageNumbers;
