@@ -113,6 +113,25 @@ function restartServer() {
     }, 2500);
 }
 
+function setDummyFiles() {
+    fetch('/api/setDummyFiles', {
+        method: 'GET',
+        credentials: 'include'
+    }).then(response => {
+        if (response.ok) {
+            response.text().then(text => console.log(text));
+        } else {
+            console.error('Failed to add dummy files with status:', response.status);
+        }
+    }).catch(error => {
+        console.error('Add dummy files failed with error:', error);
+    });
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 2500);
+}
+
 function changePassword() {
     const nickname = document.getElementById('nickname').value;
     const oldPassword = document.getElementById('old-password').value;

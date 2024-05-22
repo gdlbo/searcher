@@ -53,10 +53,6 @@ public class FileSearchController {
             return "redirect:/error";
         }
 
-        if (!fileService.isAnyFilePresent()) {
-            createDummyFiles(500);
-        }
-
         if (decNumber != null && !decNumber.isEmpty() && !decNumber.startsWith("ВГМТ.")) {
             decNumber = "ВГМТ." + decNumber;
         }
@@ -81,6 +77,12 @@ public class FileSearchController {
         setAttr(model, "location", location);
 
         return "search";
+    }
+
+    @GetMapping("/api/setDummyFiles")
+    public ResponseEntity<String> setDummyFiles() {
+        createDummyFiles(500);
+        return ResponseEntity.ok("Dummy files created successfully");
     }
 
     @GetMapping("/api/searchFile")
