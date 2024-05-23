@@ -36,3 +36,35 @@ function buildQuery() {
 
     return params;
 }
+
+function resetSearch() {
+    const searchInputs = document.querySelectorAll('.search-input');
+    searchInputs.forEach(input => {
+        input.value = '';
+        localStorage.removeItem(input.id);
+    });
+
+    window.location.href = '/search';
+}
+
+function checkForResults() {
+    const tableRows = document.getElementById('file-rows');
+    const noResultsDiv = document.getElementById('no-results');
+    const rows = tableRows.querySelectorAll('tr');
+
+    if (rows.length === 0) {
+        noResultsDiv.style.display = 'block';
+    } else {
+        noResultsDiv.style.display = 'none';
+    }
+}
+
+function initResetSearch() {
+    const resetButton = document.getElementById('reset-search');
+
+    if (resetButton) {
+        resetButton.addEventListener('click', resetSearch);
+    }
+
+    checkForResults();
+}
