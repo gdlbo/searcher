@@ -57,9 +57,11 @@ public class FileSearchController {
             return "redirect:/error";
         }
 
-        if (decNumber != null && !decNumber.isEmpty() && !decNumber.startsWith("ВГМТ.")) {
-            decNumber = "ВГМТ." + decNumber;
-        }
+        // Add "ВГМТ." prefix to decNumber if it doesn't already start with "ВГМТ."
+        // idk maybe this is a bad feature
+//        if (decNumber != null && !decNumber.isEmpty() && !decNumber.startsWith("ВГМТ.")) {
+//            decNumber = "ВГМТ." + decNumber;
+//        }
 
         Specification<FileInfo> spec = FileInfoSpecification.createSpecification(
                 decNumber, deviceName, documentType, usedDevices, project,
