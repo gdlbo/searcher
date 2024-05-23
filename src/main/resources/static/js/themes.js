@@ -69,7 +69,9 @@ function changeTheme() {
 }
 
 function changePrimaryColor(baseColor) {
-    const hoverColor = shadeColor(baseColor, -20);
+    const isDarkTheme = document.documentElement.getAttribute("data-theme") === "dark";
+    const shadingPercent = isDarkTheme ? -20 : 40;
+    const hoverColor = shadeColor(baseColor, shadingPercent);
 
     document.documentElement.style.setProperty('--primary-color', baseColor);
     document.documentElement.style.setProperty('--primary-color-hover', hoverColor);
@@ -93,13 +95,23 @@ function resetAccentColor() {
 }
 
 function shadeColor(color, percent) {
+    if (typeof color !== 'string' || typeof percent !== 'number') {
+        throw new TypeError('Invalid argument types');
+    }
+
     let R = parseInt(color.substring(1, 3), 16);
     let G = parseInt(color.substring(3, 5), 16);
     let B = parseInt(color.substring(5, 7), 16);
 
-    R = parseInt(R * (100 + percent) / 100);
-    G = parseInt(G * (100 + percent) / 100);
-    B = parseInt(B * (100 + percent) / 100);
+    if (percent > 0) {
+        R = Math.round(R + (255 - R) * (percent / 100));
+        G = Math.round(G + (255 - G) * (percent / 100));
+        B = Math.round(B + (255 - B) * (percent / 100));
+    } else {
+        R = Math.round(R * (100 + percent) / 100);
+        G = Math.round(G * (100 + percent) / 100);
+        B = Math.round(B * (100 + percent) / 100);
+    }
 
     R = (R < 255) ? R : 255;
     G = (G < 255) ? G : 255;
@@ -111,7 +123,6 @@ function shadeColor(color, percent) {
 
     return "#" + RR + GG + BB;
 }
-
 
 function initThemeButtons() {
     const savedColor = localStorage.getItem("accent-color") || '#007bff';
