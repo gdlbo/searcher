@@ -30,7 +30,7 @@ function displayFileName(input) {
     fileNameSpan.textContent = fileName;
 }
 
-function closeDialog() {
+function closeDialogDropzone() {
     const dialogBox = document.getElementById("replaceDialog");
     dialogBox.style.display = "none";
 

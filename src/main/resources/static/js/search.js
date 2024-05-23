@@ -1,24 +1,3 @@
-function storeSearch() {
-    const searchNumber = document.getElementById("searchNumber").value;
-    const searchInputs = document.querySelectorAll("[data-search-field]");
-    searchInputs.forEach((input) => {
-        const searchField = input.dataset.searchField;
-        const value = input.value;
-
-        if (value === "") {
-            localStorage.removeItem(searchField);
-        } else {
-            localStorage.setItem(searchField, value);
-        }
-    });
-
-    if (searchNumber === "") {
-        localStorage.removeItem("searchNumber");
-    } else {
-        localStorage.setItem("searchNumber", searchNumber);
-    }
-}
-
 function loadSearch() {
     const params = new URLSearchParams(window.location.search);
     const searchInputs = document.querySelectorAll("[data-search-field]");
@@ -47,9 +26,13 @@ function loadSearch() {
 function buildQuery() {
     const params = new URLSearchParams();
     const searchInputs = document.querySelectorAll("[data-search-field]");
-    searchInputs.forEach((input) => {
-        let value = input.value.trim();
-        if (value !== "") params.append(input.dataset.searchField, value);
+
+    searchInputs.forEach(input => {
+        const value = input.value.trim();
+        if (value !== "") {
+            params.append(input.dataset.searchField, value);
+        }
     });
+
     return params;
 }

@@ -56,21 +56,6 @@ function addCheckboxEventListeners() {
     });
 }
 
-function updateFile(id) {
-    fetch('/api/searchFile?id=' + id)
-        .then(response => response.json())
-        .then(data => {
-            if (data.user != null) {
-                openUpdateDialog(data.id, data.decNumber, data.deviceName, data.documentType, data.usedDevices, data.project, data.inventoryNumber, data.location, data.lastModified, data.creationTime, data.user.username)
-            } else {
-                console.error('Error:', data);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-}
-
 function openOptionsButton() {
     const optionsDialog = document.getElementById('optionsDialog');
     optionsDialog.style.display = 'block';
@@ -92,31 +77,31 @@ function openOptionsButton() {
 
     createButton("Скачать", () => {
         downloadFile(location);
-        closeOptionsDialog();
+        closeDialog('optionsDialog');
     });
     createButton("Копировать путь", () => {
         copyPath(location);
-        closeOptionsDialog();
+        closeDialog('optionsDialog');
     });
     if (isAdmin) {
         createButton("Заменить", () => {
             document.getElementById("replaceDialog").style.display = "block";
-            closeOptionsDialog();
+            closeDialog('optionsDialog');
         });
         createButton("Удалить", () => {
             removeFile(id);
-            closeOptionsDialog();
+            closeDialog('optionsDialog');
         });
         createButton("Редактировать", () => {
             updateFile(id);
-            closeOptionsDialog();
+            closeDialog('optionsDialog');
         });
     }
     createButton("История", () => {
         showFileHistory(location);
-        closeOptionsDialog();
+        closeDialog('optionsDialog');
     });
-    createButton("Закрыть", () => closeOptionsDialog());
+    createButton("Закрыть", () => closeDialog('optionsDialog'));
 }
 
 function copyPath(filePath) {
@@ -190,84 +175,23 @@ function showFileHistory(filePath) {
         });
 }
 
-function closeFileHistoryDialog() {
-    const fileHistoryDialog = document.getElementById('fileHistoryDialog');
-    document.body.style.overflow = '';
-    fileHistoryDialog.style.display = 'none';
-}
-
 function uploadDropdown() {
     const uploadDocumentType = document.getElementById("uploadDocumentType");
     const dropdown = document.getElementById("type-doc-upload-dropdown");
-    let newText;
 
-    if (dropdown.value !== "") {
-        newText = dropdown.value;
-    } else {
-        newText = "";
-    }
-
-    uploadDocumentType.value = newText;
+    uploadDocumentType.value = dropdown.value || "";
 }
 
 function updateDropdown() {
     const updateDocumentType = document.getElementById("updateDocumentType");
     const dropdown = document.getElementById("type-doc-update-dropdown");
-    let newText;
 
-    if (dropdown.value !== "") {
-        newText = dropdown.value;
-    } else {
-        newText = "";
-    }
-
-    updateDocumentType.value = newText;
-}
-
-function deleteFileFromHistory(filePath) {
-    // Send a GET request to the server to delete the file from history
-    const encodedFilePath = encodeURIComponent(filePath);
-    fetch('/api/remove?filePath=' + encodedFilePath)
-        .then(response => {
-            if (!response.ok) {
-                console.error('Failed to delete file from history: ' + encodedFilePath);
-            }
-
-            // Refresh the file history dialog
-            const currentFilePath = document.querySelector('#historyButton').getAttribute('onclick').match(/'([^']+)'/)[1];
-            showFileHistory(currentFilePath);
-        });
-}
-
-function openSettingsDialog() {
-    const settingsDialog = document.getElementById("settingsDialog");
-    document.body.style.overflow = 'hidden';
-    settingsDialog.style.display = "block";
-}
-
-function closeSettingsDialog() {
-    const settingsDialog = document.getElementById("settingsDialog");
-    settingsDialog.querySelector('.dialog-content').scrollTop = 0;
-    document.body.style.overflow = '';
-    settingsDialog.style.display = "none";
-}
-
-function openUploadDialog() {
-    const uploadDialog = document.getElementById('uploadDialog');
-    uploadDialog.style.display = 'block';
-}
-
-function closeUploadDialog() {
-    const uploadDialog = document.getElementById('uploadDialog');
-    uploadDialog.querySelector('.dialog-content').scrollTop = 0;
-    document.body.style.overflow = '';
-    uploadDialog.style.display = 'none';
+    updateDocumentType.value = dropdown.value || "";
 }
 
 function formatDateTimeString(dateTimeString) {
-    let datePart = dateTimeString.split(' ')[0];
-    let timePart = dateTimeString.split(' ')[1];
-    return `${datePart}T${timePart.substring(0, 5)}`;
+    const [datePart, timePart] = dateTimeString.split(' ');
+    return `${datePart}T${timePart.slice(0, 5)}`;
 }
 
 function openUpdateDialog(fileId, decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, location, lastModified, creationTime, userName) {
@@ -285,18 +209,20 @@ function openUpdateDialog(fileId, decNumber, deviceName, documentType, usedDevic
     document.getElementById('updateDialog').style.display = 'block';
 }
 
-function closeUpdateDialog() {
-    const updateDialog = document.getElementById('updateDialog');
-    updateDialog.querySelector('.dialog-content').scrollTop = 0;
+function closeDialog(elementId) {
+    const dialogBox = document.getElementById(elementId);
+    dialogBox.querySelector('.dialog-content').scrollTop = 0;
     document.body.style.overflow = '';
-    updateDialog.style.display = 'none';
+    dialogBox.style.display = 'none';
+
+    if (elementId === 'optionsDialog') {
+        const buttonsList = dialogBox.querySelector('.button-list');
+        buttonsList.innerHTML = '';
+    }
 }
 
-function closeOptionsDialog() {
-    const optionsDialog = document.getElementById('optionsDialog');
-    const buttonsList = optionsDialog.querySelector('.button-list');
-    optionsDialog.querySelector('.dialog-content').scrollTop = 0;
-    buttonsList.innerHTML = '';
-    document.body.style.overflow = '';
-    optionsDialog.style.display = 'none';
+function openDialog(elementId) {
+    const dialogBox = document.getElementById(elementId);
+    document.body.style.overflow = 'hidden';
+    dialogBox.style.display = 'block';
 }

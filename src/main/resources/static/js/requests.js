@@ -217,3 +217,33 @@ function submitForm() {
             console.error('Error:', error);
         });
 }
+
+function deleteFileFromHistory(filePath) {
+    // Send a GET request to the server to delete the file from history
+    const encodedFilePath = encodeURIComponent(filePath);
+    fetch('/api/remove?filePath=' + encodedFilePath)
+        .then(response => {
+            if (!response.ok) {
+                console.error('Failed to delete file from history: ' + encodedFilePath);
+            }
+
+            // Refresh the file history dialog
+            const currentFilePath = document.querySelector('#historyButton').getAttribute('onclick').match(/'([^']+)'/)[1];
+            showFileHistory(currentFilePath);
+        });
+}
+
+function updateFile(id) {
+    fetch('/api/searchFile?id=' + id)
+        .then(response => response.json())
+        .then(data => {
+            if (data.user != null) {
+                openUpdateDialog(data.id, data.decNumber, data.deviceName, data.documentType, data.usedDevices, data.project, data.inventoryNumber, data.location, data.lastModified, data.creationTime, data.user.username)
+            } else {
+                console.error('Error:', data);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}

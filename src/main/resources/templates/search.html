@@ -14,9 +14,9 @@
 <div class="header-container">
     <h1>Поисковик</h1>
     <div class="button-list">
-        <button class="settings-button" onclick="openSettingsDialog()" type="button">Настройки</button>
+        <button class="settings-button" onclick="openDialog('settingsDialog')" type="button">Настройки</button>
         <div th:if="${isAdmin}">
-            <button class="settings-button" onclick="openUploadDialog()">Загрузить файл</button>
+            <button class="settings-button" onclick="openDialog('uploadDialog')">Загрузить файл</button>
         </div>
         <button class="settings-button" id="search-button">Искать</button>
     </div>
@@ -114,7 +114,7 @@
                                 </div>
                                 <div class="buttons">
                                     <button class="custom-button" type="submit">Заменить</button>
-                                    <button class="custom-button" onclick="closeDialog()" type="button">Отменить
+                                    <button class="custom-button" onclick="closeDialogDropzone()" type="button">Отменить
                                     </button>
                                 </div>
                             </div>
@@ -128,7 +128,8 @@
                         <div class="file-history-list" id="fileHistoryList">
                             <!-- files -->
                         </div>
-                        <button class="custom-button" onclick="closeFileHistoryDialog()" type="button">Закрыть</button>
+                        <button class="custom-button" onclick="closeDialog('fileHistoryDialog')" type="button">Закрыть
+                        </button>
                     </div>
                 </div>
             </td>
@@ -178,11 +179,11 @@
                         <option value="СБ">Сборочный чертеж (СБ)</option>
                         <option value="КТП">Карта технологических процессов (КТП)</option>
                         <option value="МК">Маршрутная карта (МК)</option>
-                        <option value="Деталь">Деталь</option>
+                        <option value="Чертеж детали">Чертеж детали</option>
                         <option value="ПС">Паспорт (ПС)</option>
                         <option value="ТУ">Технические условия (ТУ)</option>
                         <option value="РЭ">Руководство по эксплуатации (РЭ)</option>
-                        <option value="Ведомость">Ведомость спецификаций</option>
+                        <option value="Ведомость спецификаций">Ведомость спецификаций</option>
                         <option value="ГЧ">Габаритный чертеж (ГЧ)</option>
                         <option value="95">Схема электрических подключений (95)</option>
                         <option value="Е1">Схема деления структурная (Е1)</option>
@@ -210,7 +211,7 @@
                 </div>
                 <div class="margin-bottom" id="error-message" style="color: red; display: none;"></div>
                 <button class="custom-button margin-bottom" onclick="submitForm()" type="button">Загрузить</button>
-                <button class="custom-button" onclick="closeUploadDialog()" type="button">Отменить</button>
+                <button class="custom-button" onclick="closeDialog('uploadDialog')" type="button">Отменить</button>
             </form>
         </div>
     </div>
@@ -241,11 +242,11 @@
                         <option value="СБ">Сборочный чертеж (СБ)</option>
                         <option value="КТП">Карта технологических процессов (КТП)</option>
                         <option value="МК">Маршрутная карта (МК)</option>
-                        <option value="Деталь">Деталь</option>
+                        <option value="Чертеж детали">Чертеж детали</option>
                         <option value="ПС">Паспорт (ПС)</option>
                         <option value="ТУ">Технические условия (ТУ)</option>
                         <option value="РЭ">Руководство по эксплуатации (РЭ)</option>
-                        <option value="Ведомость">Ведомость спецификаций</option>
+                        <option value="Ведомость спецификаций">Ведомость спецификаций</option>
                         <option value="ГЧ">Габаритный чертеж (ГЧ)</option>
                         <option value="95">Схема электрических подключений (95)</option>
                         <option value="Е1">Схема деления структурная (Е1)</option>
@@ -280,7 +281,7 @@
                     <input id="updateUserName" name="userName" required type="text">
                 </div>
                 <button class="custom-button margin-bottom" type="submit">Сохранить изменения</button>
-                <button class="custom-button" onclick="closeUpdateDialog()" type="button">Отменить</button>
+                <button class="custom-button" onclick="closeDialog('updateDialog')" type="button">Отменить</button>
             </form>
         </div>
     </div>
@@ -387,7 +388,7 @@
             </div>
             <button class="custom-button" onclick="logout()" type="button">Выйти из аккаунта</button>
         </div>
-        <button class="custom-button" onclick="closeSettingsDialog()" type="button">Закрыть</button>
+        <button class="custom-button" onclick="closeDialog('settingsDialog')" type="button">Закрыть</button>
     </div>
 </div>
 

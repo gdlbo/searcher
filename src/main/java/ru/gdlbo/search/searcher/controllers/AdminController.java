@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.gdlbo.search.searcher.config.RestartManager;
-import ru.gdlbo.search.searcher.config.WebSecurityConfig;
 import ru.gdlbo.search.searcher.repository.*;
 
 import java.io.File;
