@@ -12,7 +12,7 @@ public class FileInfoSpecification {
     public static Specification<FileInfo> createSpecification(
             String decNumber, String deviceName, String documentType, String usedDevices,
             String project, String inventoryNumber, String lastModified, String location,
-            String creationTime) {
+            String creationTime, String userName) {
 
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -26,6 +26,7 @@ public class FileInfoSpecification {
             addStringPredicate(lastModified, "lastModified", root, criteriaBuilder, predicates);
             addStringPredicate(location, "location", root, criteriaBuilder, predicates);
             addStringPredicate(creationTime, "creationTime", root, criteriaBuilder, predicates);
+            addUserPredicate(userName, root, criteriaBuilder, predicates);
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
@@ -35,6 +36,13 @@ public class FileInfoSpecification {
         if (value != null && !value.isEmpty()) {
             String pattern = "%" + value.toLowerCase() + "%";
             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(fieldName)), pattern));
+        }
+    }
+
+    private static void addUserPredicate(String value, Root<FileInfo> root, CriteriaBuilder criteriaBuilder, List<Predicate> predicates) {
+        if (value != null && !value.isEmpty()) {
+            String pattern = "%" + value.toLowerCase() + "%";
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("user").get("username")), pattern));
         }
     }
 }

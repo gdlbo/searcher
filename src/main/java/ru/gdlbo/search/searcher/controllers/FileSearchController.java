@@ -49,6 +49,7 @@ public class FileSearchController {
         String lastModified = formData.get("lastModified");
         String location = formData.get("location");
         String creationTime = formData.get("creationTime");
+        String userName = formData.get("user");
         boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
         boolean hasCustomPath = config.getPath() != null;
 
@@ -65,7 +66,7 @@ public class FileSearchController {
 
         Specification<FileInfo> spec = FileInfoSpecification.createSpecification(
                 decNumber, deviceName, documentType, usedDevices, project,
-                inventoryNumber, lastModified, location, creationTime);
+                inventoryNumber, lastModified, location, creationTime, userName);
 
         List<FileInfo> fileInfos = fileService.findFiles(spec);
         PaginatedResult paginatedResult = fileService.paginateFileInfos(fileInfos, page);
