@@ -29,7 +29,7 @@ public class AdminController {
     private UserRepository userRepository;
 
     @Autowired
-    private FileRepository fileRepository;
+    private FileInfoRepository fileInfoRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -73,7 +73,7 @@ public class AdminController {
         Thread thread = new Thread(() -> {
             userRepository.deleteAll();
             restartManager.restart();
-            fileRepository.deleteAll();
+            fileInfoRepository.deleteAll();
         });
         thread.setDaemon(false);
         thread.start();
@@ -88,7 +88,7 @@ public class AdminController {
         }
 
         Thread thread = new Thread(() -> {
-            fileRepository.deleteAll();
+            fileInfoRepository.deleteAll();
         });
         thread.setDaemon(false);
         thread.start();
@@ -143,7 +143,7 @@ public class AdminController {
     public String removeFileFromHistory(@RequestParam Long id) {
         System.out.println("Request received to remove file: " + id);
 
-        fileRepository.findById(id).ifPresent(file -> {
+        fileInfoRepository.findById(id).ifPresent(file -> {
             File fileToDelete = new File(file.getLocation());
 
             new FileHistoryController().deleteFileHistory(fileToDelete.getAbsolutePath());
@@ -153,7 +153,7 @@ public class AdminController {
             }
         });
 
-        fileRepository.deleteById(id);
+        fileInfoRepository.deleteById(id);
         return "redirect:/search";
     }
 
