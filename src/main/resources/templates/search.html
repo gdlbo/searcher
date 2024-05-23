@@ -72,7 +72,7 @@
         </tr>
         </thead>
 
-        <tbody>
+        <tbody id="file-rows">
         <tr th:each="file : ${fileInfos}">
             <td data-column="decNumber"><span th:text="${file.decNumber}"></span></td>
             <td data-column="deviceName"><span th:text="${file.deviceName}"></span></td>
@@ -113,8 +113,8 @@
                                     </div>
                                 </div>
                                 <div class="buttons">
-                                    <button class="custom-button" type="submit">Заменить</button>
-                                    <button class="custom-button" onclick="closeDialogDropzone()" type="button">Отменить
+                                    <button type="submit">Заменить</button>
+                                    <button onclick="closeDialogDropzone()" type="button">Отменить
                                     </button>
                                 </div>
                             </div>
@@ -128,7 +128,7 @@
                         <div class="file-history-list" id="fileHistoryList">
                             <!-- files -->
                         </div>
-                        <button class="custom-button" onclick="closeDialog('fileHistoryDialog')" type="button">Закрыть
+                        <button onclick="closeDialog('fileHistoryDialog')" type="button">Закрыть
                         </button>
                     </div>
                 </div>
@@ -136,6 +136,10 @@
         </tr>
         </tbody>
     </table>
+    <div id="no-results" class="noResults" style="display: none; text-align: center;">
+        <p style="font-size: 20px; font-weight: bold; margin: 20px 0;">Результатов не найдено</p>
+        <button class="custom-button" onclick="resetSearch()" type="button">Сбросить поиск</button>
+    </div>
 </div>
 
 <div class="pagination" th:fragment="pagination" th:if="${fileInfos.size() gt 0}">
@@ -210,8 +214,8 @@
                     <input id="fileInput" name="file" required type="file">
                 </div>
                 <div class="margin-bottom" id="error-message" style="color: red; display: none;"></div>
-                <button class="custom-button margin-bottom" onclick="submitForm()" type="button">Загрузить</button>
-                <button class="custom-button" onclick="closeDialog('uploadDialog')" type="button">Отменить</button>
+                <button class=" margin-bottom" onclick="submitForm()" type="button">Загрузить</button>
+                <button onclick="closeDialog('uploadDialog')" type="button">Отменить</button>
             </form>
         </div>
     </div>
@@ -280,8 +284,8 @@
                     <label for="updateUserName">Имя пользователя:</label>
                     <input id="updateUserName" name="userName" required type="text">
                 </div>
-                <button class="custom-button margin-bottom" type="submit">Сохранить изменения</button>
-                <button class="custom-button" onclick="closeDialog('updateDialog')" type="button">Отменить</button>
+                <button class=" margin-bottom" type="submit">Сохранить изменения</button>
+                <button onclick="closeDialog('updateDialog')" type="button">Отменить</button>
             </form>
         </div>
     </div>
@@ -323,8 +327,8 @@
                 <input id="accentColor" placeholder="Enter color" type="text">
             </div>
             <div class="button-group">
-                <button class="custom-button" onclick="handleAccentColorHex()" type="button">Применить цвет</button>
-                <button class="custom-button" onclick="resetAccentColor()">Сбросить цвет</button>
+                <button onclick="handleAccentColorHex()" type="button">Применить цвет</button>
+                <button onclick="resetAccentColor()">Сбросить цвет</button>
             </div>
         </div>
         <div class="input-group margin-bottom checkbox-container">
@@ -349,7 +353,7 @@
                 <input id="username" placeholder="Введите имя" type="text">
             </div>
             <div class="button-group margin-bottom">
-                <button class="custom-button" onclick="grantAdmin()" type="button">Применить</button>
+                <button onclick="grantAdmin()" type="button">Применить</button>
             </div>
         </div>
         <div class="margin-bottom" th:if="${isAdmin}">
@@ -359,15 +363,15 @@
                 <input id="searcherPath" placeholder="/путь/до/папки" th:value="${path}" type="text">
             </div>
             <div class="button-group margin-bottom">
-                <button class="custom-button" onclick="applyCustomPath()" type="button">Применить</button>
-                <button class="custom-button" onclick="dropCustomPath()" type="button">Сбросить</button>
+                <button onclick="applyCustomPath()" type="button">Применить</button>
+                <button onclick="dropCustomPath()" type="button">Сбросить</button>
             </div>
-            <button class="custom-button" onclick="resetDatabase()" type="button">Сбросить все базы</button>
-            <button class="custom-button" onclick="resetFileDatabase()" type="button">Сбросить базу файлов</button>
-            <button class="custom-button" onclick="setDummyFiles()" type="button">Заполнить базу пустышками
+            <button onclick="resetDatabase()" type="button">Сбросить все базы</button>
+            <button onclick="resetFileDatabase()" type="button">Сбросить базу файлов</button>
+            <button onclick="setDummyFiles()" type="button">Заполнить базу пустышками
                 (тестирование)
             </button>
-            <button class="custom-button" onclick="restartServer()" type="button">Перезапустить сервер</button>
+            <button onclick="restartServer()" type="button">Перезапустить сервер</button>
         </div>
         <div class="account-credentials margin-bottom">
             <h3>Аккаунт</h3>
@@ -384,11 +388,11 @@
                 <input id="new-password" placeholder="Новый пароль" type="password">
             </div>
             <div class="button-group">
-                <button class="custom-button" onclick="changePassword()" type="button">Применить изменения</button>
+                <button onclick="changePassword()" type="button">Применить изменения</button>
             </div>
-            <button class="custom-button" onclick="logout()" type="button">Выйти из аккаунта</button>
+            <button onclick="logout()" type="button">Выйти из аккаунта</button>
         </div>
-        <button class="custom-button" onclick="closeDialog('settingsDialog')" type="button">Закрыть</button>
+        <button onclick="closeDialog('settingsDialog')" type="button">Закрыть</button>
     </div>
 </div>
 

@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initThemeButtons()
     loadCheckboxStates();
     addCheckboxEventListeners();
+    initializeEventListeners();
 });
 
 function loadCheckboxStates() {
@@ -225,4 +226,38 @@ function openDialog(elementId) {
     const dialogBox = document.getElementById(elementId);
     document.body.style.overflow = 'hidden';
     dialogBox.style.display = 'block';
+}
+
+function resetSearch() {
+    const searchInputs = document.querySelectorAll('.search-input');
+    searchInputs.forEach(input => {
+        input.value = '';
+        localStorage.removeItem(input.id);
+    });
+
+    window.location.href = '/search';
+}
+
+function checkForResults() {
+    const tableRows = document.getElementById('file-rows');
+    const noResultsDiv = document.getElementById('no-results');
+    const rows = tableRows.querySelectorAll('tr');
+
+    if (rows.length === 0) {
+        noResultsDiv.style.display = 'block';
+        console.log('No results found');
+    } else {
+        noResultsDiv.style.display = 'none';
+        console.log('Results found');
+    }
+}
+
+function initializeEventListeners() {
+    const resetButton = document.getElementById('reset-search');
+
+    if (resetButton) {
+        resetButton.addEventListener('click', resetSearch);
+    }
+
+    checkForResults();
 }

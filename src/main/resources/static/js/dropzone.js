@@ -2,26 +2,30 @@ function initDropZone() {
     const dropZone = document.querySelector(".drop-zone");
     const fileInput = document.querySelector("#file-input");
 
-    dropZone.addEventListener("dragover", (event) => {
-        event.preventDefault();
-        dropZone.classList.add("drag-over");
-    });
+    if (dropZone) {
+        dropZone.addEventListener("dragover", (event) => {
+            event.preventDefault();
+            dropZone.classList.add("drag-over");
+        });
 
-    dropZone.addEventListener("dragleave", () => {
-        dropZone.classList.remove("drag-over");
-    });
+        dropZone.addEventListener("dragleave", () => {
+            dropZone.classList.remove("drag-over");
+        });
 
-    dropZone.addEventListener("drop", (event) => {
-        event.preventDefault();
-        dropZone.classList.remove("drag-over");
-        fileInput.files = event.dataTransfer.files;
-        displayFileName(fileInput);
-    });
+        dropZone.addEventListener("drop", (event) => {
+            event.preventDefault();
+            dropZone.classList.remove("drag-over");
+            fileInput.files = event.dataTransfer.files;
+            displayFileName(fileInput);
+        });
+    }
 
-    fileInput.addEventListener("change", () => {
-        dropZone.classList.remove("drag-over");
-        displayFileName(fileInput);
-    });
+    if (fileInput) {
+        fileInput.addEventListener("change", () => {
+            dropZone.classList.remove("drag-over");
+            displayFileName(fileInput);
+        });
+    }
 }
 
 function displayFileName(input) {
