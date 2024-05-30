@@ -180,14 +180,22 @@ function uploadDropdown() {
     const uploadDocumentType = document.getElementById("uploadDocumentType");
     const dropdown = document.getElementById("type-doc-upload-dropdown");
 
-    uploadDocumentType.value = dropdown.value || "";
+    if (dropdown.value === "none") {
+        uploadDocumentType.value = ""
+    } else {
+        uploadDocumentType.value = dropdown.value || "";
+    }
 }
 
 function updateDropdown() {
     const updateDocumentType = document.getElementById("updateDocumentType");
     const dropdown = document.getElementById("type-doc-update-dropdown");
 
-    updateDocumentType.value = dropdown.value || "";
+    if (dropdown.value === "none") {
+        updateDocumentType.value = ""
+    } else {
+        updateDocumentType.value = dropdown.value || "";
+    }
 }
 
 function formatDateTimeString(dateTimeString) {
