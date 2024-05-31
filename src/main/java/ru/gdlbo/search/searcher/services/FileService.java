@@ -3,10 +3,15 @@ package ru.gdlbo.search.searcher.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
+import ru.gdlbo.search.searcher.config.Config;
 import ru.gdlbo.search.searcher.repository.FileInfo;
 import ru.gdlbo.search.searcher.repository.FileInfoRepository;
+import ru.gdlbo.search.searcher.repository.FileTempInfoRepository;
 import ru.gdlbo.search.searcher.repository.PaginatedResult;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +19,54 @@ import java.util.Optional;
 public class FileService {
     @Autowired
     private FileInfoRepository fileInfoRepository;
+
+    @Autowired
+    private FileTempInfoRepository tempInfoRepository;
+
+    @Autowired
+    private Config config;
+
+    public List<FileInfo> findAllTemp() {
+        return tempInfoRepository.findAll();
+    }
+
+    public void removeTempFile(Long id) {
+        processTempFile(id, true);
+    }
+
+    public void approveTempFile(Long id) {
+        processTempFile(id, false);
+    }
+
+    private void processTempFile(Long id, boolean isRemoval) {
+        tempInfoRepository.findById(id).ifPresent(fileInfo -> {
+            File tempFile = new File(fileInfo.getLocation());
+
+            if (!tempFile.exists()) {
+                throw new IllegalStateException("File " + fileInfo.getLocation() + " does not exist");
+            }
+
+            if (!isRemoval) {
+                String newPath = config.getPath() + tempFile.getName();
+
+                try {
+                    FileCopyUtils.copy(tempFile, new File(newPath));
+                } catch (IOException e) {
+                    throw new IllegalStateException("Failed to copy file " + tempFile.getAbsolutePath(), e);
+                }
+
+                fileInfo.setLocation(newPath);
+
+                fileInfoRepository.save(fileInfo);
+            }
+
+            if (!tempFile.delete()) {
+                throw new IllegalStateException("Failed to delete file " + fileInfo.getLocation());
+            }
+
+            tempInfoRepository.delete(fileInfo);
+        });
+    }
 
     public List<FileInfo> findFiles(Specification<FileInfo> spec) {
         return fileInfoRepository.findAll(spec);
@@ -33,6 +86,10 @@ public class FileService {
         fileInfoRepository.save(fileInfo);
     }
 
+    public void saveTempFile(FileInfo fileInfo) {
+        tempInfoRepository.save(fileInfo);
+    }
+
     public Optional<FileInfo> getFileById(Long id) {
         return fileInfoRepository.findById(id);
     }
@@ -45,9 +102,7 @@ public class FileService {
         return fileInfoRepository.existsById(id);
     }
 
-
     public boolean existsByDecNumber(String decNumber) {
         return fileInfoRepository.existsByDecNumber(decNumber);
     }
 }
-

@@ -46,6 +46,7 @@ public class FileUploadController {
             Authentication authentication) throws Exception {
 
         Map<String, String> response = new HashMap<>();
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
         User user = userService.findByUsername(authentication.getName());
         if (user == null) {
@@ -73,12 +74,24 @@ public class FileUploadController {
 
         String creationTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         String lastModified = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-        String locationWithFileName = location + "/" + file.getOriginalFilename();
+        String locationWithFileName;
+
+        if (isAdmin) {
+            locationWithFileName = location + "/" + file.getOriginalFilename();
+        } else {
+            locationWithFileName = location + "/" + ".temp/" + file.getOriginalFilename();
+        }
 
         FileInfo fileInfo = new FileInfo(decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, lastModified, locationWithFileName, creationTime, user);
-        fileService.saveOrUpdateFile(fileInfo);
+
+        if (isAdmin) {
+            fileService.saveOrUpdateFile(fileInfo);
+        } else {
+            fileService.saveTempFile(fileInfo);
+        }
 
         FileCopyUtils.copy(file.getInputStream().readAllBytes(), new File(locationWithFileName));
+
         System.out.println("Uploaded file: " + locationWithFileName);
 
         response.put("success", "Файл успешно загружен");

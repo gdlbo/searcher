@@ -8,10 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Controller
 public class FileReplaceController {
@@ -26,7 +22,6 @@ public class FileReplaceController {
         File oldFile = new File(filePath);
 
         File hiddenDir = createHiddenDirectory(oldFile);
-        String newFilePath = moveOldFileToHistory(oldFile, hiddenDir);
         checkAndDeleteOldVersions(hiddenDir, oldFile.getName());
 
         replaceOldFileWithNew(file, filePath);
@@ -42,23 +37,6 @@ public class FileReplaceController {
             }
         }
         return hiddenDir;
-    }
-
-    private String moveOldFileToHistory(File oldFile, File hiddenDir) throws Exception {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm");
-        LocalDateTime now = LocalDateTime.now();
-        String timestamp = dtf.format(now);
-
-        String oldFileName = oldFile.getName();
-        int dotIndex = oldFileName.lastIndexOf('.');
-        String nameWithoutExtension = (dotIndex == -1) ? oldFileName : oldFileName.substring(0, dotIndex);
-        String extension = (dotIndex == -1) ? "" : oldFileName.substring(dotIndex);
-
-        String newFilePath = hiddenDir.getPath() + File.separator + nameWithoutExtension + "_" + timestamp + extension;
-        Files.move(oldFile.toPath(), Paths.get(newFilePath));
-        System.out.println("Moved old file to history: " + newFilePath);
-
-        return newFilePath;
     }
 
     private void checkAndDeleteOldVersions(File hiddenDir, String oldFileName) throws Exception {
