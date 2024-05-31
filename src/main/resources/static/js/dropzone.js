@@ -107,9 +107,10 @@ function hideDragOverlay(overlay) {
 
 function handleFileDrop(e, fileInput) {
     const dt = e.dataTransfer;
-    const files = dt.files;
-
-    if (files.length > 0) {
-        fileInput.files = files;
+    if (dt) {
+        const files = dt.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+        }
     }
 }
