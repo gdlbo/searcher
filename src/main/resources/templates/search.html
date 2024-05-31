@@ -15,8 +15,8 @@
     <h1>Поисковик</h1>
     <div class="button-list">
         <button class="settings-button" onclick="openDialog('settingsDialog')" type="button">Настройки</button>
-        <div th:if="${isAdmin}" class="button-list">
-            <button class="settings-button" onclick="openDialog('uploadDialog')">Загрузить</button>
+        <button class="settings-button" onclick="openDialog('uploadDialog')">Загрузить</button>
+        <div th:if="${isAdmin}">
             <button class="settings-button" onclick="openReview()">Ждут одобрения</button>
         </div>
         <button class="settings-button" id="search-button">Искать</button>

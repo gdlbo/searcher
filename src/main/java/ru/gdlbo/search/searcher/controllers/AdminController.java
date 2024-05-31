@@ -30,6 +30,8 @@ public class AdminController {
 
     @Autowired
     private FileInfoRepository fileInfoRepository;
+    @Autowired
+    private FileTempInfoRepository fileTempInfoRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -89,6 +91,7 @@ public class AdminController {
 
         Thread thread = new Thread(() -> {
             fileInfoRepository.deleteAll();
+            fileTempInfoRepository.deleteAll();
         });
         thread.setDaemon(false);
         thread.start();
