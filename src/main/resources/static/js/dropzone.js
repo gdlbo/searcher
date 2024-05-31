@@ -29,9 +29,11 @@ function initDropZone() {
 }
 
 function displayFileName(input) {
-    const fileName = input.files[0].name;
-    const fileNameSpan = document.getElementById("file-name");
-    fileNameSpan.textContent = fileName;
+    if (input.files[0]) {
+        const fileName = input.files[0].name;
+        const fileNameSpan = document.getElementById("file-name");
+        fileNameSpan.textContent = fileName;
+    }
 }
 
 function closeDialogDropzone() {
@@ -44,5 +46,7 @@ function closeDialogDropzone() {
 
     // Clear the file name
     const fileNameSpan = document.getElementById("file-name");
-    fileNameSpan.textContent = "";
+    if (fileNameSpan) {
+        fileNameSpan.textContent = "";
+    }
 }
