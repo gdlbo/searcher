@@ -86,7 +86,7 @@
             <td data-column="inventoryNumber"><span th:text="${file.inventoryNumber}"></span></td>
             <td>
                 <div class="optionsButton">
-                    <button class="options-button" onclick="openOptionsButton(this)">...</button>
+                    <button class="options-button" th:data-id="${file.id}" th:data-location="${file.location}" onclick="openOptionsButton(this)">...</button>
                 </div>
 
                 <div class="dialog-box" id="optionsDialog">

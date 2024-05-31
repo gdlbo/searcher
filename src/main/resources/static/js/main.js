@@ -57,14 +57,14 @@ function addCheckboxEventListeners() {
     });
 }
 
-function openOptionsButton() {
+function openOptionsButton(button) {
     const optionsDialog = document.getElementById('optionsDialog');
     optionsDialog.style.display = 'block';
 
     const optionsDialogContent = optionsDialog.firstElementChild
 
-    const location = optionsDialogContent.getAttribute('data-location')
-    const id = optionsDialogContent.getAttribute('data-id')
+    const location = button.getAttribute('data-location')
+    const id = button.getAttribute('data-id')
 
     const buttonsList = optionsDialogContent.querySelector(".button-list")
 
@@ -224,9 +224,22 @@ function closeDialog(elementId) {
     document.body.style.overflow = '';
     dialogBox.style.display = 'none';
 
-    if (elementId === 'optionsDialog') {
-        const buttonsList = dialogBox.querySelector('.button-list');
-        buttonsList.innerHTML = '';
+    switch (elementId) {
+        case 'optionsDialog': {
+            const buttonsList = dialogBox.querySelector('.button-list');
+            buttonsList.innerHTML = '';
+            break
+        }
+        case 'uploadDialog': {
+            document.getElementById('uploadForm').reset();
+            break
+        }
+        case 'updateDialog': {
+            document.getElementById('updateForm').reset();
+            break
+        }
+        default:
+            break;
     }
 }
 
