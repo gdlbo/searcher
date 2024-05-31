@@ -50,3 +50,66 @@ function closeDialogDropzone() {
         fileNameSpan.textContent = "";
     }
 }
+function setupDragAndDrop() {
+    const uploadDialog = document.getElementById('uploadDialog');
+    const fileInput = document.getElementById('fileInput');
+
+    if (uploadDialog) {
+        addDragAndDropEvents(uploadDialog, fileInput);
+        handleFileDrop(uploadDialog, fileInput);
+    }
+}
+
+function addDragAndDropEvents(dialogElement, fileInput) {
+    const dragOverlay = dialogElement.querySelector('.drag-overlay');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dialogElement.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+    });
+
+    // Подсчет количества элементов dragenter и dragleave
+    let dragCounter = 0;
+
+    dialogElement.addEventListener('dragenter', (e) => {
+        dragCounter++;
+        showDragOverlay(dragOverlay);
+    }, false);
+
+    dialogElement.addEventListener('dragleave', (e) => {
+        dragCounter--;
+        if (dragCounter === 0) {
+            hideDragOverlay(dragOverlay);
+        }
+    }, false);
+
+    dialogElement.addEventListener('drop', (e) => {
+        dragCounter = 0;
+        hideDragOverlay(dragOverlay);
+        handleFileDrop(e, fileInput);
+    }, false);
+
+    dialogElement.addEventListener('dragover', () => showDragOverlay(dragOverlay), false);
+}
+
+function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+}
+
+function showDragOverlay(overlay) {
+    overlay.style.display = 'flex';
+}
+
+function hideDragOverlay(overlay) {
+    overlay.style.display = 'none';
+}
+
+function handleFileDrop(e, fileInput) {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+
+    if (files.length > 0) {
+        fileInput.files = files;
+    }
+}

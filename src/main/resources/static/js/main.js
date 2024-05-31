@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
     loadCheckboxStates();
     addCheckboxEventListeners();
     initResetSearch();
+    setupDragAndDrop();
 });
 
 function loadCheckboxStates() {
