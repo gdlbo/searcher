@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import ru.gdlbo.search.searcher.config.Config;
 import ru.gdlbo.search.searcher.repository.FileInfo;
+import ru.gdlbo.search.searcher.repository.FileTempInfo;
 import ru.gdlbo.search.searcher.repository.User;
 import ru.gdlbo.search.searcher.services.FileService;
 import ru.gdlbo.search.searcher.services.UserService;
@@ -87,7 +88,7 @@ public class FileUploadController {
         if (isAdmin) {
             fileService.saveOrUpdateFile(fileInfo);
         } else {
-            fileService.saveTempFile(fileInfo);
+            fileService.saveTempFile(new FileTempInfo(fileInfo));
         }
 
         FileCopyUtils.copy(file.getInputStream().readAllBytes(), new File(locationWithFileName));

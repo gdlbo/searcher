@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface FileTempInfoRepository extends JpaRepository<FileInfo, Long>, JpaSpecificationExecutor<FileInfo> {
+public interface FileTempInfoRepository extends JpaRepository<FileTempInfo, Long>, JpaSpecificationExecutor<FileTempInfo> {
 
 }

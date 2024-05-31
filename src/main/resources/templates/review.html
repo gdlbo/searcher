@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="https://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<head>
+    <title>Одобрение</title>
+    <script th:src="@{/js/main.js}"></script>
+    <script th:src="@{/js/themes.js}"></script>
+    <script th:src="@{/js/requests.js}"></script>
+    <script th:src="@{/js/dropzone.js}"></script>
+    <script th:src="@{/js/search.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+
+<body>
+<div class="header-container">
+    <h1>Список на одобрение</h1>
+    <div class="button-list">
+        <button class="settings-button" onclick="openDialog('settingsDialog')" type="button">Настройки</button>
+        <button class="settings-button" onclick="openSearch()">Поисковик</button>
+    </div>
+</div>
+
+<div class="table-container">
+    <table id="file-paths">
+        <thead>
+        <tr>
+            <th data-column="decNumber">
+                <a class="sort">Дец. номер</a>
+                <input class="search-input" data-search-field="decNumber" id="decNumber" type="text">
+            </th>
+            <th data-column="deviceName">
+                <a class="sort">Наименование</a>
+                <input class="search-input" data-search-field="deviceName" id="deviceName" type="text">
+            </th>
+            <th data-column="documentType">
+                <a class="sort">Тип документа</a>
+                <input class="search-input" data-search-field="documentType" id="documentType" type="text">
+            </th>
+            <th data-column="usedDevices">
+                <a class="sort">Прим. устройства</a>
+                <input class="search-input" data-search-field="usedDevices" id="usedDevices" type="text">
+            </th>
+            <th data-column="project">
+                <a class="sort">Проект</a>
+                <input class="search-input" data-search-field="project" id="project" type="text">
+            </th>
+            <th data-column="creationTime">
+                <a class="sort">Дата внес.</a>
+                <input class="search-input" data-search-field="creationTime" id="creationTime" type="text">
+            </th>
+            <th data-column="lastModified">
+                <a class="sort">Дата изм.</a>
+                <input class="search-input" data-search-field="lastModified" id="lastModified" type="text">
+            </th>
+            <th data-column="user">
+                <a class="sort">Кем внесено</a>
+                <input class="search-input" data-search-field="user" id="user" type="text">
+            </th>
+            <th data-column="location">
+                <a class="sort">Путь</a>
+                <input class="search-input" data-search-field="location" id="location" type="text">
+            </th>
+            <th data-column="inventoryNumber">
+                <a class="sort">Инвентарный номер</a>
+                <input class="search-input" data-search-field="inventoryNumber" id="inventoryNumber" type="text">
+            </th>
+            <th></th>
+        </tr>
+        </thead>
+
+        <tbody id="file-rows">
+        <tr th:each="file : ${fileInfos}">
+            <td data-column="decNumber"><span th:text="${file.decNumber}"></span></td>
+            <td data-column="deviceName"><span th:text="${file.deviceName}"></span></td>
+            <td data-column="documentType"><span th:text="${file.documentType}"></span></td>
+            <td data-column="usedDevices"><span th:text="${file.usedDevices}"></span></td>
+            <td data-column="project"><span th:text="${file.project}"></span></td>
+            <td data-column="creationTime"><span th:text="${file.creationTime}"></span></td>
+            <td data-column="lastModified"><span th:text="${file.lastModified}"></span></td>
+            <td data-column="user"><span th:text="${file.user.username}"></span></td>
+            <td data-column="location"><span th:text="${file.location}"></span></td>
+            <td data-column="inventoryNumber"><span th:text="${file.inventoryNumber}"></span></td>
+        </tr>
+        </tbody>
+    </table>
+    <div id="no-results" class="noResults" style="display: none; text-align: center;">
+        <p style="font-size: 20px; font-weight: bold; margin: 20px 0;">Результатов не найдено</p>
+        <button class="custom-button" onclick="resetSearch('/review')" type="button">Сбросить поиск</button>
+    </div>
+</div>
+
+<div class="dialog-box" id="settingsDialog">
+    <div class="dialog-content">
+        <h2>Настройки</h2>
+        <div class="settings-section margin-bottom">
+            <h3>Темы</h3>
+            <div class="theme-switcher margin-bottom">
+                <label class="dropdown-label" for="theme-dropdown">Тема:</label>
+                <select class="dropdown" id="theme-dropdown" onchange="changeTheme()">
+                    <option value="system">Системная</option>
+                    <option value="dark">Тёмная</option>
+                    <option value="light">Светлая</option>
+                </select>
+            </div>
+            <div class="input-group margin-bottom">
+                <label class="dropdown-label" for="colorPicker">Цвет:</label>
+                <select class="dropdown" id="colorPicker" onchange="handleAccentColorPicker()">
+                    <option value="">Выберите цвет</option>
+                    <option value="#a14242">Темно-красный</option>
+                    <option value="#588163">Оливково-зеленый</option>
+                    <option value="#6e57d2">Лавандовый</option>
+                    <option value="#ff8a22">Оранжевый</option>
+                    <option value="#e00a97">Маджента</option>
+                    <option value="#843c54">Коричневый</option>
+                    <option value="#1a4f76">Темно-синий</option>
+                    <option value="#ffd700">Золотой</option>
+                    <option value="#8b4513">Седло коричневый</option>
+                    <option value="#4682b4">Стальной голубой</option>
+                    <option value="#ff69b4">Ярко-розовый</option>
+                    <option value="#20b2aa">Светло-морской зеленый</option>
+                </select>
+            </div>
+            <div class="input-group margin-bottom">
+                <label for="accentColor">Сторонний цвет (HEX):</label>
+                <input id="accentColor" placeholder="Enter color" type="text">
+            </div>
+            <div class="button-group">
+                <button onclick="handleAccentColorHex()" type="button">Применить цвет</button>
+                <button onclick="resetAccentColor()">Сбросить цвет</button>
+            </div>
+        </div>
+        <div class="input-group margin-bottom checkbox-container">
+            <h3>Вкладки</h3>
+            <div>
+                <label><input checked data-column="decNumber" type="checkbox"> Дец. номер</label>
+                <label><input checked data-column="deviceName" type="checkbox"> Наименование</label>
+                <label><input checked data-column="documentType" type="checkbox"> Тип документа</label>
+                <label><input checked data-column="usedDevices" type="checkbox"> Прим. устройства</label>
+                <label><input checked data-column="project" type="checkbox"> Проект</label>
+                <label><input checked data-column="creationTime" type="checkbox"> Дата внес.</label>
+                <label><input checked data-column="lastModified" type="checkbox"> Дата изм.</label>
+                <label><input checked data-column="user" type="checkbox"> Кем внесено</label>
+                <label><input checked data-column="location" type="checkbox"> Путь</label>
+                <label><input checked data-column="inventoryNumber" type="checkbox"> Инвентарный номер</label>
+            </div>
+        </div>
+        <div class="margin-bottom" th:if="${isAdmin}">
+            <h3>Admin</h3>
+            <div class="input-group">
+                <label for="userName">Дать админку:</label>
+                <input id="username" placeholder="Введите имя" type="text">
+            </div>
+            <div class="button-group margin-bottom">
+                <button onclick="grantAdmin()" type="button">Применить</button>
+            </div>
+        </div>
+        <div class="margin-bottom" th:if="${isAdmin}">
+            <h3>Системное</h3>
+            <div class="input-group">
+                <label for="searcherPath">Путь для загрузки файлов по умолчанию:</label>
+                <input id="searcherPath" placeholder="/путь/до/папки" th:value="${path}" type="text">
+            </div>
+            <div class="button-group margin-bottom">
+                <button onclick="applyCustomPath()" type="button">Применить</button>
+                <button onclick="dropCustomPath()" type="button">Сбросить</button>
+            </div>
+            <button onclick="resetDatabase()" type="button">Сбросить все базы</button>
+            <button onclick="resetFileDatabase()" type="button">Сбросить базу файлов</button>
+            <button onclick="setDummyFiles()" type="button">Заполнить базу пустышками
+                (тестирование)
+            </button>
+            <button onclick="restartServer()" type="button">Перезапустить сервер</button>
+        </div>
+        <div class="account-credentials margin-bottom">
+            <h3>Аккаунт</h3>
+            <div class="input-group">
+                <label for="nickname">Имя:</label>
+                <input id="nickname" th:placeholder="${nickname}" type="text">
+            </div>
+            <div class="input-group">
+                <label for="old-password">Старый пароль:</label>
+                <input id="old-password" placeholder="Старый пароль" type="password">
+            </div>
+            <div class="input-group">
+                <label for="new-password">Новый пароль:</label>
+                <input id="new-password" placeholder="Новый пароль" type="password">
+            </div>
+            <div class="button-group">
+                <button onclick="changePassword()" type="button">Применить изменения</button>
+            </div>
+            <button onclick="logout()" type="button">Выйти из аккаунта</button>
+        </div>
+        <button onclick="closeDialog('settingsDialog')" type="button">Закрыть</button>
+    </div>
+</div>
+</body>
+</html>

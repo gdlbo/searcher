@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FileInfo {
+public class FileTempInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,7 +27,7 @@ public class FileInfo {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public FileInfo(String decNumber, String deviceName, String documentType, String usedDevices, String project, String inventoryNumber, String lastModified, String location, String creationTime, User user) {
+    public FileTempInfo(String decNumber, String deviceName, String documentType, String usedDevices, String project, String inventoryNumber, String lastModified, String location, String creationTime, User user) {
         this.decNumber = decNumber;
         this.deviceName = deviceName;
         this.documentType = documentType;
@@ -40,7 +40,7 @@ public class FileInfo {
         this.user = user;
     }
 
-    public FileInfo(FileTempInfo fileInfo) {
+    public FileTempInfo(FileInfo fileInfo) {
         this.decNumber = fileInfo.getDecNumber();
         this.deviceName = fileInfo.getDeviceName();
         this.documentType = fileInfo.getDocumentType();
@@ -53,7 +53,7 @@ public class FileInfo {
         this.user = fileInfo.getUser();
     }
 
-    public FileInfo(Long id, String decNumber, String deviceName, String documentType, String usedDevices, String project, String inventoryNumber, String lastModified, String location, String creationTime, User user) {
+    public FileTempInfo(Long id, String decNumber, String deviceName, String documentType, String usedDevices, String project, String inventoryNumber, String lastModified, String location, String creationTime, User user) {
         this.id = id;
         this.decNumber = decNumber;
         this.deviceName = deviceName;

@@ -15,8 +15,9 @@
     <h1>Поисковик</h1>
     <div class="button-list">
         <button class="settings-button" onclick="openDialog('settingsDialog')" type="button">Настройки</button>
-        <div th:if="${isAdmin}">
+        <div th:if="${isAdmin}" class="button-list">
             <button class="settings-button" onclick="openDialog('uploadDialog')">Загрузить</button>
+            <button class="settings-button" onclick="openReview()">Ждут одобрения</button>
         </div>
         <button class="settings-button" id="search-button">Искать</button>
     </div>
@@ -138,7 +139,7 @@
     </table>
     <div id="no-results" class="noResults" style="display: none; text-align: center;">
         <p style="font-size: 20px; font-weight: bold; margin: 20px 0;">Результатов не найдено</p>
-        <button class="custom-button" onclick="resetSearch()" type="button">Сбросить поиск</button>
+        <button class="custom-button" onclick="resetSearch('/search')" type="button">Сбросить поиск</button>
     </div>
 </div>
 

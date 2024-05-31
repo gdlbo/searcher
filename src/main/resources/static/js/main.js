@@ -244,6 +244,16 @@ function closeDialog(elementId) {
     }
 }
 
+function openReview() {
+    console.log("Open review")
+    window.location.href = '/review';
+}
+
+function openSearch() {
+    console.log("Open search")
+    window.location.href = '/search';
+}
+
 function openDialog(elementId) {
     const dialogBox = document.getElementById(elementId);
     document.body.style.overflow = 'hidden';

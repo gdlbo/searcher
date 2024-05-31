@@ -5,10 +5,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import ru.gdlbo.search.searcher.config.Config;
-import ru.gdlbo.search.searcher.repository.FileInfo;
-import ru.gdlbo.search.searcher.repository.FileInfoRepository;
-import ru.gdlbo.search.searcher.repository.FileTempInfoRepository;
-import ru.gdlbo.search.searcher.repository.PaginatedResult;
+import ru.gdlbo.search.searcher.repository.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +23,7 @@ public class FileService {
     @Autowired
     private Config config;
 
-    public List<FileInfo> findAllTemp() {
+    public List<FileTempInfo> findAllTemp() {
         return tempInfoRepository.findAll();
     }
 
@@ -57,7 +54,7 @@ public class FileService {
 
                 fileInfo.setLocation(newPath);
 
-                fileInfoRepository.save(fileInfo);
+                fileInfoRepository.save(new FileInfo(fileInfo));
             }
 
             if (!tempFile.delete()) {
@@ -86,7 +83,7 @@ public class FileService {
         fileInfoRepository.save(fileInfo);
     }
 
-    public void saveTempFile(FileInfo fileInfo) {
+    public void saveTempFile(FileTempInfo fileInfo) {
         tempInfoRepository.save(fileInfo);
     }
 
