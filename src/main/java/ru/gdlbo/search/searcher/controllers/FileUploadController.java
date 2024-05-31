@@ -38,7 +38,7 @@ public class FileUploadController {
             @RequestParam String decNumber,
             @RequestParam String deviceName,
             @RequestParam String documentType,
-            @RequestParam String usedDevices,
+            @RequestParam(required = false) String usedDevices,
             @RequestParam String project,
             @RequestParam String inventoryNumber,
             @RequestParam(required = false) String location,
@@ -65,6 +65,10 @@ public class FileUploadController {
 
         if (config.getPath() != null) {
             location = config.getPath();
+        }
+
+        if (usedDevices == null || usedDevices.isEmpty()) {
+            usedDevices = "N/A";
         }
 
         String creationTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
