@@ -80,7 +80,8 @@ public class FileUploadController {
         if (isAdmin) {
             locationWithFileName = location + "/" + file.getOriginalFilename();
         } else {
-            locationWithFileName = location + "/.review/" + file.getOriginalFilename();
+            File targetDirectory = createHiddenDirectory(new File(location));
+            locationWithFileName = targetDirectory.getPath() + "/" + file.getOriginalFilename();
         }
 
         FileInfo fileInfo = new FileInfo(decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, lastModified, locationWithFileName, creationTime, user);
@@ -91,17 +92,7 @@ public class FileUploadController {
             fileService.saveTempFile(new FileTempInfo(fileInfo));
         }
 
-        if (!isAdmin) {
-            File reviewDir = new File(location + "/.review/");
-
-            if (!reviewDir.mkdir()) {
-                response.put("error", "Ошибка загрузки файла");
-                return ResponseEntity.badRequest().body(response);
-            }
-        }
-
         File newFile = new File(locationWithFileName);
-
         FileCopyUtils.copy(file.getInputStream().readAllBytes(), newFile);
 
         System.out.println("Uploaded file: " + locationWithFileName);
@@ -111,7 +102,7 @@ public class FileUploadController {
     }
 
     private File createHiddenDirectory(File oldFile) throws Exception {
-        File hiddenDir = new File(oldFile.getParentFile(), ".review");
+        File hiddenDir = new File(oldFile, ".review");
         if (!hiddenDir.exists()) {
             if (!hiddenDir.mkdir()) {
                 throw new Exception("Failed to create directory");

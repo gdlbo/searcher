@@ -459,7 +459,8 @@ form {
     transition: background-color 0.3s ease;
     text-align: center;
     width: auto;
-    margin-left: 10px;
+    flex: 1;
+    margin: 0 5px;
 }
 
 .settings-button:hover {
@@ -546,4 +547,10 @@ form {
     color: white;
     font-size: 24px;
     z-index: 1000;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
 }

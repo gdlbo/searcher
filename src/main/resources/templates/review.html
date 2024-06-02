@@ -69,12 +69,30 @@
             <td data-column="user"><span th:text="${file.user.username}"></span></td>
             <td data-column="location"><span th:text="${file.location}"></span></td>
             <td data-column="inventoryNumber"><span th:text="${file.inventoryNumber}"></span></td>
+            <td>
+                <div class="optionsButton">
+                    <button class="options-button" onclick="openDialog('reviewDialog')">...</button>
+                </div>
+
+                <div class="dialog-box" id="reviewDialog">
+                    <div class="dialog-content" th:data-id="${file.id}">
+                        <h2>Вы уверены, что хотите утвердить?</h2>
+
+                        <div class="button-list">
+                            <div class="button-container">
+                                <button class="settings-button" onclick="approveFile(this)">Утвердить</button>
+                                <button class="settings-button" onclick="refuseFile(this)">Отказать</button>
+                            </div>
+                            <button class="settings-button" onclick="closeDialog('reviewDialog')">Закрыть</button>
+                        </div>
+                    </div>
+                </div>
+            </td>
         </tr>
         </tbody>
     </table>
-    <div id="no-results" class="noResults" style="display: none; text-align: center;">
-        <p style="font-size: 20px; font-weight: bold; margin: 20px 0;">Результатов не найдено</p>
-        <button class="custom-button" onclick="resetSearch('/review')" type="button">Сбросить поиск</button>
+    <div class="noResults" id="no-results" style="display: none; text-align: center;">
+        <p style="font-size: 20px; font-weight: bold; margin: 20px 0;">Ничего не найдено</p>
     </div>
 </div>
 

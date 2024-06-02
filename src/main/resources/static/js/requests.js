@@ -196,6 +196,53 @@ function removeFile(id) {
     });
 }
 
+function approveFile(button) {
+    const reviewDialog = document.getElementById('reviewDialog');
+    reviewDialog.style.display = 'block';
+
+    const id = reviewDialog.firstElementChild.getAttribute('data-id')
+
+    fetch('/api/approve?id=' + id, {
+        method: 'GET',
+        credentials: 'include'
+    }).then(response => {
+        if (response.ok) {
+            window.location.reload();
+        } else {
+            console.error('Failed to approve file with status:', response.status);
+        }
+    }).catch(error => {
+        console.error('Failed to approve file:', error);
+    });
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 1500);
+}
+
+function refuseFile(button) {
+    const reviewDialog = document.getElementById('reviewDialog');
+    reviewDialog.style.display = 'block';
+    const id = reviewDialog.firstElementChild.getAttribute('data-id')
+
+    fetch('/api/refuse?id=' + id, {
+        method: 'GET',
+        credentials: 'include'
+    }).then(response => {
+        if (response.ok) {
+            window.location.reload();
+        } else {
+            console.error('Failed to refuse file with status:', response.status);
+        }
+    }).catch(error => {
+        console.error('Failed to refuse file:', error);
+    });
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 1500);
+}
+
 function submitForm() {
     const formData = new FormData(document.getElementById('uploadForm'));
 
