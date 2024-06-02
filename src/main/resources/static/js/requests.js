@@ -200,7 +200,7 @@ function approveFile(button) {
     const reviewDialog = document.getElementById('reviewDialog');
     reviewDialog.style.display = 'block';
 
-    const id = reviewDialog.firstElementChild.getAttribute('data-id')
+    const id = button.firstElementChild.getAttribute('data-id')
 
     fetch('/api/approve?id=' + id, {
         method: 'GET',
@@ -223,7 +223,8 @@ function approveFile(button) {
 function refuseFile(button) {
     const reviewDialog = document.getElementById('reviewDialog');
     reviewDialog.style.display = 'block';
-    const id = reviewDialog.firstElementChild.getAttribute('data-id')
+
+    const id = button.firstElementChild.getAttribute('data-id')
 
     fetch('/api/refuse?id=' + id, {
         method: 'GET',
