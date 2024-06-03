@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="https://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <head>
-    <title>Поисковик</title>
+    <title>Архив</title>
     <script th:src="@{/js/main.js}"></script>
     <script th:src="@{/js/themes.js}"></script>
     <script th:src="@{/js/requests.js}"></script>
@@ -12,7 +12,7 @@
 
 <body th:data-is-admin="${isAdmin}" th:data-is-custom-path="${isCustomPathDisabled}" th:data-path="${path}">
 <div class="header-container">
-    <h1>Поисковик</h1>
+    <h1>Архив</h1>
     <div class="button-list">
         <button class="settings-button" onclick="openDialog('settingsDialog')" type="button">Настройки</button>
         <button class="settings-button" onclick="openDialog('uploadDialog')">Загрузить</button>
@@ -55,7 +55,7 @@
                 <a class="sort">Дата изм.</a>
                 <input class="search-input" data-search-field="lastModified" id="lastModified" type="text">
             </th>
-            <th data-column="user">
+            <th data-column="user" th:if="${isAdmin}">
                 <a class="sort">Кем внесено</a>
                 <input class="search-input" data-search-field="user" id="user" type="text">
             </th>
@@ -80,7 +80,7 @@
             <td data-column="project"><span th:text="${file.project}"></span></td>
             <td data-column="creationTime"><span th:text="${file.creationTime}"></span></td>
             <td data-column="lastModified"><span th:text="${file.lastModified}"></span></td>
-            <td data-column="user"><span th:text="${file.user.username}"></span></td>
+            <td data-column="user" th:if="${isAdmin}"><span th:text="${file.user.username}"></span></td>
             <td data-column="location"><span th:text="${file.location}"></span></td>
             <td data-column="inventoryNumber"><span th:text="${file.inventoryNumber}"></span></td>
             <td>
@@ -407,7 +407,7 @@
                 <label><input checked data-column="project" type="checkbox"> Проект</label>
                 <label><input checked data-column="creationTime" type="checkbox"> Дата внес.</label>
                 <label><input checked data-column="lastModified" type="checkbox"> Дата изм.</label>
-                <label><input checked data-column="user" type="checkbox"> Кем внесено</label>
+                <label th:if="${isAdmin}"><input checked data-column="user" type="checkbox"> Кем внесено</label>
                 <label><input checked data-column="location" type="checkbox"> Путь</label>
                 <label><input checked data-column="inventoryNumber" type="checkbox"> Инвентарный номер</label>
             </div>

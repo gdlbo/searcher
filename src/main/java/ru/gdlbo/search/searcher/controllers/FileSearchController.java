@@ -37,6 +37,8 @@ public class FileSearchController {
                               Authentication authentication,
                               Model model) {
 
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        boolean hasCustomPath = config.getPath() != null;
         String decNumber = formData.get("decNumber");
         String deviceName = formData.get("deviceName");
         String documentType = formData.get("documentType");
@@ -46,20 +48,12 @@ public class FileSearchController {
         String lastModified = formData.get("lastModified");
         String location = formData.get("location");
         String creationTime = formData.get("creationTime");
-        String userName = formData.get("user");
-        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        boolean hasCustomPath = config.getPath() != null;
+        String userName = isAdmin ? formData.get("user") : authentication.getName();
 
         User user = userService.findByUsername(authentication.getName());
         if (user == null) {
             return "redirect:/error";
         }
-
-        // Add "ВГМТ." prefix to decNumber if it doesn't already start with "ВГМТ."
-        // idk maybe this is a bad feature
-//        if (decNumber != null && !decNumber.isEmpty() && !decNumber.startsWith("ВГМТ.")) {
-//            decNumber = "ВГМТ." + decNumber;
-//        }
 
         Specification<FileInfo> spec = FileInfoSpecification.createSpecification(
                 decNumber, deviceName, documentType, usedDevices, project,
