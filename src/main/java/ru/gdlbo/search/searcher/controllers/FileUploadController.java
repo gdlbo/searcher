@@ -1,5 +1,6 @@
 package ru.gdlbo.search.searcher.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -47,8 +48,6 @@ public class FileUploadController {
             Authentication authentication) throws Exception {
 
         Map<String, String> response = new HashMap<>();
-        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
-
         User user = userService.findByUsername(authentication.getName());
         if (user == null) {
             response.put("error", "Ошибка: Не удалось найти пользователя " + authentication.getName());
@@ -77,7 +76,7 @@ public class FileUploadController {
         String lastModified = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         String locationWithFileName;
 
-        if (isAdmin) {
+        if (isAdmin(authentication)) {
             locationWithFileName = location + "/" + file.getOriginalFilename();
         } else {
             File targetDirectory = createHiddenDirectory(new File(location));
@@ -86,7 +85,7 @@ public class FileUploadController {
 
         FileInfo fileInfo = new FileInfo(decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, lastModified, locationWithFileName, creationTime, user);
 
-        if (isAdmin) {
+        if (isAdmin(authentication)) {
             fileService.saveOrUpdateFile(fileInfo);
         } else {
             fileService.saveTempFile(new FileTempInfo(fileInfo));
@@ -121,19 +120,29 @@ public class FileUploadController {
                              @RequestParam String lastModified,
                              @RequestParam String creationTime,
                              @RequestParam String inventoryNumber,
-                             @RequestParam String location,
-                             @RequestParam String userName,
+                             @RequestParam(required = false) String location,
+                             @RequestParam(required = false) String userName,
+                             @RequestParam(defaultValue = "false", required = false) Boolean isReview,
+                             HttpServletRequest request,
                              Authentication authentication) {
 
-        if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+        if (!isReview && !isAdmin(authentication)) {
             return "redirect:/error";
         }
 
         Optional<FileInfo> optionalFileInfo = fileService.getFileById(id);
-        if (optionalFileInfo.isPresent()) {
+        Optional<FileTempInfo> optionalTempFileInfo = fileService.getTempFileById(id);
+        String referer = request.getHeader("Referer");
+
+        if (optionalTempFileInfo.isPresent() || optionalFileInfo.isPresent()) {
+            if (isReview) {
+                location = optionalTempFileInfo.get().getLocation();
+                userName = authentication.getName();
+            }
+
             User user = userService.findByUsername(userName);
 
-            if (user == null) {
+            if (user == null || (!user.getUsername().equals(userName) && isReview && !isAdmin(authentication))) {
                 System.out.println("Failed to find user with username: " + userName);
                 return "redirect:/error";
             }
@@ -141,14 +150,30 @@ public class FileUploadController {
             String formattedLastModified = formatDateTime(lastModified);
             String formattedCreationTime = formatDateTime(creationTime);
 
-            FileInfo fileInfo = new FileInfo(id, decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, formattedLastModified, location, formattedCreationTime, user);
-
-            fileService.saveOrUpdateFile(fileInfo);
-            return "redirect:/search";
+            if (isReview) {
+                saveTempFile(id, decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, formattedLastModified, location, formattedCreationTime, user);
+            } else {
+                saveFile(id, decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, formattedLastModified, location, formattedCreationTime, user);
+            }
+            return "redirect:" + referer;
         } else {
             System.out.println("Failed to find file with id: " + id);
             return "redirect:/error";
         }
+    }
+
+    private boolean isAdmin(Authentication authentication) {
+        return authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+    }
+
+    private void saveTempFile(Long id, String decNumber, String deviceName, String documentType, String usedDevices, String project, String inventoryNumber, String formattedLastModified, String location, String formattedCreationTime, User user) {
+        FileTempInfo fileInfo = new FileTempInfo(id, decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, formattedLastModified, location, formattedCreationTime, user);
+        fileService.saveTempFile(fileInfo);
+    }
+
+    private void saveFile(Long id, String decNumber, String deviceName, String documentType, String usedDevices, String project, String inventoryNumber, String formattedLastModified, String location, String formattedCreationTime, User user) {
+        FileInfo fileInfo = new FileInfo(id, decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, formattedLastModified, location, formattedCreationTime, user);
+        fileService.saveOrUpdateFile(fileInfo);
     }
 
     private String formatDateTime(String dateTime) {

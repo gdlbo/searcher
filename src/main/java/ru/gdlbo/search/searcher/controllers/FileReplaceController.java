@@ -1,16 +1,26 @@
 package ru.gdlbo.search.searcher.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import ru.gdlbo.search.searcher.repository.FileTempInfo;
+import ru.gdlbo.search.searcher.services.FileService;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 @Controller
 public class FileReplaceController {
+    @Autowired
+    private FileService fileService;
+
     @PostMapping("/api/replace")
     public String replaceFile(@RequestParam String filePath, @RequestParam MultipartFile file) throws Exception {
         System.out.println("Request received to replace file: " + filePath);
@@ -27,6 +37,29 @@ public class FileReplaceController {
         replaceOldFileWithNew(file, filePath);
 
         return "redirect:/search";
+    }
+
+    @PostMapping("/api/replaceTempFile")
+    public String replaceTempFile(@RequestParam String filePath,
+                                  @RequestParam MultipartFile file,
+                                  @RequestParam Long fileId,
+                                  HttpServletRequest request,
+                                  Authentication authentication) throws Exception {
+        String referer = request.getHeader("Referer");
+
+        if (file.isEmpty()) {
+            throw new Exception("File is empty");
+        }
+
+        Optional<FileTempInfo> fileTempInfo = fileService.getTempFileById(fileId);
+
+        if (fileTempInfo.isPresent() && fileTempInfo.get().getUser().getUsername().equals(authentication.getName()) || authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            FileCopyUtils.copy(file.getInputStream().readAllBytes(), new File(filePath));
+            return "redirect:" + referer;
+        } else {
+            System.out.println("Trying to replace file without permission");
+            return "redirect:/error";
+        }
     }
 
     private File createHiddenDirectory(File oldFile) throws Exception {

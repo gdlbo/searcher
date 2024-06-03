@@ -81,6 +81,8 @@ function openOptionsButton(button) {
 
     const buttonsList = optionsDialogContent.querySelector(".button-list")
 
+    const isReviewPage = window.location.pathname.includes('/review');
+
     const createButton = (text, eventClick) => {
         const button = document.createElement("button");
         button.textContent = text;
@@ -97,24 +99,33 @@ function openOptionsButton(button) {
         copyPath(location);
         closeDialog('optionsDialog');
     });
-    if (isAdmin) {
+    if (isAdmin || isReviewPage) {
         createButton("Заменить", () => {
             document.getElementById("replaceDialog").style.display = "block";
             closeDialog('optionsDialog');
         });
         createButton("Удалить", () => {
-            removeFile(id);
+            removeFile(id, isReviewPage);
             closeDialog('optionsDialog');
         });
         createButton("Редактировать", () => {
-            updateFile(id);
+            updateFile(id, isReviewPage);
             closeDialog('optionsDialog');
         });
     }
-    createButton("История", () => {
-        showFileHistory(location);
-        closeDialog('optionsDialog');
-    });
+    if (isAdmin && isReviewPage) {
+        createButton("Утверждение", () => {
+            openDialog('reviewDialog')
+            closeDialog('optionsDialog');
+        });
+    }
+    if (!isReviewPage) {
+        createButton("История", () => {
+            showFileHistory(location);
+            closeDialog('optionsDialog');
+        });
+    }
+
     createButton("Закрыть", () => closeDialog('optionsDialog'));
 }
 
@@ -216,19 +227,28 @@ function formatDateTimeString(dateTimeString) {
     return `${datePart}T${timePart.slice(0, 5)}`;
 }
 
-function openUpdateDialog(fileId, decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, location, lastModified, creationTime, userName) {
-    document.getElementById('fileId').value = fileId;
-    document.getElementById('updateDecNumber').value = decNumber;
-    document.getElementById('updateDeviceName').value = deviceName;
-    document.getElementById('updateDocumentType').value = documentType;
-    document.getElementById('updateUsedDevices').value = usedDevices;
-    document.getElementById('updateProject').value = project;
-    document.getElementById('updateInventoryNumber').value = inventoryNumber;
-    document.getElementById('updateLocation').value = location;
-    document.getElementById('updateLastModified').value = formatDateTimeString(lastModified);
-    document.getElementById('updateCreationTime').value = formatDateTimeString(creationTime);
-    document.getElementById('updateUserName').value = userName;
+function openUpdateDialog(fileId, decNumber, deviceName, documentType, usedDevices, project, inventoryNumber, location, lastModified, creationTime, userName, isReview) {
+    setElementValue('fileId', fileId);
+    setElementValue('updateDecNumber', decNumber);
+    setElementValue('updateDeviceName', deviceName);
+    setElementValue('updateDocumentType', documentType);
+    setElementValue('updateUsedDevices', usedDevices);
+    setElementValue('updateProject', project);
+    setElementValue('updateInventoryNumber', inventoryNumber);
+    setElementValue('updateLastModified', formatDateTimeString(lastModified));
+    setElementValue('updateCreationTime', formatDateTimeString(creationTime));
+    setElementValue('updateLocation', location);
+    setElementValue('updateUserName', userName);
+    setElementValue('isReview', isReview);
+
     document.getElementById('updateDialog').style.display = 'block';
+}
+
+function setElementValue(elementId, value) {
+    const element = document.getElementById(elementId);
+    if (element !== null) {
+        element.value = value;
+    }
 }
 
 function closeDialog(elementId) {

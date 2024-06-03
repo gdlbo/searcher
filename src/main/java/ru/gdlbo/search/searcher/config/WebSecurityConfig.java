@@ -53,10 +53,14 @@ public class WebSecurityConfig {
         http
                 .securityMatcher("/api/**")
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/history").permitAll() // Allow access to '/api/history' for all users
-                        .requestMatchers("/api/download").permitAll() // Allow access to '/api/download' for all users
-                        .requestMatchers("/api/changeCredentials").permitAll() // Allow access to '/api/changeCredentials' for all users
-                        .requestMatchers("/api/upload").permitAll()
+                        .requestMatchers("/api/history").hasAnyRole("ADMIN", "USER") // Allow access to '/api/history' for all users
+                        .requestMatchers("/api/download").hasAnyRole("ADMIN", "USER") // Allow access to '/api/download' for all users
+                        .requestMatchers("/api/changeCredentials").hasAnyRole("ADMIN", "USER") // Allow access to '/api/changeCredentials' for all users
+                        .requestMatchers("/api/upload").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/api/update").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/api/searchTempFile").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/api/removeTempFile").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/api/replaceTempFile").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/api/**").hasRole("ADMIN") // Only allow access to other '/api/**' endpoints if the user has the 'ADMIN' role
                         .anyRequest().authenticated()
                 )
@@ -77,7 +81,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/register").permitAll()
                         .requestMatchers("/login").permitAll()
-                        .requestMatchers("/review").hasRole("ADMIN")
+                        .requestMatchers("/review").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(formLogin -> formLogin

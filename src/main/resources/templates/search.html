@@ -16,9 +16,7 @@
     <div class="button-list">
         <button class="settings-button" onclick="openDialog('settingsDialog')" type="button">Настройки</button>
         <button class="settings-button" onclick="openDialog('uploadDialog')">Загрузить</button>
-        <div th:if="${isAdmin}">
-            <button class="settings-button" onclick="openReview()">Ждут одобрения</button>
-        </div>
+        <button class="settings-button" onclick="openReview()">Ждут одобрения</button>
         <button class="settings-button" id="search-button">Искать</button>
     </div>
 </div>
@@ -230,7 +228,7 @@
                 </div>
                 <div class="input-group margin-bottom">
                     <label for="uploadUsedDevices">Применяемые устройства:</label>
-                    <input id="uploadUsedDevices" name="usedDevices" type="text">
+                    <input id="uploadUsedDevices" name="usedDevices" placeholder="необязательно" type="text">
                 </div>
                 <div class="input-group margin-bottom">
                     <label for="uploadProject">Проект:</label>
@@ -352,7 +350,7 @@
                     <label for="updateUserName">Имя пользователя:</label>
                     <input id="updateUserName" name="userName" required type="text">
                 </div>
-                <button class=" margin-bottom" type="submit">Сохранить изменения</button>
+                <button class="margin-bottom" type="submit">Сохранить изменения</button>
                 <button onclick="closeDialog('updateDialog')" type="button">Отменить</button>
             </form>
         </div>

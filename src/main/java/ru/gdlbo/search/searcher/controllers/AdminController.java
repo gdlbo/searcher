@@ -143,7 +143,7 @@ public class AdminController {
     }
 
     @GetMapping("/api/removeFile")
-    public String removeFileFromHistory(@RequestParam Long id) {
+    public String removeFile(@RequestParam Long id) {
         System.out.println("Request received to remove file: " + id);
 
         fileInfoRepository.findById(id).ifPresent(file -> {
@@ -158,6 +158,22 @@ public class AdminController {
 
         fileInfoRepository.deleteById(id);
         return "redirect:/search";
+    }
+
+    @GetMapping("/api/removeTempFile")
+    public String removeTempFile(@RequestParam Long id, Authentication authentication) {
+        fileTempInfoRepository.findById(id).ifPresent(file -> {
+            File fileToDelete = new File(file.getLocation());
+
+            if (authentication.getName().equals(file.getUser().getUsername()) || authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+                if (fileToDelete.exists()) {
+                    fileToDelete.delete();
+                }
+
+                fileTempInfoRepository.delete(file);
+            }
+        });
+        return "redirect:/review";
     }
 
     @GetMapping("/api/submitCustomPath")

@@ -71,7 +71,7 @@
             <td data-column="inventoryNumber"><span th:text="${file.inventoryNumber}"></span></td>
             <td>
                 <div class="optionsButton">
-                    <button class="options-button" onclick="openDialog('reviewDialog')">...</button>
+                    <button class="options-button" th:data-id="${file.id}" th:data-location="${file.location}" onclick="openOptionsButton(this)">...</button>
                 </div>
 
                 <div class="dialog-box" id="reviewDialog">
@@ -83,8 +83,42 @@
                                 <button class="settings-button" onclick="approveFile(this)">Утвердить</button>
                                 <button class="settings-button" onclick="refuseFile(this)">Отказать</button>
                             </div>
+                            <button class="settings-button" onclick="downloadFile()">Скачать</button>
                             <button class="settings-button" onclick="closeDialog('reviewDialog')">Закрыть</button>
                         </div>
+                    </div>
+                </div>
+
+                <div class="dialog-box" id="optionsDialog">
+                    <div class="dialog-content" th:data-id="${file.id}" th:data-location="${file.location}">
+                        <h2>Опции</h2>
+                        <div class="button-list">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dialog-box" id="replaceDialog">
+                    <div class="dialog-content">
+                        <h2>Замена файла</h2>
+                        <form action="/api/replaceTempFile" enctype="multipart/form-data" method="post">
+                            <input name="filePath" th:value="${file.location}" type="hidden"/>
+                            <input name="fileId" th:value="${file.id}" type="hidden"/>
+                            <div class="form-group">
+                                <div class="drop-zone-container">
+                                    <div class="drop-zone">
+                                        <input id="file-input" name="file" type="file"/>
+                                        <label class="drop-zone__prompt" for="file-input">Выберите или переместите файл
+                                            сюда</label>
+                                        <span id="file-name"></span>
+                                    </div>
+                                </div>
+                                <div class="buttons">
+                                    <button type="submit">Заменить</button>
+                                    <button onclick="closeDialogDropzone()" type="button">Отменить</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </td>
@@ -200,5 +234,110 @@
         <button onclick="closeDialog('settingsDialog')" type="button">Закрыть</button>
     </div>
 </div>
+
+<div class="dialog-box" id="updateDialog" style="display: none;">
+    <div class="dialog-content">
+        <div class="settings-section margin-bottom">
+            <h2>Изменение информации о файле</h2>
+            <form action="/api/update" enctype="multipart/form-data" id="updateForm" method="post">
+                <input id="fileId" name="id" type="hidden">
+                <input id="isReview" name="isReview" type="hidden">
+                <div class="input-group margin-bottom">
+                    <label for="updateDecNumber">Децимальный номер:</label>
+                    <input id="updateDecNumber" name="decNumber" required type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="updateDeviceName">Наименование устройства:</label>
+                    <input id="updateDeviceName" name="deviceName" required type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="updateDocumentType">Тип документа:</label>
+                    <input id="updateDocumentType" name="documentType" required type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <select class="dropdown" id="type-doc-update-dropdown" onchange="updateDropdown()">
+                        <option value="none">Выберите тип технической документации</option>
+                        <option>Электрическая объединенная (Э0)</option>
+                        <option>Электрическая структурная (Э1)</option>
+                        <option>Электрическая функциональная (Э2)</option>
+                        <option>Электрическая принципиальная (полная) (Э3)</option>
+                        <option>Электрическая "соединений" (монажная) (Э4)</option>
+                        <option>Электрическая "подключения" (Э5)</option>
+                        <option>Электрическая общая (Э6)</option>
+                        <option>Схема деления (стуктурная) (Е1)</option>
+                        <option>Схема деления (функциональная) (Е2)</option>
+                        <option>Руководство по эксплуатации (РЭ)</option>
+                        <option>Инструкция по монтажу, пуску, регулированию и обкатке изделия (ИМ)</option>
+                        <option>Формуляр (ФО)</option>
+                        <option>Паспорт (ПС)</option>
+                        <option>Этикетка (ЭТ)</option>
+                        <option>Каталог изделия (КИ)</option>
+                        <option>Нормы расхода запасных частей (НЗЧ)</option>
+                        <option>Ведомость ЗИП (ЗИ)</option>
+                        <option>Учебно-технические плакаты (УП)</option>
+                        <option>Инструкции эксплуатационные специальные (ИС)</option>
+                        <option>Ведомость эксплуатационных документов (ВЭ)</option>
+                        <option>Сборочный чертеж (СБ)</option>
+                        <option>Чертеж общего вида (ВО)</option>
+                        <option>Теоретический чертеж (ТЧ)</option>
+                        <option>Габаритный чертеж (ГЧ)</option>
+                        <option>Электромонтажный чертеж (МЭ)</option>
+                        <option>Монтажный чертеж (МЧ)</option>
+                        <option>Упаковочный чертеж (УЧ)</option>
+                        <option>Электронная структура изделия (конструктивная)</option>
+                        <option>Спецификация</option>
+                        <option>Ведомость спецификации‌ (ВС)</option>
+                        <option>Ведомость ссылочных документов (ВД)</option>
+                        <option>Ведомость покупных изделии‌ (ВП)</option>
+                        <option>Ведомость разрешения применения покупных изделии‌ (ВИ)</option>
+                        <option>Ведомость держателей подлинников (ДП)</option>
+                        <option>Ведомость технического предложения (ПТ)</option>
+                        <option>Ведомость эскизного проекта (ЭП)</option>
+                        <option>Ведомость технического проекта (ТП)</option>
+                        <option>Пояснительная записка (ПЗ)</option>
+                        <option>Ведомость электронных документов (ВДЭ)</option>
+                        <option>Технические условия (ТУ)</option>
+                        <option>Программа и методика испытании‌ (ПМ)</option>
+                        <option>Таблицы (ТБ)</option>
+                        <option>Расчеты (РР)</option>
+                        <option>Инструкция (И...)</option>
+                        <option>Документы прочие (Д...)</option>
+                    </select>
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="updateUsedDevices">Применяемые устройства:</label>
+                    <input id="updateUsedDevices" name="usedDevices" type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="updateProject">Проект:</label>
+                    <input id="updateProject" name="project" type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="updateInventoryNumber">Инвентарный номер:</label>
+                    <input id="updateInventoryNumber" name="inventoryNumber" type="text">
+                </div>
+                <div class="input-group margin-bottom" th:if="${isAdmin}">
+                    <label for="updateLocation">Путь до документа:</label>
+                    <input id="updateLocation" name="location" type="text">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="updateLastModified">Дата последнего изменения:</label>
+                    <input id="updateLastModified" name="lastModified" required type="datetime-local">
+                </div>
+                <div class="input-group margin-bottom">
+                    <label for="updateCreationTime">Дата создания:</label>
+                    <input id="updateCreationTime" name="creationTime" required type="datetime-local">
+                </div>
+                <div class="input-group margin-bottom" th:if="${isAdmin}">
+                    <label for="updateUserName">Имя пользователя:</label>
+                    <input id="updateUserName" name="userName" required type="text">
+                </div>
+                <button class="margin-bottom" type="submit">Сохранить изменения</button>
+                <button onclick="closeDialog('updateDialog')" type="button">Отменить</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

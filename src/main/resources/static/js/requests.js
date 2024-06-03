@@ -181,8 +181,9 @@ function downloadFile(filePath) {
     window.location.href = `/api/download?filePath=${encodeURIComponent(filePath)}`;
 }
 
-function removeFile(id) {
-    fetch('/api/removeFile?id=' + id, {
+function removeFile(id, isReviewPage) {
+    const link = isReviewPage ? '/api/removeTempFile?id=' : '/api/removeFile?id='
+    fetch(link + id, {
         method: 'GET',
         credentials: 'include'
     }).then(response => {
@@ -281,12 +282,13 @@ function deleteFileFromHistory(filePath) {
         });
 }
 
-function updateFile(id) {
-    fetch('/api/searchFile?id=' + id)
+function updateFile(id, isReviewPage) {
+    const updateLink = isReviewPage ? '/api/searchTempFile?id=' : '/api/searchFile?id='
+    fetch(updateLink + id)
         .then(response => response.json())
         .then(data => {
             if (data.user != null) {
-                openUpdateDialog(data.id, data.decNumber, data.deviceName, data.documentType, data.usedDevices, data.project, data.inventoryNumber, data.location, data.lastModified, data.creationTime, data.user.username)
+                openUpdateDialog(data.id, data.decNumber, data.deviceName, data.documentType, data.usedDevices, data.project, data.inventoryNumber, data.location, data.lastModified, data.creationTime, data.user.username, isReviewPage)
             } else {
                 console.error('Error:', data);
             }

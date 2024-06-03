@@ -22,9 +22,15 @@ public class FileService {
 
     @Autowired
     private Config config;
+    @Autowired
+    private FileTempInfoRepository fileTempInfoRepository;
 
     public List<FileTempInfo> findAllTemp() {
         return tempInfoRepository.findAll();
+    }
+
+    public List<FileTempInfo> findByUser(User user) {
+        return tempInfoRepository.findByUser(user);
     }
 
     public void removeTempFile(Long id) {
@@ -89,6 +95,10 @@ public class FileService {
 
     public Optional<FileInfo> getFileById(Long id) {
         return fileInfoRepository.findById(id);
+    }
+
+    public Optional<FileTempInfo> getTempFileById(Long id) {
+        return fileTempInfoRepository.findById(id);
     }
 
     public boolean isAnyFilePresent() {

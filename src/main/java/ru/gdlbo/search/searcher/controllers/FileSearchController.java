@@ -11,10 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.gdlbo.search.searcher.config.Config;
-import ru.gdlbo.search.searcher.repository.FileInfo;
-import ru.gdlbo.search.searcher.repository.FileInfoSpecification;
-import ru.gdlbo.search.searcher.repository.PaginatedResult;
-import ru.gdlbo.search.searcher.repository.User;
+import ru.gdlbo.search.searcher.repository.*;
 import ru.gdlbo.search.searcher.services.FileService;
 import ru.gdlbo.search.searcher.services.UserService;
 
@@ -101,6 +98,11 @@ public class FileSearchController {
     @GetMapping("/api/searchFile")
     public ResponseEntity<FileInfo> searchFiles(@RequestParam Long id) {
         return fileService.getFileById(id).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @GetMapping("/api/searchTempFile")
+    public ResponseEntity<FileTempInfo> searchTempFiles(@RequestParam Long id) {
+        return fileService.getTempFileById(id).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     public void createDummyFiles(int count) {
