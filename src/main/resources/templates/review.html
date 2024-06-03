@@ -184,33 +184,6 @@
                 <label><input checked data-column="inventoryNumber" type="checkbox"> Инвентарный номер</label>
             </div>
         </div>
-        <div class="margin-bottom" th:if="${isAdmin}">
-            <h3>Admin</h3>
-            <div class="input-group">
-                <label for="userName">Дать админку:</label>
-                <input id="username" placeholder="Введите имя" type="text">
-            </div>
-            <div class="button-group margin-bottom">
-                <button onclick="grantAdmin()" type="button">Применить</button>
-            </div>
-        </div>
-        <div class="margin-bottom" th:if="${isAdmin}">
-            <h3>Системное</h3>
-            <div class="input-group">
-                <label for="searcherPath">Путь для загрузки файлов по умолчанию:</label>
-                <input id="searcherPath" placeholder="/путь/до/папки" th:value="${path}" type="text">
-            </div>
-            <div class="button-group margin-bottom">
-                <button onclick="applyCustomPath()" type="button">Применить</button>
-                <button onclick="dropCustomPath()" type="button">Сбросить</button>
-            </div>
-            <button onclick="resetDatabase()" type="button">Сбросить все базы</button>
-            <button onclick="resetFileDatabase()" type="button">Сбросить базу файлов</button>
-            <button onclick="setDummyFiles()" type="button">Заполнить базу пустышками
-                (тестирование)
-            </button>
-            <button onclick="restartServer()" type="button">Перезапустить сервер</button>
-        </div>
         <div class="account-credentials margin-bottom">
             <h3>Аккаунт</h3>
             <div class="input-group">
