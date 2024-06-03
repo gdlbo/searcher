@@ -10,7 +10,7 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 </head>
 
-<body>
+<body th:data-is-admin="${isAdmin}">
 <div class="header-container">
     <h1>Список на одобрение</h1>
     <div class="button-list">
@@ -75,15 +75,14 @@
                 </div>
 
                 <div class="dialog-box" id="reviewDialog">
-                    <div class="dialog-content" th:data-id="${file.id}">
+                    <div class="dialog-content">
                         <h2>Вы уверены, что хотите утвердить?</h2>
 
                         <div class="button-list">
                             <div class="button-container">
-                                <button class="settings-button" onclick="approveFile(this)">Утвердить</button>
-                                <button class="settings-button" onclick="refuseFile(this)">Отказать</button>
+                                <button class="settings-button" th:data-id="${file.id}" onclick="approveFile(this)">Утвердить</button>
+                                <button class="settings-button" th:data-id="${file.id}" onclick="refuseFile(this)">Отказать</button>
                             </div>
-                            <button class="settings-button" onclick="downloadFile()">Скачать</button>
                             <button class="settings-button" onclick="closeDialog('reviewDialog')">Закрыть</button>
                         </div>
                     </div>

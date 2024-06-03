@@ -1,6 +1,7 @@
 package ru.gdlbo.search.searcher.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
@@ -38,13 +39,15 @@ public class FileModeration {
     }
 
     @GetMapping("/api/approve")
-    public void approve(@RequestParam Long id) {
+    public ResponseEntity<Void> approve(@RequestParam Long id) {
         fileService.approveTempFile(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/api/refuse")
-    public void decline(@RequestParam Long id) {
+    public ResponseEntity<Void> decline(@RequestParam Long id) {
         fileService.removeTempFile(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/api/getTempList")

@@ -50,7 +50,7 @@ public class FileService {
             }
 
             if (!isRemoval) {
-                String newPath = config.getPath() + tempFile.getName();
+                String newPath = config.getPath() + "/" + tempFile.getName();
 
                 try {
                     FileCopyUtils.copy(tempFile, new File(newPath));

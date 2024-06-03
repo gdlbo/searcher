@@ -58,18 +58,6 @@ function addCheckboxEventListeners() {
     });
 }
 
-function openReview(button) {
-    const optionsDialog = document.getElementById('optionsDialog');
-    optionsDialog.style.display = 'block';
-
-    const optionsDialogContent = optionsDialog.firstElementChild
-
-    const location = button.getAttribute('data-location')
-    const id = button.getAttribute('data-id')
-
-
-}
-
 function openOptionsButton(button) {
     const optionsDialog = document.getElementById('optionsDialog');
     optionsDialog.style.display = 'block';
@@ -277,7 +265,6 @@ function closeDialog(elementId) {
 }
 
 function openReview() {
-    console.log("Open review")
     window.location.href = '/review';
 }
 
