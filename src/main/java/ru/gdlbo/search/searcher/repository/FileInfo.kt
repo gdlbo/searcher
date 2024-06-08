@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import lombok.Getter
 import lombok.NoArgsConstructor
 import lombok.Setter
+import ru.gdlbo.search.searcher.repository.dto.FileInfoDto
 
 @Entity
 @Getter
@@ -64,5 +65,19 @@ data class FileInfo(
         inventoryNumber = fileInfo.inventoryNumber,
         location = fileInfo.location,
         user = fileInfo.user
+    )
+
+    fun toDTO() = FileInfoDto(
+        id = this.id,
+        decNumber = this.decNumber,
+        deviceName = this.deviceName,
+        documentType = this.documentType,
+        usedDevices = this.usedDevices,
+        project = this.project,
+        lastModified = this.lastModified,
+        creationTime = this.creationTime,
+        inventoryNumber = this.inventoryNumber,
+        location = this.location,
+        username = this.user?.username
     )
 }

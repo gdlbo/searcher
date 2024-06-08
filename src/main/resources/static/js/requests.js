@@ -287,8 +287,8 @@ function updateFile(id, isReviewPage) {
     fetch(updateLink + id)
         .then(response => response.json())
         .then(data => {
-            if (data.user != null) {
-                openUpdateDialog(data.id, data.decNumber, data.deviceName, data.documentType, data.usedDevices, data.project, data.inventoryNumber, data.location, data.lastModified, data.creationTime, data.user.username, isReviewPage)
+            if (data.id != null) {
+                openUpdateDialog(data.id, data.decNumber, data.deviceName, data.documentType, data.usedDevices, data.project, data.inventoryNumber, data.location, data.lastModified, data.creationTime, data.username, isReviewPage)
             } else {
                 console.error('Error:', data);
             }

@@ -14,6 +14,7 @@ import ru.gdlbo.search.searcher.repository.FileInfo
 import ru.gdlbo.search.searcher.repository.FileInfoSpecification
 import ru.gdlbo.search.searcher.repository.FileTempInfo
 import ru.gdlbo.search.searcher.repository.PaginatedResult
+import ru.gdlbo.search.searcher.repository.dto.FileInfoDto
 import ru.gdlbo.search.searcher.services.FileService
 import ru.gdlbo.search.searcher.services.UserService
 import java.time.LocalDateTime
@@ -60,8 +61,8 @@ class FileSearchController {
             inventoryNumber, lastModified, location, creationTime, userName
         )
 
-        val fileInfos = fileService!!.findFiles(spec)
-        val paginatedResult = fileService.paginateFileInfos(fileInfos, page)
+        val files = fileService!!.findFiles(spec)
+        val paginatedResult = fileService.paginateFileInfos(files, page)
 
         addAttributesToModel(model, paginatedResult, authentication)
 
@@ -91,16 +92,16 @@ class FileSearchController {
     }
 
     @GetMapping("/api/searchFile")
-    fun searchFiles(@RequestParam id: Long): ResponseEntity<FileInfo> {
+    fun searchFiles(@RequestParam id: Long): ResponseEntity<FileInfoDto>? {
         return fileService!!.getFileById(id)
-            .map<ResponseEntity<FileInfo>> { body: FileInfo? -> ResponseEntity.ok(body) }
+            .map<ResponseEntity<FileInfoDto>> { body: FileInfo? -> ResponseEntity.ok(body?.toDTO()) }
             .orElseGet { ResponseEntity.status(HttpStatus.NOT_FOUND).build() }
     }
 
     @GetMapping("/api/searchTempFile")
-    fun searchTempFiles(@RequestParam id: Long): ResponseEntity<FileTempInfo> {
+    fun searchTempFiles(@RequestParam id: Long): ResponseEntity<FileInfoDto> {
         return fileService!!.getTempFileById(id)
-            .map<ResponseEntity<FileTempInfo>> { body: FileTempInfo? -> ResponseEntity.ok(body) }
+            .map<ResponseEntity<FileInfoDto>> { body: FileTempInfo? -> ResponseEntity.ok(body?.toDTO()) }
             .orElseGet { ResponseEntity.status(HttpStatus.NOT_FOUND).build() }
     }
 

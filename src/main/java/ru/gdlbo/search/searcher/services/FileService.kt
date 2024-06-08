@@ -70,7 +70,7 @@ class FileService {
         val endIndex = min((startIndex + 50).toDouble(), fileInfos.size.toDouble()).toInt()
         val totalPages = ceil(fileInfos.size.toDouble() / 50).toInt()
 
-        val paginatedFileInfos = fileInfos.subList(startIndex, endIndex)
+        val paginatedFileInfos = fileInfos.subList(startIndex, endIndex).map { it?.toDTO() }
 
         return PaginatedResult(paginatedFileInfos, fileInfos.size > endIndex, page, totalPages)
     }

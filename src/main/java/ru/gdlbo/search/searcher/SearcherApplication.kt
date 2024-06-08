@@ -1,5 +1,6 @@
 package ru.gdlbo.search.searcher
 
+import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication

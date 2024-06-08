@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
-import ru.gdlbo.search.searcher.repository.FileTempInfo
+import ru.gdlbo.search.searcher.repository.dto.FileInfoDto
 import ru.gdlbo.search.searcher.services.FileService
 import ru.gdlbo.search.searcher.services.UserService
 
@@ -22,13 +22,13 @@ class FileModeration {
 
     @GetMapping("review")
     fun review(model: Model, auth: Authentication): String {
-        val fileInfos: List<FileTempInfo?>?
+        val fileInfos: List<FileInfoDto?>?
 
         if (!auth.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) {
             val user = userService!!.findByUsername(auth.name)
-            fileInfos = fileService!!.findByUser(user)
+            fileInfos = fileService!!.findByUser(user)?.map { it?.toDTO() }
         } else {
-            fileInfos = fileService!!.findAllTemp()
+            fileInfos = fileService!!.findAllTemp().map { it?.toDTO() }
             model.addAttribute("isAdmin", true)
         }
 
@@ -48,7 +48,8 @@ class FileModeration {
         return ResponseEntity.ok().build()
     }
 
-    @get:GetMapping("/api/getTempList")
-    val tempList: List<FileTempInfo?>
-        get() = fileService!!.findAllTemp()
+    @GetMapping("/api/getTempList")
+    fun tempList(): ResponseEntity<List<FileInfoDto?>> {
+        return ResponseEntity.ok().body(fileService!!.findAllTemp().map { it?.toDTO() })
+    }
 }

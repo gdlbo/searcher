@@ -40,7 +40,7 @@ class FileUploadController {
         @RequestParam(required = false) usedDevices: String?,
         @RequestParam project: String,
         @RequestParam inventoryNumber: String,
-        @RequestParam(required = false) location: String,
+        @RequestParam(required = false) location: String?,
         @RequestParam file: MultipartFile,
         authentication: Authentication
     ): ResponseEntity<Map<String, String>> {
@@ -63,8 +63,12 @@ class FileUploadController {
             return ResponseEntity.badRequest().body(response)
         }
 
-        if (config?.path.isNullOrBlank()) {
-            location = config?.path.toString()
+        if (location.isNullOrBlank()) {
+            location = config?.path
+            if (location.isNullOrBlank()) {
+                response["error"] = "Путь загрузки не указан"
+                return ResponseEntity.badRequest().body(response)
+            }
         }
 
         if (usedDevices.isNullOrEmpty()) {
@@ -76,10 +80,10 @@ class FileUploadController {
         val locationWithFileName: String
 
         if (isAdmin(authentication)) {
-            locationWithFileName = location + "/" + file.originalFilename
+            locationWithFileName = "$location/${file.originalFilename}"
         } else {
             val targetDirectory = createHiddenDirectory(File(location))
-            locationWithFileName = targetDirectory.path + "/" + file.originalFilename
+            locationWithFileName = "${targetDirectory.path}/${file.originalFilename}"
         }
 
         val fileInfo = FileInfo(

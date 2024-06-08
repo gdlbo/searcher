@@ -38,7 +38,7 @@ open class WebSecurityConfig {
                             .collect(Collectors.toList())
                     )
                 }
-                .orElseThrow { UsernameNotFoundException("User not found: $username") }
+                .orElseThrow()
         }
     }
 
@@ -97,6 +97,7 @@ open class WebSecurityConfig {
                     .defaultSuccessUrl("/search", true)
                     .permitAll()
             }
+            .csrf { csrfConfigurer -> csrfConfigurer.disable() }
         return http.build()
     }
 
