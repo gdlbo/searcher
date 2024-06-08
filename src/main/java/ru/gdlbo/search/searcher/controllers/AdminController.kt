@@ -145,7 +145,7 @@ class AdminController {
         println("Request received to remove file: $id")
 
         fileInfoRepository!!.findById(id).ifPresent { file: FileInfo ->
-            val fileToDelete = File(file.location)
+            val fileToDelete = File(file.location.toString())
             FileHistoryController().deleteFileHistory(fileToDelete.absolutePath)
             if (fileToDelete.exists()) {
                 fileToDelete.delete()
@@ -191,7 +191,7 @@ class AdminController {
         FileInputStream(propertiesPath.toFile()).use { inStream ->
             properties.load(inStream)
         }
-        if (searcherPath == null || searcherPath.isEmpty()) {
+        if (searcherPath.isNullOrEmpty()) {
             searcherPath = properties.getProperty("searcher.path")
         }
 

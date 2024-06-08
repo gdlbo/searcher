@@ -7,7 +7,6 @@ import org.springframework.util.FileCopyUtils
 import ru.gdlbo.search.searcher.config.Config
 import ru.gdlbo.search.searcher.repository.*
 import java.io.File
-import java.io.IOException
 import java.util.*
 import kotlin.math.ceil
 import kotlin.math.min

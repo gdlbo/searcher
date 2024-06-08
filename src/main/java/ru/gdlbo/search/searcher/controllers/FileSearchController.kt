@@ -104,7 +104,7 @@ class FileSearchController {
             .orElseGet { ResponseEntity.status(HttpStatus.NOT_FOUND).build() }
     }
 
-    fun createDummyFiles(count: Int) {
+    private fun createDummyFiles(count: Int) {
         val defaultUser = userService!!.findByUsername("admin")
         val random = Random()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
@@ -151,7 +151,7 @@ class FileSearchController {
         }
     }
 
-    fun getPageNumbers(currentPage: Int, totalPages: Int, limit: Int): List<Int> {
+    private fun getPageNumbers(currentPage: Int, totalPages: Int, limit: Int): List<Int> {
         val pageNumbers: MutableList<Int> = ArrayList()
 
         if (totalPages <= limit) {

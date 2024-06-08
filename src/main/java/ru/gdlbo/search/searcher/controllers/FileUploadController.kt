@@ -67,7 +67,7 @@ class FileUploadController {
             location = config?.path.toString()
         }
 
-        if (usedDevices == null || usedDevices.isEmpty()) {
+        if (usedDevices.isNullOrEmpty()) {
             usedDevices = "N/A"
         }
 

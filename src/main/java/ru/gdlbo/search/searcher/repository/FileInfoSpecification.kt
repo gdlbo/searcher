@@ -48,7 +48,7 @@ object FileInfoSpecification {
         criteriaBuilder: CriteriaBuilder,
         predicates: MutableList<Predicate>
     ) {
-        if (value != null && !value.isEmpty()) {
+        if (!value.isNullOrEmpty()) {
             val pattern = "%" + value.lowercase(Locale.getDefault()) + "%"
             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get<Any>("user").get("username")), pattern))
         }

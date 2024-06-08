@@ -7,9 +7,7 @@ import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import ru.gdlbo.search.searcher.repository.*
 import java.util.stream.Collectors
 
@@ -18,15 +16,6 @@ open class CustomUserDetailsService : UserDetailsService {
     // The repository for managing users
     @Autowired
     private val userRepository: UserRepository? = null
-
-    @Transactional
-    open fun saveUser(user: ru.gdlbo.search.searcher.repository.User): ru.gdlbo.search.searcher.repository.User {
-        user.password = BCryptPasswordEncoder().encode(user.password)
-        return userRepository!!.save(user)
-    }
-
-    val users: List<ru.gdlbo.search.searcher.repository.User?>
-        get() = userRepository!!.findAll()
 
     // This method is responsible for loading a user by their username
     @Throws(UsernameNotFoundException::class)
