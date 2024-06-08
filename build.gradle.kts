@@ -2,14 +2,11 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.2.5"
 	id("io.spring.dependency-management") version "1.1.4"
+    kotlin("jvm")
 }
 
 group = "ru.gdlbo.search"
 version = "1.0.0"
-
-java {
-	sourceCompatibility = JavaVersion.VERSION_21
-}
 
 configurations {
 	compileOnly {
@@ -30,12 +27,18 @@ dependencies {
 	implementation("org.springframework.session:spring-session-core")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.0")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+kotlin {
+    jvmToolchain(21)
 }
