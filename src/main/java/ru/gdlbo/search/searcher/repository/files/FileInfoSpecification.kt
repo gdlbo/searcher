@@ -1,4 +1,4 @@
-package ru.gdlbo.search.searcher.repository
+package ru.gdlbo.search.searcher.repository.files
 
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery

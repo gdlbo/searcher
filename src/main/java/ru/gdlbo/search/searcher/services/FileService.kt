@@ -5,7 +5,12 @@ import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.util.FileCopyUtils
 import ru.gdlbo.search.searcher.config.Config
-import ru.gdlbo.search.searcher.repository.*
+import ru.gdlbo.search.searcher.repository.PaginatedResult
+import ru.gdlbo.search.searcher.repository.files.FileInfo
+import ru.gdlbo.search.searcher.repository.files.FileInfoRepository
+import ru.gdlbo.search.searcher.repository.files.FileTempInfo
+import ru.gdlbo.search.searcher.repository.files.FileTempInfoRepository
+import ru.gdlbo.search.searcher.repository.user.User
 import java.io.File
 import java.util.*
 import kotlin.math.ceil
@@ -29,7 +34,7 @@ class FileService {
         return tempInfoRepository!!.findAll()
     }
 
-    fun findByUser(user: User?): List<FileTempInfo?>? {
+    fun findTempByUser(user: User?): List<FileTempInfo?>? {
         return tempInfoRepository!!.findByUser(user)
     }
 

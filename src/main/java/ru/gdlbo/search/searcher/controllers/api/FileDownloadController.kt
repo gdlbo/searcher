@@ -1,4 +1,4 @@
-package ru.gdlbo.search.searcher.controllers
+package ru.gdlbo.search.searcher.controllers.api
 
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpHeaders

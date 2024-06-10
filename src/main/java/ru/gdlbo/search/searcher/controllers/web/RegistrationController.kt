@@ -1,11 +1,15 @@
-package ru.gdlbo.search.searcher.controllers
+package ru.gdlbo.search.searcher.controllers.web
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
-import ru.gdlbo.search.searcher.repository.*
+import ru.gdlbo.search.searcher.repository.role.Role
+import ru.gdlbo.search.searcher.repository.role.RoleRepository
+import ru.gdlbo.search.searcher.repository.user.User
+import ru.gdlbo.search.searcher.repository.user.UserRepository
+import ru.gdlbo.search.searcher.repository.user.UserRole
 
 @Controller
 class RegistrationController {

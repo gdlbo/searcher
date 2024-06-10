@@ -1,16 +1,17 @@
-package ru.gdlbo.search.searcher.repository
+package ru.gdlbo.search.searcher.repository.files
 
 import jakarta.persistence.*
 import lombok.Getter
 import lombok.NoArgsConstructor
 import lombok.Setter
 import ru.gdlbo.search.searcher.repository.dto.FileInfoDto
+import ru.gdlbo.search.searcher.repository.user.User
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-data class FileTempInfo(
+data class FileInfo(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
@@ -53,7 +54,7 @@ data class FileTempInfo(
         user = user
     )
 
-    constructor(fileInfo: FileInfo) : this(
+    constructor(fileInfo: FileTempInfo) : this(
         id = null,
         decNumber = fileInfo.decNumber,
         deviceName = fileInfo.deviceName,

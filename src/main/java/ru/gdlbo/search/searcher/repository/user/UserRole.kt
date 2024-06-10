@@ -1,7 +1,8 @@
-package ru.gdlbo.search.searcher.repository
+package ru.gdlbo.search.searcher.repository.user
 
 import jakarta.persistence.*
 import lombok.*
+import ru.gdlbo.search.searcher.repository.role.Role
 
 @Data
 @Entity

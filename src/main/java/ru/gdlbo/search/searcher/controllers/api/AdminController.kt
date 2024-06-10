@@ -1,4 +1,4 @@
-package ru.gdlbo.search.searcher.controllers
+package ru.gdlbo.search.searcher.controllers.api
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -11,6 +11,15 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import ru.gdlbo.search.searcher.config.RestartManager
 import ru.gdlbo.search.searcher.repository.*
+import ru.gdlbo.search.searcher.repository.files.FileInfo
+import ru.gdlbo.search.searcher.repository.files.FileInfoRepository
+import ru.gdlbo.search.searcher.repository.files.FileTempInfo
+import ru.gdlbo.search.searcher.repository.files.FileTempInfoRepository
+import ru.gdlbo.search.searcher.repository.role.Role
+import ru.gdlbo.search.searcher.repository.role.RoleRepository
+import ru.gdlbo.search.searcher.repository.user.User
+import ru.gdlbo.search.searcher.repository.user.UserRepository
+import ru.gdlbo.search.searcher.repository.user.UserRole
 import java.io.*
 import java.nio.file.Paths
 import java.util.*
@@ -38,7 +47,7 @@ class AdminController {
     @GetMapping("/api/grantAdmin")
     fun grantAdminPrivileges(@RequestParam username: String, authentication: Authentication): ResponseEntity<String> {
         if (!authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User is not an admin")
+            return ResponseEntity("User is not an admin", HttpStatus.FORBIDDEN)
         }
 
         val userOptional: Optional<User> = userRepository!!.findByUsername(username)
@@ -57,7 +66,7 @@ class AdminController {
                 userRepository.save(user)
                 ResponseEntity.ok("Admin privileges granted to $username")
             }
-        }.orElseGet { ResponseEntity.status(HttpStatus.NOT_FOUND).body("User does not exist") }
+        }.orElseGet { ResponseEntity("User does not exist", HttpStatus.NOT_FOUND) }
     }
 
     @GetMapping("/api/resetDatabase")
@@ -80,7 +89,7 @@ class AdminController {
     @GetMapping("/api/resetFileDatabase")
     fun resetFileDatabase(authentication: Authentication): ResponseEntity<String> {
         if (!authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User is not an admin")
+            return ResponseEntity("User is not an admin", HttpStatus.FORBIDDEN)
         }
 
         val thread = Thread {
@@ -96,7 +105,7 @@ class AdminController {
     @GetMapping("/api/restartServer")
     fun restartServer(authentication: Authentication): ResponseEntity<String> {
         if (!authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User is not an admin")
+            return ResponseEntity("User is not an admin", HttpStatus.FORBIDDEN)
         }
 
         val thread = Thread {
@@ -116,17 +125,16 @@ class AdminController {
         authentication: Authentication
     ): ResponseEntity<String> {
         val currentUser = userRepository!!.findByUsername(authentication.name).orElse(null)
-            ?: return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Current user not found")
+            ?: return ResponseEntity("Current user not found", HttpStatus.BAD_REQUEST)
 
         if (!passwordEncoder!!.matches(oldPassword, currentUser.password)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Old password is incorrect")
+            return ResponseEntity("Old password is incorrect", HttpStatus.BAD_REQUEST)
         }
 
         if (!username.isNullOrEmpty() && username != currentUser.username) {
             val exists = userRepository.findByUsername(username).isPresent
             if (exists) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with this username already exists")
+                return ResponseEntity("User with this username already exists", HttpStatus.BAD_REQUEST)
             }
             currentUser.username = username
         }
@@ -141,7 +149,7 @@ class AdminController {
     }
 
     @GetMapping("/api/removeFile")
-    fun removeFile(@RequestParam id: Long): String {
+    fun removeFile(@RequestParam id: Long): ResponseEntity<String> {
         println("Request received to remove file: $id")
 
         fileInfoRepository!!.findById(id).ifPresent { file: FileInfo ->
@@ -153,11 +161,11 @@ class AdminController {
         }
 
         fileInfoRepository.deleteById(id)
-        return "redirect:/search"
+        return ResponseEntity.ok("Removed file successfully")
     }
 
     @GetMapping("/api/removeTempFile")
-    fun removeTempFile(@RequestParam id: Long, authentication: Authentication): String {
+    fun removeTempFile(@RequestParam id: Long, authentication: Authentication): ResponseEntity<String> {
         fileTempInfoRepository!!.findById(id).ifPresent { file: FileTempInfo ->
             val fileToDelete = file.location?.let { File(it) }
             if (authentication.name == file.user?.username || authentication.authorities.contains(
@@ -173,7 +181,7 @@ class AdminController {
                 fileTempInfoRepository.delete(file)
             }
         }
-        return "redirect:/review"
+        return ResponseEntity.ok("Removed temp file successfully")
     }
 
     @GetMapping("/api/submitCustomPath")

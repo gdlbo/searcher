@@ -270,7 +270,7 @@ function submitForm() {
 function deleteFileFromHistory(filePath) {
     // Send a GET request to the server to delete the file from history
     const encodedFilePath = encodeURIComponent(filePath);
-    fetch('/api/remove?filePath=' + encodedFilePath)
+    fetch('/api/removeFromHistory?filePath=' + encodedFilePath)
         .then(response => {
             if (!response.ok) {
                 console.error('Failed to delete file from history: ' + encodedFilePath);

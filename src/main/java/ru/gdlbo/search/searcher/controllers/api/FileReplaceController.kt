@@ -1,7 +1,9 @@
-package ru.gdlbo.search.searcher.controllers
+package ru.gdlbo.search.searcher.controllers.api
 
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Controller
@@ -19,11 +21,11 @@ class FileReplaceController {
 
     @PostMapping("/api/replace")
     @Throws(Exception::class)
-    fun replaceFile(@RequestParam filePath: String, @RequestParam file: MultipartFile): String {
+    fun replaceFile(@RequestParam filePath: String, @RequestParam file: MultipartFile): ResponseEntity<String> {
         println("Request received to replace file: $filePath")
 
         if (file.isEmpty) {
-            throw Exception("File is empty")
+            return ResponseEntity("File is empty", HttpStatus.BAD_REQUEST)
         }
 
         val oldFile = File(filePath)
@@ -33,7 +35,7 @@ class FileReplaceController {
 
         replaceOldFileWithNew(file, filePath)
 
-        return "redirect:/search"
+        return ResponseEntity.ok("Successfully replaced file")
     }
 
     @PostMapping("/api/replaceTempFile")
@@ -44,24 +46,27 @@ class FileReplaceController {
         @RequestParam fileId: Long,
         request: HttpServletRequest,
         authentication: Authentication
-    ): String {
-        val referer = request.getHeader("Referer")
-
+    ): ResponseEntity<String> {
         if (file.isEmpty) {
-            throw Exception("File is empty")
+            return ResponseEntity("File is empty", HttpStatus.BAD_REQUEST)
         }
 
-        val fileTempInfo = fileService!!.getTempFileById(fileId)
+        val fileTempInfo = fileService?.getTempFileById(fileId)
 
-        if (fileTempInfo.isPresent && fileTempInfo.get().user?.username == authentication.name || authentication.authorities.contains(
-                SimpleGrantedAuthority("ROLE_ADMIN")
-            )
-        ) {
-            FileCopyUtils.copy(file.inputStream.readAllBytes(), File(filePath))
-            return "redirect:$referer"
+        if (fileTempInfo != null && fileTempInfo.isPresent) {
+            if (fileTempInfo.get().user?.username == authentication.name || authentication.authorities.contains(
+                    SimpleGrantedAuthority("ROLE_ADMIN")
+                )
+            ) {
+                FileCopyUtils.copy(file.inputStream.readAllBytes(), File(filePath))
+                return ResponseEntity.ok("OK")
+            } else {
+                println("Trying to replace file without permission")
+                return ResponseEntity("Error", HttpStatus.BAD_REQUEST)
+            }
         } else {
-            println("Trying to replace file without permission")
-            return "redirect:/error"
+            println("File isn't exist")
+            return ResponseEntity("File isn't exist", HttpStatus.BAD_REQUEST)
         }
     }
 

@@ -1,7 +1,8 @@
-package ru.gdlbo.search.searcher.controllers
+package ru.gdlbo.search.searcher.controllers.api
 
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.multipart.MultipartFile
 import ru.gdlbo.search.searcher.config.Config
 import ru.gdlbo.search.searcher.repository.*
+import ru.gdlbo.search.searcher.repository.files.FileInfo
+import ru.gdlbo.search.searcher.repository.files.FileTempInfo
+import ru.gdlbo.search.searcher.repository.user.User
 import ru.gdlbo.search.searcher.services.FileService
 import ru.gdlbo.search.searcher.services.UserService
 import java.io.*
@@ -141,16 +145,15 @@ class FileUploadController {
         @RequestParam(defaultValue = "false", required = false) isReview: Boolean,
         request: HttpServletRequest,
         authentication: Authentication
-    ): String {
+    ): ResponseEntity<String>? {
         var location = location
         var userName = userName
         if (!isReview && !isAdmin(authentication)) {
-            return "redirect:/error"
+            return ResponseEntity("Error", HttpStatus.FORBIDDEN)
         }
 
         val optionalFileInfo = fileService!!.getFileById(id)
         val optionalTempFileInfo = fileService.getTempFileById(id)
-        val referer = request.getHeader("Referer")
 
         if (optionalTempFileInfo.isPresent || optionalFileInfo.isPresent) {
             if (isReview) {
@@ -162,7 +165,7 @@ class FileUploadController {
 
             if (user == null || (user.username != userName && isReview && !isAdmin(authentication))) {
                 println("Failed to find user with username: $userName")
-                return "redirect:/error"
+                return ResponseEntity("Failed to find user", HttpStatus.BAD_REQUEST)
             }
 
             val formattedLastModified = formatDateTime(lastModified)
@@ -197,10 +200,10 @@ class FileUploadController {
                     user
                 )
             }
-            return "redirect:$referer"
+            return ResponseEntity.ok("Ok")
         } else {
             println("Failed to find file with id: $id")
-            return "redirect:/error"
+            return ResponseEntity("Failed to find file", HttpStatus.NOT_FOUND)
         }
     }
 

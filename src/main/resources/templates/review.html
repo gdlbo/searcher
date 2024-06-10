@@ -100,8 +100,7 @@
                 <div class="dialog-box" id="replaceDialog">
                     <div class="dialog-content">
                         <h2>Замена файла</h2>
-                        <form action="/api/replaceTempFile" enctype="multipart/form-data" method="post">
-                            <input name="filePath" th:value="${file.location}" type="hidden"/>
+                        <form action="/api/web/replaceTempFile" enctype="multipart/form-data" method="post">
                             <input name="fileId" th:value="${file.id}" type="hidden"/>
                             <div class="form-group">
                                 <div class="drop-zone-container">

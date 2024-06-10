@@ -1,4 +1,4 @@
-package ru.gdlbo.search.searcher.controllers
+package ru.gdlbo.search.searcher.controllers.web
 
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller

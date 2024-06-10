@@ -11,11 +11,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
-import ru.gdlbo.search.searcher.repository.UserRepository
+import ru.gdlbo.search.searcher.repository.user.UserRepository
 import java.util.stream.Collectors
 
 @Configuration
@@ -65,7 +64,7 @@ open class WebSecurityConfig {
                     .requestMatchers("/api/update").hasAnyRole("ADMIN", "USER")
                     .requestMatchers("/api/searchTempFile").hasAnyRole("ADMIN", "USER")
                     .requestMatchers("/api/removeTempFile").hasAnyRole("ADMIN", "USER")
-                    .requestMatchers("/api/replaceTempFile").hasAnyRole("ADMIN", "USER")
+                    .requestMatchers("/api/web/replaceTempFile").hasAnyRole("ADMIN", "USER")
                     .requestMatchers("/api/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
             }

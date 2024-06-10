@@ -1,5 +1,6 @@
-package ru.gdlbo.search.searcher.controllers
+package ru.gdlbo.search.searcher.controllers.web
 
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -7,24 +8,24 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
+import org.springframework.util.FileCopyUtils
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.multipart.MultipartFile
 import ru.gdlbo.search.searcher.config.Config
-import ru.gdlbo.search.searcher.repository.FileInfo
-import ru.gdlbo.search.searcher.repository.FileInfoSpecification
-import ru.gdlbo.search.searcher.repository.FileTempInfo
+import ru.gdlbo.search.searcher.controllers.api.FileReplaceController
 import ru.gdlbo.search.searcher.repository.PaginatedResult
-import ru.gdlbo.search.searcher.repository.dto.FileInfoDto
+import ru.gdlbo.search.searcher.repository.files.FileInfoSpecification
 import ru.gdlbo.search.searcher.services.FileService
 import ru.gdlbo.search.searcher.services.UserService
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
+import java.io.File
+import java.io.IOException
 import kotlin.math.max
 import kotlin.math.min
 
 @Controller
-class FileSearchController {
+class SearchController {
     @Autowired
     private val fileService: FileService? = null
 
@@ -33,6 +34,72 @@ class FileSearchController {
 
     @Autowired
     private val config: Config? = null
+
+    @PostMapping("/api/web/replaceFile")
+    @Throws(Exception::class)
+    fun replaceTempFile(
+        @RequestParam filePath: String,
+        @RequestParam file: MultipartFile,
+        authentication: Authentication
+    ): String {
+        println("Request received to replace file: $filePath")
+
+        if (file.isEmpty) {
+            return "redirect:/error"
+        }
+
+        val oldFile = File(filePath)
+
+        val hiddenDir = createHiddenDirectory(oldFile)
+        checkAndDeleteOldVersions(hiddenDir, oldFile.name)
+
+        replaceOldFileWithNew(file, filePath)
+
+        return "redirect:/search"
+    }
+
+    @Throws(Exception::class)
+    private fun createHiddenDirectory(oldFile: File): File {
+        val hiddenDir = File(oldFile.parentFile, ".history")
+        if (!hiddenDir.exists()) {
+            if (!hiddenDir.mkdir()) {
+                throw Exception("Failed to create directory")
+            }
+        }
+        return hiddenDir
+    }
+
+    @Throws(Exception::class)
+    private fun checkAndDeleteOldVersions(hiddenDir: File, oldFileName: String) {
+        val files = hiddenDir.listFiles { dir: File?, name: String ->
+            name.startsWith(
+                oldFileName.substring(
+                    0,
+                    oldFileName.lastIndexOf('.')
+                )
+            )
+        }
+        if (files != null && files.size > 10) {
+            var oldestFile = files[0]
+            for (i in 1 until files.size) {
+                if (files[i].lastModified() < oldestFile.lastModified()) {
+                    oldestFile = files[i]
+                }
+            }
+
+            if (!oldestFile.delete()) {
+                throw Exception("Failed to delete " + oldestFile.name)
+            }
+
+            println("Deleted oldest file: " + oldestFile.name)
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun replaceOldFileWithNew(file: MultipartFile, filePath: String) {
+        FileCopyUtils.copy(file.inputStream.readAllBytes(), File(filePath))
+        println("Replaced file: $filePath")
+    }
 
     @GetMapping("/search")
     fun searchFiles(
@@ -83,54 +150,6 @@ class FileSearchController {
         }
 
         return "search"
-    }
-
-    @GetMapping("/api/setDummyFiles")
-    fun setDummyFiles(): ResponseEntity<String> {
-        createDummyFiles(500)
-        return ResponseEntity.ok("Dummy files created successfully")
-    }
-
-    @GetMapping("/api/searchFile")
-    fun searchFiles(@RequestParam id: Long): ResponseEntity<FileInfoDto>? {
-        return fileService!!.getFileById(id)
-            .map<ResponseEntity<FileInfoDto>> { body: FileInfo? -> ResponseEntity.ok(body?.toDTO()) }
-            .orElseGet { ResponseEntity.status(HttpStatus.NOT_FOUND).build() }
-    }
-
-    @GetMapping("/api/searchTempFile")
-    fun searchTempFiles(@RequestParam id: Long): ResponseEntity<FileInfoDto> {
-        return fileService!!.getTempFileById(id)
-            .map<ResponseEntity<FileInfoDto>> { body: FileTempInfo? -> ResponseEntity.ok(body?.toDTO()) }
-            .orElseGet { ResponseEntity.status(HttpStatus.NOT_FOUND).build() }
-    }
-
-    private fun createDummyFiles(count: Int) {
-        val defaultUser = userService!!.findByUsername("admin")
-        val random = Random()
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-
-        for (i in 1..count) {
-            val randomNumber = random.nextInt(1000)
-            val fileName = String.format("ВГМТ.%06d.%03d МАРШРУТИЗАТОР INCARNET %d.pdf", 465245 + i, 7, randomNumber)
-
-            val randomDateTime = LocalDateTime.now().plusDays(random.nextInt(365).toLong())
-            val formattedDateTime = randomDateTime.format(formatter)
-
-            val dummyFile = FileInfo(
-                fileName,
-                "Device $i",
-                "Type $i",
-                "Used $i",
-                "Project $i",
-                i.toString(),
-                formattedDateTime,
-                "/path/to/location",
-                formattedDateTime,
-                defaultUser!!
-            )
-            fileService!!.saveOrUpdateFile(dummyFile)
-        }
     }
 
     private fun addAttributesToModel(model: Model, paginatedResult: PaginatedResult, authentication: Authentication) {

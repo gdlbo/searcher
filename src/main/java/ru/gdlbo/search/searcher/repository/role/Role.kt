@@ -1,4 +1,4 @@
-package ru.gdlbo.search.searcher.repository
+package ru.gdlbo.search.searcher.repository.role
 
 import jakarta.persistence.*
 import lombok.AllArgsConstructor

@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import ru.gdlbo.search.searcher.repository.*
+import ru.gdlbo.search.searcher.repository.user.UserRepository
+import ru.gdlbo.search.searcher.repository.user.UserRole
 import java.util.stream.Collectors
 
 @Service

@@ -1,13 +1,13 @@
-package ru.gdlbo.search.searcher.controllers
+package ru.gdlbo.search.searcher.controllers.api
 
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
-import ru.gdlbo.search.searcher.repository.FileHistory
+import ru.gdlbo.search.searcher.repository.files.FileHistory
 import java.io.File
 import java.util.regex.Pattern
 
@@ -38,8 +38,8 @@ class FileHistoryController {
         return ResponseEntity.ok(fileHistory)
     }
 
-    @DeleteMapping("/api/removeAllFromHistory")
-    fun deleteFileHistory(@RequestParam fileName: String): ResponseEntity<Void> {
+    @GetMapping("/api/removeAllFromHistory")
+    fun deleteFileHistory(@RequestParam fileName: String): ResponseEntity<String> {
         println("Request received to delete all history for file: $fileName")
 
         val files = getFiles(fileName)
@@ -50,18 +50,19 @@ class FileHistoryController {
                     println("Deleted history file: " + historyFile.name)
                 } else {
                     println("Failed to delete history file: " + historyFile.name)
+                    return ResponseEntity("Failed to delete history file", HttpStatus.BAD_REQUEST)
                 }
             }
         } else {
             println("No history found for file: $fileName")
+            return ResponseEntity("No history found for file", HttpStatus.BAD_REQUEST)
         }
-
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.ok("Deleted file")
     }
 
     // This method is responsible for removing a file from the history
     @GetMapping("/api/removeFromHistory")
-    fun removeFileFromHistory(@RequestParam filePath: String, authentication: Authentication): String {
+    fun removeFileFromHistory(@RequestParam filePath: String, authentication: Authentication): ResponseEntity<String> {
         println("Request received to remove file history: $filePath")
 
         val fileToRemove = File(filePath)
@@ -72,18 +73,18 @@ class FileHistoryController {
             )
         ) {
             println("Attempt to delete file outside of history directory: $filePath")
-            return "redirect:/error"
+            return ResponseEntity.ok("Failed to delete file")
         }
 
         // Remove the file from the hidden directory
         if (!fileToRemove.delete()) {
             println("Failed to delete file: $filePath")
-            return "redirect:/error"
+            return ResponseEntity.ok("Failed to delete file")
         }
 
         println("Deleted file: $filePath")
 
-        return "redirect:/search"
+        return ResponseEntity.ok("Deleted file")
     }
 
     companion object {

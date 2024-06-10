@@ -1,4 +1,4 @@
-package ru.gdlbo.search.searcher.repository
+package ru.gdlbo.search.searcher.repository.files
 
 import lombok.Getter
 import lombok.NoArgsConstructor

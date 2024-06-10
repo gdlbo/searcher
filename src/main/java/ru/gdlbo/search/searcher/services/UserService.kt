@@ -2,8 +2,8 @@ package ru.gdlbo.search.searcher.services
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import ru.gdlbo.search.searcher.repository.User
-import ru.gdlbo.search.searcher.repository.UserRepository
+import ru.gdlbo.search.searcher.repository.user.User
+import ru.gdlbo.search.searcher.repository.user.UserRepository
 
 @Service
 class UserService {
