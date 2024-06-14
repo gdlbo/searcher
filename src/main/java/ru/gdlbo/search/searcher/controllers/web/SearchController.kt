@@ -101,6 +101,7 @@ class SearchController {
         println("Заменен файл: $filePath")  // Печатает в консоль путь к замененному файлу
     }
 
+    // Обработка поисковых запросов и выдача как страницы (Web)
     @GetMapping("/search")
     fun searchFiles(
         // Номер страницы (по умолчанию 0)
@@ -112,7 +113,6 @@ class SearchController {
         // Модель для представления данных
         model: Model
     ): String {
-
         // Проверка роли администратора
         val isAdmin = authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))
 

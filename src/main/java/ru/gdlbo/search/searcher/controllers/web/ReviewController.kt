@@ -27,6 +27,7 @@ class ReviewController {
     @Autowired
     private val userService: UserService? = null // Сервис для работы с пользователями
 
+    // Обработка и выдача страницы одобрения файлов (Web)
     @GetMapping("review")
     fun review(model: Model, auth: Authentication): String {
         val fileInfos: List<FileInfoDto?>? // Список информации о файлах
