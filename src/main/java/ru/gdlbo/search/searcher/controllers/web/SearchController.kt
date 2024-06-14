@@ -200,34 +200,47 @@ class SearchController {
     }
 
     private fun getPageNumbers(currentPage: Int, totalPages: Int, limit: Int): List<Int> {
-        // Логика формирования списка номеров страниц для отображения
+        // Создаем пустой изменяемый список для хранения номеров страниц
         val pageNumbers: MutableList<Int> = ArrayList()
 
+        // Если общее количество страниц меньше или равно лимиту
         if (totalPages <= limit) {
+            // Добавляем все номера страниц от 0 до totalPages-1 в список
             for (i in 0 until totalPages) {
                 pageNumbers.add(i)
             }
         } else {
+            // Вычисляем начальную страницу, с которой начнется отображение
+            // Берем максимальное значение между 0 и (текущая страница - половина лимита)
             var startPage = max(0.0, (currentPage - limit / 2).toDouble()).toInt()
+            // Вычисляем конечную страницу, до которой будет идти отображение
+            // Берем минимальное значение между (начальная страница + лимит) и totalPages
             val endPage = min((startPage + limit).toDouble(), totalPages.toDouble()).toInt()
 
+            // Если разница между конечной и начальной страницей меньше лимита,
+            // сдвигаем начальную страницу назад, чтобы заполнить лимит
             if (endPage - startPage < limit) {
                 startPage = max(0.0, (endPage - limit).toDouble()).toInt()
             }
 
+            // Если начальная страница больше 0, добавляем индикатор пропуска страниц
             if (startPage > 0) {
-                pageNumbers.add(-1)
+                pageNumbers.add(-1) // -1 как индикатор пропуска
             }
 
+            // Добавляем номера страниц от начальной до конечной страницы в список
             for (i in startPage until endPage) {
                 pageNumbers.add(i)
             }
 
+            // Если конечная страница меньше общего количества страниц,
+            // добавляем общее количество страниц как индикатор пропуска
             if (endPage < totalPages) {
-                pageNumbers.add(totalPages)
+                pageNumbers.add(totalPages) // Общее количество страниц как индикатор пропуска
             }
         }
 
+        // Возвращаем сформированный список номеров страниц
         return pageNumbers
     }
 }
