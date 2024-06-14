@@ -13,7 +13,7 @@ import java.util.regex.Pattern
 
 @Controller
 class FileHistoryController {
-    // Этот метод отвечает за получение истории изменений файла
+    // Получение истории файла (API)
     @GetMapping("/api/history")
     fun getFileHistory(@RequestParam fileName: String): ResponseEntity<List<FileHistory>> {
         println("Запрос на получение истории файла: $fileName")
@@ -39,6 +39,7 @@ class FileHistoryController {
         return ResponseEntity.ok(fileHistory)
     }
 
+    // Удаление всей истории файлов (API)
     @GetMapping("/api/removeAllFromHistory")
     fun deleteFileHistory(@RequestParam fileName: String): ResponseEntity<String> {
         println("Запрос на удаление всей истории файла: $fileName")
@@ -61,7 +62,7 @@ class FileHistoryController {
         return ResponseEntity.ok("Файл истории удален")
     }
 
-    // Этот метод отвечает за удаление отдельного файла из истории
+    // Удаление отдельного файла из истории (API)
     @GetMapping("/api/removeFromHistory")
     fun removeFileFromHistory(@RequestParam filePath: String, authentication: Authentication): ResponseEntity<String> {
         println("Запрос на удаление файла истории: $filePath")

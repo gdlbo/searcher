@@ -44,6 +44,7 @@ class AdminController {
     @Autowired
     private val passwordEncoder: PasswordEncoder? = null // Сервис для шифрования паролей
 
+    // Выдача админских прав (API)
     @GetMapping("/api/grantAdmin")
     fun grantAdminPrivileges(
         @RequestParam username: String,
@@ -73,6 +74,7 @@ class AdminController {
         }.orElseGet { ResponseEntity("Пользователь не найден", HttpStatus.NOT_FOUND) } // Обработать случай, когда пользователь не найден
     }
 
+    // Сброс всех баз (файлов, пользователей) (API)
     @GetMapping("/api/resetDatabase")
     fun resetDatabase(authentication: Authentication): ResponseEntity<String> {
         // Проверка прав администратора у текущего пользователя
@@ -91,6 +93,7 @@ class AdminController {
         return ResponseEntity.ok("База данных сброшена")
     }
 
+    // Сброс базы файлов (API)
     @GetMapping("/api/resetFileDatabase")
     fun resetFileDatabase(authentication: Authentication): ResponseEntity<String> {
         // Проверка прав администратора у текущего пользователя
@@ -108,6 +111,7 @@ class AdminController {
         return ResponseEntity.ok("База данных с информацией о файлах сброшена")
     }
 
+    // Перезапуск сервера (API)
     @GetMapping("/api/restartServer")
     fun restartServer(authentication: Authentication): ResponseEntity<String> {
         // Проверка прав администратора у текущего пользователя
@@ -123,6 +127,8 @@ class AdminController {
 
         return ResponseEntity.ok("Сервер перезапускается...")
     }
+
+    // Смена логина/пароля пользователя (API)
     @GetMapping("/api/changeCredentials")
     fun changeCredentials(
         @RequestParam(required = false) username: String?,
@@ -159,6 +165,7 @@ class AdminController {
         return ResponseEntity.ok("Данные пользователя успешно обновлены")
     }
 
+    // Удаление файла из базы (API)
     @GetMapping("/api/removeFile")
     fun removeFile(@RequestParam id: Long): ResponseEntity<String> {
         println("Получен запрос на удаление файла: $id")
@@ -179,6 +186,7 @@ class AdminController {
         return ResponseEntity.ok("Файл успешно удален")
     }
 
+    // Удаление не одобренного файла из базы (API)
     @GetMapping("/api/removeTempFile")
     fun removeTempFile(@RequestParam id: Long, authentication: Authentication): ResponseEntity<String> {
         fileTempInfoRepository!!.findById(id).ifPresent { file: FileTempInfo -> // Поиск временного файла по id
@@ -201,6 +209,7 @@ class AdminController {
         return ResponseEntity.ok("Временный файл успешно удален")
     }
 
+    // Установка пути по умолчанию для сохранения файлов (API)
     @GetMapping("/api/submitCustomPath")
     @Throws(IOException::class)
     fun submitCustomPath(@RequestParam searcherPath: String?): ResponseEntity<String> {
@@ -236,6 +245,7 @@ class AdminController {
         return ResponseEntity.ok("Перезапуск...")
     }
 
+    // Сброс пути для сохранения (API)
     @GetMapping("/api/dropCustomPath")
     fun dropCustomPath(): ResponseEntity<String> {
         val propertiesPath = Paths.get(System.getProperty("user.dir"), "application.properties") // Путь к файлу application.properties

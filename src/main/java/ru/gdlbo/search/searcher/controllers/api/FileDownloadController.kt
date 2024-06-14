@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets
 
 @Controller
 class FileDownloadController {
-    // Этот метод обрабатывает запросы на скачивание файлов
+    // Скачивание файлов (API)
     @GetMapping("/api/download")
     @Throws(IOException::class)
     fun downloadFile(@RequestParam filePath: String): ResponseEntity<InputStreamResource> {

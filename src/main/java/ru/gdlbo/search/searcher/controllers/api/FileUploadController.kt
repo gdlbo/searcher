@@ -26,14 +26,15 @@ import java.time.format.DateTimeFormatter
 @Controller
 class FileUploadController {
     @Autowired
-    private val fileService: FileService? = null
+    private val fileService: FileService? = null // Сервис для работы с файлами
 
     @Autowired
-    private val userService: UserService? = null
+    private val userService: UserService? = null // Сервис для работы с пользователями
 
     @Autowired
     private val config: Config? = null
 
+    // Загрузка файлов на сервер и добавление в базу (API)
     @PostMapping("/api/upload")
     @ResponseBody
     @Throws(Exception::class)
@@ -129,6 +130,7 @@ class FileUploadController {
         return hiddenDir
     }
 
+    // Обновление информации о файле (API)
     @PostMapping("/api/update")
     fun updateFile(
         @RequestParam id: Long,

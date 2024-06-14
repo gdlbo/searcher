@@ -19,6 +19,7 @@ class FileReplaceController {
     @Autowired
     private val fileService: FileService? = null // Сервис для работы с файлами
 
+    // Замена файла и сохранение в историю (API)
     @PostMapping("/api/replace")
     @Throws(Exception::class)
     fun replaceFile(@RequestParam filePath: String, @RequestParam file: MultipartFile): ResponseEntity<String> {
@@ -43,6 +44,7 @@ class FileReplaceController {
         return ResponseEntity.ok("Файл успешно заменен")
     }
 
+    // Замена не одобренного файла (API)
     @PostMapping("/api/replaceTempFile")
     @Throws(Exception::class)
     fun replaceTempFile(
