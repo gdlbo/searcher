@@ -13,78 +13,79 @@ import java.util.regex.Pattern
 
 @Controller
 class FileHistoryController {
-    // This method is responsible for retrieving the history of a file
+    // Этот метод отвечает за получение истории изменений файла
     @GetMapping("/api/history")
     fun getFileHistory(@RequestParam fileName: String): ResponseEntity<List<FileHistory>> {
-        println("Request received to get history for file: $fileName")
+        println("Запрос на получение истории файла: $fileName")
 
-        val file = File(fileName)
-        val files = getFiles(fileName)
+        val file = File(fileName) // Создать объект File для исходного файла
+        val files = getFiles(fileName) // Получить список файлов-историй
 
-        // Если нет файлов, возвращаем пустой список
+        // Если список файлов пуст, вернуть пустой список
         if (files.isNullOrEmpty()) {
-            println("No history found for file: $fileName")
+            println("История для файла $fileName не найдена")
             return ResponseEntity.ok(emptyList())
         }
 
-        // Сортируем файлы по времени последнего изменения
+        // Преобразовать список файлов в List и отсортировать по дате изменения
         val fileList: List<File> = files.toList().sortedBy { it.lastModified() }
-        val location = file.absolutePath
 
-        val fileHistory = fileList.map { f -> FileHistory(extractDateFromFileName(f), location) }
+        val location = file.absolutePath // Получить абсолютный путь исходного файла
 
-        println("Returning history for file: $fileName")
+        val fileHistory = fileList.map { f -> FileHistory(extractDateFromFileName(f), location) } // Создать объекты FileHistory
+
+        println("Возвращаем историю файла: $fileName")
 
         return ResponseEntity.ok(fileHistory)
     }
 
     @GetMapping("/api/removeAllFromHistory")
     fun deleteFileHistory(@RequestParam fileName: String): ResponseEntity<String> {
-        println("Request received to delete all history for file: $fileName")
+        println("Запрос на удаление всей истории файла: $fileName")
 
-        val files = getFiles(fileName)
+        val files = getFiles(fileName) // Получить список файлов-историй
 
         if (files != null) {
             for (historyFile in files) {
                 if (historyFile.delete()) {
-                    println("Deleted history file: " + historyFile.name)
+                    println("Удален файл истории: " + historyFile.name)
                 } else {
-                    println("Failed to delete history file: " + historyFile.name)
-                    return ResponseEntity("Failed to delete history file", HttpStatus.BAD_REQUEST)
+                    println("Не удалось удалить файл истории: " + historyFile.name)
+                    return ResponseEntity("Не удалось удалить файл истории", HttpStatus.BAD_REQUEST)
                 }
             }
         } else {
-            println("No history found for file: $fileName")
-            return ResponseEntity("No history found for file", HttpStatus.BAD_REQUEST)
+            println("История для файла $fileName не найдена")
+            return ResponseEntity("История для файла не найдена", HttpStatus.BAD_REQUEST)
         }
-        return ResponseEntity.ok("Deleted file")
+        return ResponseEntity.ok("Файл истории удален")
     }
 
-    // This method is responsible for removing a file from the history
+    // Этот метод отвечает за удаление отдельного файла из истории
     @GetMapping("/api/removeFromHistory")
     fun removeFileFromHistory(@RequestParam filePath: String, authentication: Authentication): ResponseEntity<String> {
-        println("Request received to remove file history: $filePath")
+        println("Запрос на удаление файла истории: $filePath")
 
-        val fileToRemove = File(filePath)
+        val fileToRemove = File(filePath) // Создать объект File для файла на удаление
 
-        // Check to not abuse deletion of files
+        // Проверка на попытку удаления файлов вне директории истории
         if (!fileToRemove.absolutePath.contains(".history") && !authentication.authorities.contains(
                 SimpleGrantedAuthority("ROLE_ADMIN")
             )
         ) {
-            println("Attempt to delete file outside of history directory: $filePath")
-            return ResponseEntity.ok("Failed to delete file")
+            println("Попытка удалить файл вне директории истории: $filePath")
+            return ResponseEntity.ok("Не удалось удалить файл")
         }
 
-        // Remove the file from the hidden directory
+        // Удалить файл из скрытой директории
         if (!fileToRemove.delete()) {
-            println("Failed to delete file: $filePath")
-            return ResponseEntity.ok("Failed to delete file")
+            println("Не удалось удалить файл: $filePath")
+            return ResponseEntity.ok("Не удалось удалить файл")
         }
 
-        println("Deleted file: $filePath")
+        println("Файл удален: $filePath")
 
-        return ResponseEntity.ok("Deleted file")
+        return ResponseEntity.ok("Файл удален")
     }
 
     companion object {

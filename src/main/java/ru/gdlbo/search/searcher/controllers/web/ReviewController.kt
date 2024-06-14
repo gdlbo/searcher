@@ -22,24 +22,24 @@ import java.io.File
 @Controller
 class ReviewController {
     @Autowired
-    private val fileService: FileService? = null
+    private val fileService: FileService? = null // Сервис для работы с файлами
 
     @Autowired
-    private val userService: UserService? = null
+    private val userService: UserService? = null // Сервис для работы с пользователями
 
     @GetMapping("review")
     fun review(model: Model, auth: Authentication): String {
-        val fileInfos: List<FileInfoDto?>?
+        val fileInfos: List<FileInfoDto?>? // Список информации о файлах
 
         if (!auth.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            val user = userService!!.findByUsername(auth.name)
-            fileInfos = fileService!!.findTempByUser(user)?.map { it?.toDTO() }
+            val user = userService!!.findByUsername(auth.name) // Получить пользователя по имени
+            fileInfos = fileService!!.findTempByUser(user)?.map { it?.toDTO() } // Найти временные файлы пользователя и преобразовать в DTO
         } else {
-            fileInfos = fileService!!.findAllTemp().map { it?.toDTO() }
-            model.addAttribute("isAdmin", true)
+            fileInfos = fileService!!.findAllTemp().map { it?.toDTO() } // Найти все временные файлы и преобразовать в DTO
+            model.addAttribute("isAdmin", true) // Добавить атрибут в модель, указывающий на роль администратора
         }
 
-        model.addAttribute("fileInfos", fileInfos)
+        model.addAttribute("fileInfos", fileInfos) // Добавить список файлов в модель
         return "review"
     }
 
@@ -52,26 +52,24 @@ class ReviewController {
         authentication: Authentication
     ): String {
         if (file.isEmpty) {
-            return "redirect:/error"
+            return "redirect:/error" // Пустой файл - ошибка
         }
 
-        val fileTempInfo = fileService?.getTempFileById(fileId)
+        val fileTempInfo = fileService?.getTempFileById(fileId) // Получить информацию о временном файле по id
 
         if (fileTempInfo != null && fileTempInfo.isPresent) {
             val fileTempInfo = fileTempInfo.get()
-            if (fileTempInfo.user?.username == authentication.name || authentication.authorities.contains(
-                    SimpleGrantedAuthority("ROLE_ADMIN")
-                )
-            ) {
+            if (fileTempInfo.user?.username == authentication.name || authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) {
+                // Копирование файла если пользователь администратор или же файл того же пользователя (безопасность)
                 FileCopyUtils.copy(file.inputStream.readAllBytes(), File(fileTempInfo.location.toString()))
-                return "redirect:/review"
+                return "redirect:/review" // Успешное обновление - переход на страницу отзывов
             } else {
-                println("Trying to replace file without permission")
-                return "redirect:/error"
+                println("Попытка заменить файл без прав доступа") // Предупреждение о попытке замены без прав
+                return "redirect:/error" // Ошибка доступа
             }
         } else {
-            println("File isn't exist")
-            return "redirect:/error"
+            println("Файл не существует") // Предупреждение об отсутствии файла
+            return "redirect:/error" // Ошибка - файл не найден
         }
     }
 }

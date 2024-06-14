@@ -14,13 +14,13 @@ import ru.gdlbo.search.searcher.repository.user.UserRole
 @Controller
 class RegistrationController {
     @Autowired
-    private val userRepository: UserRepository? = null
+    private val userRepository: UserRepository? = null // Сервис для работы с пользователями
 
     @Autowired
-    private val roleRepository: RoleRepository? = null
+    private val roleRepository: RoleRepository? = null // Сервис для работы с ролями пользователей
 
     @Autowired
-    private val passwordEncoder: PasswordEncoder? = null
+    private val passwordEncoder: PasswordEncoder? = null // Сервис для шифрования паролей
 
     @GetMapping("/auth/register")
     fun showRegistrationForm(): String {
@@ -28,26 +28,29 @@ class RegistrationController {
     }
 
     @GetMapping("/auth/reg")
-    fun registerUser(@RequestParam username: String, @RequestParam password: String): String {
+    fun registerUser(
+        @RequestParam username: String,
+        @RequestParam password: String
+    ): String {
         if (username.isEmpty() || password.isEmpty()) {
-            // Handle validation error
-            println("Username or password is empty")
-            return "redirect:/auth/register?error"
+            // Обработать ошибку валидации
+            println("Имя пользователя или пароль пусты")
+            return "redirect:/auth/register?error" // Перенаправление на форму регистрации с сообщением об ошибке
         }
 
-        // Check if username already exists
+        // Проверить, существует ли уже пользователь с таким именем
         if (userRepository!!.findByUsername(username).isPresent) {
-            // Handle duplicate username error
-            println("User already exists: $username")
-            return "redirect:/auth/register?error"
+            // Обработать ошибку занятого имени пользователя
+            println("Пользователь уже существует: $username")
+            return "redirect:/auth/register?error" // Перенаправление на форму регистрации с сообщением об ошибке
         }
 
-        // Create a new user
+        // Создать нового пользователя
         val user = User()
         user.username = username
-        user.password = passwordEncoder!!.encode(password)
+        user.password = passwordEncoder!!.encode(password) // Зашифровать пароль
 
-        // Ensure roles exist in the database
+        // Проверить наличие ролей в базе данных
         val roleAdmin = roleRepository!!.findByName("ROLE_ADMIN").orElseGet {
             val newRole = Role("ROLE_ADMIN")
             roleRepository.save(newRole)
@@ -60,21 +63,22 @@ class RegistrationController {
             newRole
         }
 
+        // Назначение стартовой роли
         if (username == "admin") {
             user.userRoles = mutableSetOf(UserRole(user, roleAdmin))
         } else {
             user.userRoles = mutableSetOf(UserRole(user, roleUser))
         }
 
-        // Save the user
+        // Сохранить пользователя
         userRepository.save(user)
 
         if (userRepository.findByUsername(username).isPresent) {
-            println("User saved successfully: $username")
-            return "redirect:/auth/login"
+            println("Пользователь успешно создан: $username")
+            return "redirect:/auth/login" // Перенаправление на страницу входа после успешной регистрации
         } else {
-            println("Failed to save user: $username")
-            return "redirect:/error"
+            println("Не удалось создать пользователя: $username")
+            return "redirect:/error" // Перенаправление на страницу ошибки в случае неудачной регистрации
         }
     }
 }

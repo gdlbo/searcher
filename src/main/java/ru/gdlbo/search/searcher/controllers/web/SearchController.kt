@@ -27,10 +27,10 @@ import kotlin.math.min
 @Controller
 class SearchController {
     @Autowired
-    private val fileService: FileService? = null
+    private val fileService: FileService? = null  // Сервис для работы с файлами
 
     @Autowired
-    private val userService: UserService? = null
+    private val userService: UserService? = null  // Сервис для работы с пользователями
 
     @Autowired
     private val config: Config? = null
@@ -42,7 +42,7 @@ class SearchController {
         @RequestParam file: MultipartFile,
         authentication: Authentication
     ): String {
-        println("Request received to replace file: $filePath")
+        println("Получен запрос на замену файла: $filePath")  // Печатает в консоль полученный путь к файлу
 
         if (file.isEmpty) {
             return "redirect:/error"
@@ -50,10 +50,10 @@ class SearchController {
 
         val oldFile = File(filePath)
 
-        val hiddenDir = createHiddenDirectory(oldFile)
-        checkAndDeleteOldVersions(hiddenDir, oldFile.name)
+        val hiddenDir = createHiddenDirectory(oldFile)  // Создает скрытую директорию для истории файлов
+        checkAndDeleteOldVersions(hiddenDir, oldFile.name)  // Проверяет и удаляет старые версии файла
 
-        replaceOldFileWithNew(file, filePath)
+        replaceOldFileWithNew(file, filePath)  // Заменяет старый файл новым
 
         return "redirect:/search"
     }
@@ -63,7 +63,7 @@ class SearchController {
         val hiddenDir = File(oldFile.parentFile, ".history")
         if (!hiddenDir.exists()) {
             if (!hiddenDir.mkdir()) {
-                throw Exception("Failed to create directory")
+                throw Exception("Не удалось создать директорию")
             }
         }
         return hiddenDir
@@ -88,28 +88,38 @@ class SearchController {
             }
 
             if (!oldestFile.delete()) {
-                throw Exception("Failed to delete " + oldestFile.name)
+                throw Exception("Не удалось удалить " + oldestFile.name)
             }
 
-            println("Deleted oldest file: " + oldestFile.name)
+            println("Удален самый старый файл: " + oldestFile.name)
         }
     }
 
     @Throws(IOException::class)
     private fun replaceOldFileWithNew(file: MultipartFile, filePath: String) {
         FileCopyUtils.copy(file.inputStream.readAllBytes(), File(filePath))
-        println("Replaced file: $filePath")
+        println("Заменен файл: $filePath")  // Печатает в консоль путь к замененному файлу
     }
 
     @GetMapping("/search")
     fun searchFiles(
+        // Номер страницы (по умолчанию 0)
         @RequestParam(defaultValue = "0") page: Int,
+        // Данные формы (ключ-значение)
         @RequestParam formData: Map<String?, String?>,
+        // Данные авторизации
         authentication: Authentication,
+        // Модель для представления данных
         model: Model
     ): String {
+
+        // Проверка роли администратора
         val isAdmin = authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))
+
+        // Проверка наличия кастомного пути
         val hasCustomPath = config?.path != null
+
+        // Получение данных из формы
         val decNumber = formData["decNumber"]
         val deviceName = formData["deviceName"]
         val documentType = formData["documentType"]
@@ -119,20 +129,29 @@ class SearchController {
         val lastModified = formData["lastModified"]
         val location = formData["location"]
         val creationTime = formData["creationTime"]
+
+        // Получение имени пользователя (своего, если админ, иначе из авторизации)
         val userName = if (isAdmin) formData["user"] else authentication.name
 
+        // Поиск пользователя по имени (если не найден - редирект на ошибку)
         userService!!.findByUsername(authentication.name) ?: return "redirect:/error"
 
+        // Формирование спецификации поиска файлов
         val spec = FileInfoSpecification.createSpecification(
             decNumber, deviceName, documentType, usedDevices, project,
             inventoryNumber, lastModified, location, creationTime, userName
         )
 
+        // Поиск файлов по спецификации
         val files = fileService!!.findFiles(spec)
+
+        // Получение постраничных результатов поиска
         val paginatedResult = fileService.paginateFileInfos(files, page)
 
+        // Добавление атрибутов в модель (результаты поиска, пагинация и т.д.)
         addAttributesToModel(model, paginatedResult, authentication)
 
+        // Добавление отдельных атрибутов в модель (данные из формы)
         setAttr(model, "decNumber", decNumber)
         setAttr(model, "deviceName", deviceName)
         setAttr(model, "documentType", documentType)
@@ -143,23 +162,32 @@ class SearchController {
         setAttr(model, "lastModified", lastModified)
         setAttr(model, "location", location)
 
+        // Атрибут для отключения кастомного пути (если он не задан)
         model.addAttribute("isCustomPathDisabled", !hasCustomPath)
 
+        // Добавление кастомного пути в модель для администраторов
         if (hasCustomPath && isAdmin) {
             model.addAttribute("path", config?.path)
         }
 
-        return "search"
+        return "search" // название шаблона для отображения результатов
     }
 
     private fun addAttributesToModel(model: Model, paginatedResult: PaginatedResult, authentication: Authentication) {
+        // Результаты поиска
         model.addAttribute("fileInfos", paginatedResult.paginatedFileInfos)
+        // Есть ли еще результаты
         model.addAttribute("hasMoreResults", paginatedResult.hasMoreResults)
+        // Номер текущей страницы
         model.addAttribute("page", paginatedResult.page)
+        // Номера страниц для отображения
         model.addAttribute("pageNumbers", getPageNumbers(paginatedResult.page, paginatedResult.totalPages, 10))
+        // Общее количество страниц
         model.addAttribute("totalPages", paginatedResult.totalPages)
+        // Имя пользователя из авторизации
         model.addAttribute("nickname", authentication.name)
 
+        // Добавление признака администратора
         if (authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) {
             model.addAttribute("isAdmin", true)
         }
@@ -172,6 +200,7 @@ class SearchController {
     }
 
     private fun getPageNumbers(currentPage: Int, totalPages: Int, limit: Int): List<Int> {
+        // Логика формирования списка номеров страниц для отображения
         val pageNumbers: MutableList<Int> = ArrayList()
 
         if (totalPages <= limit) {

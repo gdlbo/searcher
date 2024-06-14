@@ -13,28 +13,27 @@ import java.nio.charset.StandardCharsets
 
 @Controller
 class FileDownloadController {
-    // This method is responsible for handling file download requests
+    // Этот метод обрабатывает запросы на скачивание файлов
     @GetMapping("/api/download")
     @Throws(IOException::class)
     fun downloadFile(@RequestParam filePath: String): ResponseEntity<InputStreamResource> {
-        // Creating a new File object from the provided filePath
-
+        // Создание объекта из пути к файлу
         val file = File(filePath)
-        println("File object created with path: $filePath")
+        println("Создан файл с путем: $filePath")
 
-        // Creating an InputStreamResource to read from the file
+        // Создание потока для чтения из файла
         val resource = InputStreamResource(FileInputStream(file))
-        println("InputStreamResource created to read from the file")
+        println("Создан InputStreamResource для чтения из файла")
 
-        // Getting the name of the file
+        // Получение имени файла
         val fileName = file.name
-        println("File name: $fileName")
+        println("Имя файла: $fileName")
 
-        // Encoding the file name to ensure it's properly displayed in all browsers
+        // Кодировка имени файла для корректного отображения в браузерах
         val encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8)
-        println("Encoded file name: $encodedFileName")
+        println("Закодированное имя файла: $encodedFileName")
 
-        // Building and returning the ResponseEntity with the file as the body
+        // Создание и возврат ResponseEntity с файлом в теле ответа для начала загрузки
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename*=UTF-8''$encodedFileName")
             .contentType(MediaType.APPLICATION_OCTET_STREAM)
