@@ -60,17 +60,25 @@ class SearchController {
 
     @Throws(Exception::class)
     private fun createHiddenDirectory(oldFile: File): File {
+        // Создаем объект директории с именем ".history" в родительской директории переданного файла
         val hiddenDir = File(oldFile.parentFile, ".history")
+
+        // Проверяем, существует ли уже эта директория
         if (!hiddenDir.exists()) {
+            // Если директории не существует, пытаемся ее создать
             if (!hiddenDir.mkdir()) {
+                // Если не удалось создать директорию, выбрасываем исключение с сообщением об ошибке
                 throw Exception("Не удалось создать директорию")
             }
         }
+
+        // Возвращаем объект созданной или уже существующей директории
         return hiddenDir
     }
 
     @Throws(Exception::class)
     private fun checkAndDeleteOldVersions(hiddenDir: File, oldFileName: String) {
+        // Получаем список файлов в директории, которые начинаются с имени переданного файла (без расширения)
         val files = hiddenDir.listFiles { dir: File?, name: String ->
             name.startsWith(
                 oldFileName.substring(
@@ -79,18 +87,26 @@ class SearchController {
                 )
             )
         }
+
+        // Проверяем, если файлов больше 10 (лимит по рекомендации компании)
         if (files != null && files.size > 10) {
+            // Инициализируем переменную для самого старого файла, начально задав ей первый файл в списке
             var oldestFile = files[0]
+
+            // Проходим по остальным файлам и находим самый старый файл
             for (i in 1 until files.size) {
                 if (files[i].lastModified() < oldestFile.lastModified()) {
                     oldestFile = files[i]
                 }
             }
 
+            // Пытаемся удалить самый старый файл
             if (!oldestFile.delete()) {
+                // Если не удалось удалить файл, выбрасываем исключение с сообщением об ошибке
                 throw Exception("Не удалось удалить " + oldestFile.name)
             }
 
+            // Печатаем сообщение об успешном удалении самого старого файла
             println("Удален самый старый файл: " + oldestFile.name)
         }
     }
@@ -216,30 +232,25 @@ class SearchController {
             // Вычисляем конечную страницу, до которой будет идти отображение
             // Берем минимальное значение между (начальная страница + лимит) и totalPages
             val endPage = min((startPage + limit).toDouble(), totalPages.toDouble()).toInt()
-
             // Если разница между конечной и начальной страницей меньше лимита,
             // сдвигаем начальную страницу назад, чтобы заполнить лимит
             if (endPage - startPage < limit) {
                 startPage = max(0.0, (endPage - limit).toDouble()).toInt()
             }
-
             // Если начальная страница больше 0, добавляем индикатор пропуска страниц
             if (startPage > 0) {
                 pageNumbers.add(-1) // -1 как индикатор пропуска
             }
-
             // Добавляем номера страниц от начальной до конечной страницы в список
             for (i in startPage until endPage) {
                 pageNumbers.add(i)
             }
-
             // Если конечная страница меньше общего количества страниц,
             // добавляем общее количество страниц как индикатор пропуска
             if (endPage < totalPages) {
                 pageNumbers.add(totalPages) // Общее количество страниц как индикатор пропуска
             }
         }
-
         // Возвращаем сформированный список номеров страниц
         return pageNumbers
     }
